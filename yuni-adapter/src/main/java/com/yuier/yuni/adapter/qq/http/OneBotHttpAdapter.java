@@ -1,7 +1,10 @@
 package com.yuier.yuni.adapter.qq.http;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.model.message.QqMessage;
+import com.yuier.yuni.core.model.event.MessageEvent;
+import com.yuier.yuni.core.model.event.OneBotEvent;
+import com.yuier.yuni.core.util.OneBotDeserializer;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @Title: OneBotHttpAdapter
@@ -12,6 +15,13 @@ import com.yuier.yuni.core.model.message.QqMessage;
  */
 
 public class OneBotHttpAdapter implements OneBotAdapter {
+
+    private OneBotDeserializer deserializer;
+
+    public OneBotHttpAdapter(OneBotDeserializer deserializer) {
+        this.deserializer = deserializer;
+    }
+
     @Override
     public void startListening() {
 
@@ -25,15 +35,21 @@ public class OneBotHttpAdapter implements OneBotAdapter {
     @Override
     public void handleReportJson(String json) {
         System.out.println("OneBot HTTP POST adapter ...");
+        try {
+            OneBotEvent oneBotEvent = deserializer.deserializeEvent(json);
+            System.out.println("deserializer succeed");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void sendGroupMessage(long groupId, QqMessage message) {
+    public void sendGroupMessage(long groupId, MessageEvent message) {
 
     }
 
     @Override
-    public void sendPrivateMessage(long userId, QqMessage message) {
+    public void sendPrivateMessage(long userId, MessageEvent message) {
 
     }
 

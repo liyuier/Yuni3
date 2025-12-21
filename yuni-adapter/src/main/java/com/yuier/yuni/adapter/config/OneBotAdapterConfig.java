@@ -2,6 +2,8 @@ package com.yuier.yuni.adapter.config;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.adapter.qq.http.OneBotHttpAdapter;
+import com.yuier.yuni.core.util.OneBotDeserializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +19,12 @@ import org.springframework.context.annotation.Bean;
 @SpringBootConfiguration
 public class OneBotAdapterConfig {
 
+    @Autowired
+    OneBotDeserializer oneBotDeserializer;
+
     @Bean
     @ConditionalOnProperty(name = "onebot.communication.mode", havingValue = "http", matchIfMissing = true)
     public OneBotAdapter oneBotHttpAdapter() {
-        return new OneBotHttpAdapter();
+        return new OneBotHttpAdapter(oneBotDeserializer);
     }
 }

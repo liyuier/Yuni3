@@ -1,6 +1,6 @@
 package com.yuier.yuni.adapter.qq;
 
-import com.yuier.yuni.core.model.message.QqMessage;
+import com.yuier.yuni.core.model.event.MessageEvent;
 
 /**
  * @Title: OneBotAdapter
@@ -15,6 +15,6 @@ public interface OneBotAdapter {
     void startListening();
     void stopListening();
     void handleReportJson(String json);
-    void sendGroupMessage(long groupId, QqMessage message);
-    void sendPrivateMessage(long userId, QqMessage message);
+    void sendGroupMessage(long groupId, MessageEvent message);
+    void sendPrivateMessage(long userId, MessageEvent message);
 }
