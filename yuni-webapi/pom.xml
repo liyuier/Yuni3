@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- 父模块中以 dependencyManagement 引入了统一依赖管理，因此后边无需再次引入。
-             直接声明 dependencies 即可 -->
+         直接声明 dependencies 即可 -->
     <parent>
         <groupId>com.yuier.yuni</groupId>
         <artifactId>yuni3</artifactId>
@@ -12,10 +12,10 @@
     </parent>
 
     <!-- 模块信息 -->
-    <artifactId>yuni-engine</artifactId>
+    <artifactId>yuni-webapi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>yuni-engine</name>
-    <description>yuni-engine</description>
+    <name>yuni-webapi</name>
+    <description>yuni-webapi</description>
 
     <dependencies>
         <dependency>

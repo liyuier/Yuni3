@@ -12,12 +12,30 @@
     </parent>
 
     <!-- 模块信息 -->
-    <artifactId>yuni-engine</artifactId>
+    <artifactId>yuni-application</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>yuni-engine</name>
-    <description>yuni-engine</description>
+    <name>yuni-application</name>
+    <description>yuni-application</description>
 
     <dependencies>
+
+        <!-- 引入其他子模块 -->
+        <dependency>
+            <groupId>com.yuier.yuni</groupId>
+            <artifactId>yuni-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yuier.yuni</groupId>
+            <artifactId>yuni-adapter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yuier.yuni</groupId>
+            <artifactId>yuni-webapi</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

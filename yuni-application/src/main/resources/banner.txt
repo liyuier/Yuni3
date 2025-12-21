@@ -1,0 +1,11 @@
+##    ## ##     ## ##    ## ####
+ ##  ##  ##     ## ###   ##  ##
+  ####   ##     ## ####  ##  ##
+   ##    ##     ## ## ## ##  ##
+   ##    ##     ## ##  ####  ##
+   ##    ##     ## ##   ###  ##
+   ##     #######  ##    ## ####
+
+${yuni.name} ${yuni.version}
+Powered by Spring Boot ${spring-boot.version}
+${yuni.description}

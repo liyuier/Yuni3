@@ -1,0 +1,6 @@
+server:
+  port: 11451
+
+spring:
+  application:
+    name: yuni-application

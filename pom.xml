@@ -13,9 +13,12 @@
 
     <!-- 子模块 -->
     <modules>
-        <module>yuni-core</module>
         <module>yuni-dependency</module>
         <module>yuni-engine</module>
+        <module>yuni-adapter</module>
+        <module>yuni-webapi</module>
+        <module>yuni-core</module>
+        <module>yuni-application</module>
     </modules>
 
     <!-- 统一 Java 与 maven 属性 -->
@@ -26,6 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <spring-boot-maven-plugin.version>3.3.4</spring-boot-maven-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
     </properties>
 
     <!-- 引入统一依赖管理 -->
@@ -74,6 +78,25 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!--&lt;!&ndash; 确保构建顺序的插件 &ndash;&gt;-->
+            <!--<plugin>-->
+            <!--    <groupId>org.apache.maven.plugins</groupId>-->
+            <!--    <artifactId>maven-dependency-plugin</artifactId>-->
+            <!--    <version>${maven-dependency-plugin.version}</version>-->
+            <!--    <executions>-->
+            <!--        <execution>-->
+            <!--            <id>analyze-only</id>-->
+            <!--            <goals>-->
+            <!--                <goal>analyze-only</goal>-->
+            <!--            </goals>-->
+            <!--            <configuration>-->
+            <!--                <failOnWarning>true</failOnWarning>-->
+            <!--                <ignoreNonCompile>false</ignoreNonCompile>-->
+            <!--            </configuration>-->
+            <!--        </execution>-->
+            <!--    </executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

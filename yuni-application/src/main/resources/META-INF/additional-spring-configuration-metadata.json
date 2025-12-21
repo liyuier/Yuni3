@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "yuni.name",
+      "type": "java.lang.String",
+      "description": "Description for yuni.name."
+    },
+    {
+      "name": "yuni.version",
+      "type": "java.lang.String",
+      "description": "Description for yuni.version."
+    },
+    {
+      "name": "yuni.description",
+      "type": "java.lang.String",
+      "description": "Description for yuni.description."
+    }
+  ] }
