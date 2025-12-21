@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Component
 public class PolymorphicRegistrationProcessor {
@@ -70,8 +69,7 @@ public class PolymorphicRegistrationProcessor {
                 Class<?> clazz = Class.forName(className);
 
                 PolymorphicSubType annotation = clazz.getAnnotation(PolymorphicSubType.class);
-                String customTypeName = annotation.value();
-                String typeName = customTypeName;
+                String typeName = annotation.value();
                 if (typeName == null || typeName.trim().isEmpty()) {
                     typeName = inferTypeName(clazz);
                 }
@@ -105,7 +103,7 @@ public class PolymorphicRegistrationProcessor {
                         System.out.println("  - 注册: " + clazz.getSimpleName() + " -> " + typeName);
                         return new NamedType(clazz, typeName);
                     })
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (!namedTypes.isEmpty()) {
                 mapper.registerSubtypes(namedTypes.toArray(new NamedType[0]));

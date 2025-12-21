@@ -4,7 +4,6 @@ import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @Title: OneBotHttpAdapter
