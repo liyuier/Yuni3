@@ -9,13 +9,72 @@
     <packaging>pom</packaging>
 
     <name>yuni3</name>
-    <description>Yuni3</description>
+    <description>Yuni3 chat-bot app framework</description>
 
+    <!-- 子模块 -->
     <modules>
+        <module>yuni-core</module>
+        <module>yuni-dependency</module>
+        <module>yuni-engine</module>
     </modules>
 
+    <!-- 统一 Java 与 maven 属性 -->
     <properties>
         <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <spring-boot-maven-plugin.version>3.3.4</spring-boot-maven-plugin.version>
     </properties>
+
+    <!-- 引入统一依赖管理 -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.yuier.yuni</groupId>
+                <artifactId>yuni-dependency</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <type>pom</type>  <!-- 依赖本身是个 pom -->
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!-- 最终打包文件的名字 -->
+        <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <!-- 指定资源文件目录 -->
+                <directory>src/main/resources</directory>
+                <!-- 启用过滤，允许 Maven 替换 application.yml 等文件中的 ${project.version} 等占位符 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <!-- 负责复制和过滤资源文件 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <!-- SpringBoot 专用构建插件 -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <!-- lombok 是编译期工具，打包时不需要 -->
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
