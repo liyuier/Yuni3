@@ -2,69 +2,135 @@ package com.yuier.yuni.engine.manager.init;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.yuier.yuni.core.anno.PolymorphicSubType;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageSegment;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-/**
- * @Title: PolymorphicRegistrationProcessor
- * @Author yuier
- * @Package com.yuier.yuni.engine.manager.init
- * @Date 2025/12/22 5:39
- * @description: Polymorphic 注解的类自动注册
- */
+import java.util.stream.Collectors;
 
 @Component
-public class PolymorphicRegistrationProcessor implements BeanPostProcessor {
+public class PolymorphicRegistrationProcessor {
 
-    private final Map<Class<?>, Set<PolymorphicTypeEntry>> polymorphicMappings = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Set<Class<?>>> polymorphicMappings = new ConcurrentHashMap<>();
+    private volatile boolean initialized = false;
 
     public PolymorphicRegistrationProcessor() {
-        // 自动发现需要多态反序列化的基类
-        discoverPolymorphicBaseClasses();
+        // 预注册基类
+        registerPolymorphicBaseClass(OneBotEvent.class);
+        registerPolymorphicBaseClass(MessageSegment.class);
     }
 
-    private void discoverPolymorphicBaseClasses() {
-        // 扫描所有带有 @JsonTypeInfo 注解的类作为基类
-        Set<Class<?>> baseClasses = findAnnotatedClasses(com.fasterxml.jackson.annotation.JsonTypeInfo.class);
-        for (Class<?> baseClass : baseClasses) {
-            polymorphicMappings.putIfAbsent(baseClass, new HashSet<>());
+    public void registerPolymorphicBaseClass(Class<?> baseClass) {
+        polymorphicMappings.putIfAbsent(baseClass, new HashSet<>());
+        System.out.println("预注册基类: " + baseClass.getSimpleName());
+    }
+
+    public void registerSubType(Class<?> baseClass, Class<?> subType) {
+        polymorphicMappings.computeIfAbsent(baseClass, k -> new HashSet<>())
+                .add(subType);
+        System.out.println("添加子类型: " + baseClass.getSimpleName() + " <- " + subType.getSimpleName());
+    }
+
+    // 🔥 修正：这是一个方法，不是成员变量
+    public synchronized void initializeIfNeeded() {
+        if (initialized) return;
+
+        System.out.println("=== 开始初始化多态类型扫描 ===");
+        try {
+            performScan();
+            initialized = true;
+            System.out.println("=== 多态类型扫描完成 ===");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize polymorphic types", e);
         }
     }
 
-    public void registerSubType(Class<?> subType, String typeName) {
-        // 自动发现 subType 的基类
-        Class<?> baseClass = findPolymorphicBaseClass(subType);
-        if (baseClass != null) {
-            polymorphicMappings.computeIfAbsent(baseClass, k -> new HashSet<>())
-                    .add(new PolymorphicTypeEntry(subType, typeName));
-        }
-    }
+    private void performScan() throws Exception {
+        ClassPathScanningCandidateComponentProvider scanner =
+                new ClassPathScanningCandidateComponentProvider(false);
 
-    public void applyTo(ObjectMapper mapper) {
-        for (Map.Entry<Class<?>, Set<PolymorphicTypeEntry>> entry : polymorphicMappings.entrySet()) {
-            Class<?> baseClass = entry.getKey();
-            Set<PolymorphicTypeEntry> subTypes = entry.getValue();
+        scanner.addIncludeFilter(new AnnotationTypeFilter(PolymorphicSubType.class));
 
-            List<NamedType> namedTypes = subTypes.stream()
-                    .map(typeEntry -> new NamedType(typeEntry.getSubType(), typeEntry.getTypeName()))
-                    .toList();
+        String packageToScan = "com.yuier.yuni.core";
+        java.util.Set<org.springframework.beans.factory.config.BeanDefinition> candidates =
+                scanner.findCandidateComponents(packageToScan);
 
-            if (!namedTypes.isEmpty()) {
-                mapper.registerSubtypes(namedTypes.toArray(new NamedType[0]));
+        System.out.println("在包 " + packageToScan + " 中找到 " + candidates.size() + " 个 @PolymorphicSubType 标记的类");
+
+        for (org.springframework.beans.factory.config.BeanDefinition candidate : candidates) {
+            String className = candidate.getBeanClassName();
+            System.out.println("发现类: " + className);
+
+            try {
+                Class<?> clazz = Class.forName(className);
+
+                PolymorphicSubType annotation = clazz.getAnnotation(PolymorphicSubType.class);
+                String customTypeName = annotation.value();
+                String typeName = customTypeName;
+                if (typeName == null || typeName.trim().isEmpty()) {
+                    typeName = inferTypeName(clazz);
+                }
+
+                Class<?> baseClass = findPolymorphicBaseClass(clazz);
+                if (baseClass != null) {
+                    registerSubType(baseClass, clazz);
+                    System.out.println("注册类型: " + baseClass.getSimpleName() + " <- " +
+                            clazz.getSimpleName() + " (" + typeName + ")");
+                }
+            } catch (Exception e) {
+                System.err.println("处理类失败: " + className);
+                e.printStackTrace();
             }
         }
     }
 
+    public void applyTo(ObjectMapper mapper) {
+        initializeIfNeeded(); // 🔥 确保在应用前完成初始化
+
+        System.out.println("开始应用多态类型注册到 ObjectMapper...");
+        for (Map.Entry<Class<?>, Set<Class<?>>> entry : polymorphicMappings.entrySet()) {
+            Class<?> baseClass = entry.getKey();
+            Set<Class<?>> subTypes = entry.getValue();
+
+            System.out.println("处理基类: " + baseClass.getSimpleName() + ", 子类型数量: " + subTypes.size());
+
+            List<NamedType> namedTypes = subTypes.stream()
+                    .map(clazz -> {
+                        String typeName = inferTypeName(clazz);
+                        System.out.println("  - 注册: " + clazz.getSimpleName() + " -> " + typeName);
+                        return new NamedType(clazz, typeName);
+                    })
+                    .collect(Collectors.toList());
+
+            if (!namedTypes.isEmpty()) {
+                mapper.registerSubtypes(namedTypes.toArray(new NamedType[0]));
+                System.out.println("  已注册 " + namedTypes.size() + " 个子类型");
+            }
+        }
+        System.out.println("多态类型注册完成");
+    }
+
+    private String inferTypeName(Class<?> clazz) {
+        String simpleName = clazz.getSimpleName();
+        if (simpleName.endsWith("Event")) {
+            return lowerFirst(simpleName.substring(0, simpleName.length() - 5));
+        } else if (simpleName.endsWith("Segment")) {
+            return lowerFirst(simpleName.substring(0, simpleName.length() - 7));
+        }
+        return lowerFirst(simpleName);
+    }
+
+    private String lowerFirst(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return Character.toLowerCase(str.charAt(0)) + str.substring(1);
+    }
+
     private Class<?> findPolymorphicBaseClass(Class<?> subType) {
-        // 从当前类开始向上查找，直到找到带有 @JsonTypeInfo 注解的类
         Class<?> current = subType.getSuperclass();
         while (current != null && current != Object.class) {
             if (current.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonTypeInfo.class)) {
@@ -75,28 +141,7 @@ public class PolymorphicRegistrationProcessor implements BeanPostProcessor {
         return null;
     }
 
-    private Set<Class<?>> findAnnotatedClasses(Class<? extends java.lang.annotation.Annotation> annotation) {
-        // 这里可以通过扫描或预注册的方式来发现
-        // 为了简化，我们可以硬编码已知的基类，或者通过反射扫描
-        Set<Class<?>> result = new HashSet<>();
-        // 添加已知的基类
-        result.add(OneBotEvent.class);
-        result.add(MessageSegment.class);
-        // 可以通过扫描包路径来动态发现更多
-        return result;
-    }
-
-    // 内部类存储类型映射信息
-    private static class PolymorphicTypeEntry {
-        private final Class<?> subType;
-        private final String typeName;
-
-        public PolymorphicTypeEntry(Class<?> subType, String typeName) {
-            this.subType = subType;
-            this.typeName = typeName;
-        }
-
-        public Class<?> getSubType() { return subType; }
-        public String getTypeName() { return typeName; }
+    public Set<Class<?>> getSubTypes(Class<?> baseClass) {
+        return polymorphicMappings.getOrDefault(baseClass, Collections.emptySet());
     }
 }

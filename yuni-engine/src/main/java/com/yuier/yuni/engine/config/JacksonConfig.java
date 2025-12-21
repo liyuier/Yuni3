@@ -1,5 +1,6 @@
 package com.yuier.yuni.engine.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.yuier.yuni.engine.manager.init.PolymorphicRegistrationProcessor;
@@ -26,13 +27,16 @@ public class JacksonConfig {
     }
 
     @Bean
-    @Primary
     public ObjectMapper objectMapper() {
+        System.out.println("创建 ObjectMapper...");
         ObjectMapper mapper = new ObjectMapper();
-        // 配置 snake_case 转换
+        // 🔥 配置处理未知字段的方式
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        // 应用多态类型注册
+
+        // applyTo 会确保初始化完成后再应用配置
         registrationProcessor.applyTo(mapper);
+        System.out.println("ObjectMapper 配置完成");
         return mapper;
     }
 

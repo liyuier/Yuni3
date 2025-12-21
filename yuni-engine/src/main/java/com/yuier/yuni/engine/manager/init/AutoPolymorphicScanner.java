@@ -2,6 +2,7 @@ package com.yuier.yuni.engine.manager.init;
 
 import com.yuier.yuni.core.anno.PolymorphicSubType;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
@@ -22,24 +23,23 @@ import java.util.Map;
  */
 
 @Component
-public class AutoPolymorphicScanner implements BeanFactoryPostProcessor {
+public class AutoPolymorphicScanner
+//        implements BeanFactoryPostProcessor
+{
 
-    private final PolymorphicRegistrationProcessor registrationProcessor;
+    @Autowired  // 🔥 使用 @Autowired 注解注入依赖
+    private PolymorphicRegistrationProcessor registrationProcessor;
 
-    public AutoPolymorphicScanner(PolymorphicRegistrationProcessor registrationProcessor) {
-        this.registrationProcessor = registrationProcessor;
-    }
+//    @Override
+//    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+//        try {
+//            scanAndRegisterPolymorphicTypes();
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to auto-register polymorphic types", e);
+//        }
+//    }
 
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        try {
-            scanAndRegisterPolymorphicTypes();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to auto-register polymorphic types", e);
-        }
-    }
-
-    private void scanAndRegisterPolymorphicTypes() throws Exception {
+    public void scanAndRegisterPolymorphicTypes() throws Exception {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         CachingMetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resolver);
 
@@ -66,7 +66,7 @@ public class AutoPolymorphicScanner implements BeanFactoryPostProcessor {
                     typeName = inferTypeName(clazz);
                 }
 
-                registrationProcessor.registerSubType(clazz, typeName);
+//                registrationProcessor.registerSubType(clazz, typeName);
             }
         }
     }

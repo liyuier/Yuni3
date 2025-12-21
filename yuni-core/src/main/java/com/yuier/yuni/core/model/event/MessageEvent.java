@@ -22,7 +22,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @PolymorphicSubType
-public class MessageEvent {
+public class MessageEvent extends OneBotEvent {
 
     /**
      * 消息类型。
