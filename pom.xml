@@ -78,25 +78,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-            <!--&lt;!&ndash; 确保构建顺序的插件 &ndash;&gt;-->
-            <!--<plugin>-->
-            <!--    <groupId>org.apache.maven.plugins</groupId>-->
-            <!--    <artifactId>maven-dependency-plugin</artifactId>-->
-            <!--    <version>${maven-dependency-plugin.version}</version>-->
-            <!--    <executions>-->
-            <!--        <execution>-->
-            <!--            <id>analyze-only</id>-->
-            <!--            <goals>-->
-            <!--                <goal>analyze-only</goal>-->
-            <!--            </goals>-->
-            <!--            <configuration>-->
-            <!--                <failOnWarning>true</failOnWarning>-->
-            <!--                <ignoreNonCompile>false</ignoreNonCompile>-->
-            <!--            </configuration>-->
-            <!--        </execution>-->
-            <!--    </executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 

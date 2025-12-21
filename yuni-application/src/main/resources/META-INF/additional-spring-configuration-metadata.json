@@ -14,5 +14,10 @@
       "name": "yuni.description",
       "type": "java.lang.String",
       "description": "Description for yuni.description."
+    },
+    {
+      "name": "onebot.communication.mode",
+      "type": "java.lang.String",
+      "description": "Description for onebot.communication.mode."
     }
   ] }
