@@ -1,4 +1,4 @@
-package com.yuier.yuni.engine.event.message;
+package com.yuier.yuni.event.model.context;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.enums.MessageType;
@@ -6,6 +6,9 @@ import com.yuier.yuni.core.model.message.MessageChain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
+import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
 
 /**
  * @Title: ChatSession
@@ -38,8 +41,21 @@ public class ChatSession {
     // 当前全局适配器
     private OneBotAdapter adapter;
 
+    // 当前会话的 OneBot 侧基础 URL
+    private String OneBotBaseUrl;
+
     public ChatSession(OneBotAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    public void setMessageType(String messageType) {
+        if (messageType.equals(PRIVATE_MESSAGE)) {
+            this.messageType = MessageType.PRIVATE;
+        } else if (messageType.equals(GROUP_MESSAGE)) {
+            this.messageType = MessageType.GROUP;
+        } else {
+            throw new RuntimeException("未知消息类型！");
+        }
     }
 
     public void response(MessageChain chain) {

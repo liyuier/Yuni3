@@ -17,4 +17,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TextData {
     private String text;
+
+    public TextData(String text) {
+        this.text = text;
+    }
+    @Override
+    public String toString() {
+        return text;
+    }
 }

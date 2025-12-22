@@ -1,9 +1,10 @@
 package com.yuier.yuni.webapi.filter;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.engine.event.message.ChatSession;
+import com.yuier.yuni.event.model.context.ChatSession;
 import com.yuier.yuni.engine.manager.context.RequestContextContainer;
 import com.yuier.yuni.engine.manager.context.RequestContextManager;
+import com.yuier.yuni.event.model.message.detector.command.CommandMatcher;
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,11 @@ public class BusinessContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
-            // 为当前请求创建业务上下文容器
-            RequestContextContainer requestContextContainer = new RequestContextContainer();
+            // 为当前请求创建上下文容器
+            createRequestContextContainer();
 
-            // 创建 chatSession 对象并放入容器中
-            requestContextContainer.setChatSession(new ChatSession(adapter));
-
-            // 将容器放入 ThreadLocal
-            RequestContextManager.setContext(requestContextContainer);
+            // 刷新 CommandMatcher 的 chainForCommand
+            CommandMatcher.chainForCommand = null;
 
             // 继续执行请求连
             filterChain.doFilter(servletRequest, servletResponse);
@@ -47,6 +45,19 @@ public class BusinessContextFilter implements Filter {
         } finally {
             // 请求结束后清理上下文，防止内存泄露
             RequestContextManager.clear();
+            CommandMatcher.chainForCommand = null;
         }
+    }
+
+    // 为当前请求创建上下文容器
+    private void createRequestContextContainer() {
+        // 为当前请求创建业务上下文容器
+        RequestContextContainer requestContextContainer = new RequestContextContainer();
+
+        // 创建 chatSession 对象并放入容器中
+        requestContextContainer.setChatSession(new ChatSession(adapter));
+
+        // 将容器放入 ThreadLocal
+        RequestContextManager.setContext(requestContextContainer);
     }
 }

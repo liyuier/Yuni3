@@ -1,7 +1,7 @@
 package com.yuier.yuni.webapi.websocket;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.engine.event.message.ChatSession;
+import com.yuier.yuni.event.model.context.ChatSession;
 import com.yuier.yuni.engine.manager.context.RequestContextContainer;
 import com.yuier.yuni.engine.manager.context.RequestContextManager;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.yuier.yuni.engine.event.model;
+package com.yuier.yuni.event.model.context;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

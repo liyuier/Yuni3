@@ -1,9 +1,10 @@
-package com.yuier.yuni.engine.event.model;
+package com.yuier.yuni.event.model.context;
 
+import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;
-import com.yuier.yuni.engine.event.message.ChatSession;
 import com.yuier.yuni.core.model.message.MessageChain;
+import com.yuier.yuni.event.model.message.detector.command.model.matched.CommandMatched;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -85,4 +86,9 @@ public class YuniMessageEvent extends SpringYuniEvent {
 
     // 会话状态
     private ChatSession session;
+
+    // 命令匹配结果
+    private CommandMatched commandMatched;
+
+    private MessageEvent messageEvent;
 }

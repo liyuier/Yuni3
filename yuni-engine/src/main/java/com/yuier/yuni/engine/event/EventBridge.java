@@ -3,10 +3,12 @@ package com.yuier.yuni.engine.event;
 import com.yuier.yuni.core.constants.OneBotPostType;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
-import com.yuier.yuni.core.util.BeanCopyUtils;
 import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.engine.event.model.SpringYuniEvent;
-import com.yuier.yuni.engine.event.model.YuniMessageEvent;
+import com.yuier.yuni.core.util.BeanCopyUtils;
+import com.yuier.yuni.engine.manager.context.RequestContextManager;
+import com.yuier.yuni.event.model.context.ChatSession;
+import com.yuier.yuni.event.model.context.SpringYuniEvent;
+import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -47,6 +49,16 @@ public class EventBridge {
         yuniMessageEvent.setMessage(messageEvent.getMessage());
         yuniMessageEvent.setMessageChain(new MessageChain(yuniMessageEvent.getMessage()));
         yuniMessageEvent.setSender(messageEvent.getSender());
+        yuniMessageEvent.setMessageEvent(messageEvent);
+        // 为消息事件添加 chatSession
+        ChatSession chatSession = RequestContextManager.getChatSession();
+        assert chatSession != null;
+        chatSession.setSelfId(messageEvent.getSelfId());
+        chatSession.setUserId(messageEvent.getUserId());
+        chatSession.setGroupId(messageEvent.getGroupId());
+        chatSession.setMessageType(messageEvent.getMessageType());
+        // TODO 添加 OneBotBaseUrl
+        yuniMessageEvent.setSession(chatSession);
         return yuniMessageEvent;
     }
 }

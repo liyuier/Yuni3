@@ -19,5 +19,15 @@
       "name": "onebot.communication.mode",
       "type": "java.lang.String",
       "description": "Description for onebot.communication.mode."
+    },
+    {
+      "name": "bot.qq",
+      "type": "java.lang.String",
+      "description": "Description for bot.qq."
+    },
+    {
+      "name": "bot.nickname",
+      "type": "java.lang.String",
+      "description": "Description for bot.nickname."
     }
   ] }

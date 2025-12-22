@@ -30,4 +30,8 @@ public abstract class MessageSegment {
         this.type = type;
     }
 
+    public Boolean typeOf(String type) {
+        return this.type.equals(type);
+    }
+
 }

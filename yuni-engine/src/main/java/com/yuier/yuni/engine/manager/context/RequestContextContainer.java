@@ -1,6 +1,6 @@
 package com.yuier.yuni.engine.manager.context;
 
-import com.yuier.yuni.engine.event.message.ChatSession;
+import com.yuier.yuni.event.model.context.ChatSession;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

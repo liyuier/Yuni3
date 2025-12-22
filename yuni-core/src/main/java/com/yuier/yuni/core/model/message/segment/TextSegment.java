@@ -25,6 +25,11 @@ public class TextSegment extends MessageSegment {
         super("text");
     }
 
+    public TextSegment(String text) {
+        super("text");
+        this.data = new TextData(text);
+    }
+
     public String getText() {
         return data != null ? data.getText() : null;
     }

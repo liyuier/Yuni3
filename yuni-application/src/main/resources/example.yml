@@ -9,6 +9,10 @@ onebot:
   communication:
     mode: http
 
+bot:
+  qq: 114514
+  nickname: nickname
+
 yuni:
   name: Yuni
   version: v3.0.0
