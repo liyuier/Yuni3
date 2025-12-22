@@ -34,6 +34,7 @@ public class JacksonConfig {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 
+
         // applyTo 会确保初始化完成后再应用配置
         registrationProcessor.applyTo(mapper);
         System.out.println("ObjectMapper 配置完成");

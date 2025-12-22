@@ -29,4 +29,9 @@ public class FaceSegment extends MessageSegment {
         return data != null ? data.getId() : null;
     }
 
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
+
 }

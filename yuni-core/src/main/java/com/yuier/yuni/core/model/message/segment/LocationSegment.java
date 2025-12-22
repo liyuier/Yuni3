@@ -24,4 +24,9 @@ public class LocationSegment extends MessageSegment {
     public LocationSegment() {
         super("location");
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

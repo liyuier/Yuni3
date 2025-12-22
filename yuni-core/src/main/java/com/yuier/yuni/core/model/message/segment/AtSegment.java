@@ -32,4 +32,9 @@ public class AtSegment extends MessageSegment {
     public String getName() {
         return data != null ? data.getName() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

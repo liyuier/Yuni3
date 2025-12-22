@@ -28,4 +28,9 @@ public class TextSegment extends MessageSegment {
     public String getText() {
         return data != null ? data.getText() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

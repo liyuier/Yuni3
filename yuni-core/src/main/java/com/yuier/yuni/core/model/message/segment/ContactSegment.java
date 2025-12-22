@@ -32,4 +32,9 @@ public class ContactSegment extends MessageSegment {
     public String getId() {
         return data != null ? data.getId() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

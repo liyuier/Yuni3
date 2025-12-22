@@ -28,4 +28,9 @@ public class XmlSegment extends MessageSegment {
     private String getXmlData() {
         return data != null ? data.getData() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

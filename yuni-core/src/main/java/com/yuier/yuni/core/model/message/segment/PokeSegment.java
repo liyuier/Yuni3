@@ -29,4 +29,8 @@ public class PokeSegment extends MessageSegment {
         return data != null ? data.getQq() : null;
     }
 
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

@@ -28,4 +28,9 @@ public class JsonSegment extends MessageSegment {
     public String getJsonData() {
         return data != null ? data.getData() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

@@ -2,6 +2,7 @@ package com.yuier.yuni.core.model.message.segment;
 
 import com.yuier.yuni.core.anno.PolymorphicSubType;
 import com.yuier.yuni.core.model.message.MessageSegment;
+import com.yuier.yuni.core.model.message.data.AnonymousData;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,15 @@ import lombok.Setter;
 @Setter
 @PolymorphicSubType
 public class AnonymousSegment extends MessageSegment {
+
+    private AnonymousData data;
+
     public AnonymousSegment() {
         super();
+    }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
     }
 }

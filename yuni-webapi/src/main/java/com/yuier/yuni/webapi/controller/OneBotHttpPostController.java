@@ -1,6 +1,8 @@
 package com.yuier.yuni.webapi.controller;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.core.model.event.OneBotEvent;
+import com.yuier.yuni.engine.event.EventBridge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,10 +23,12 @@ public class OneBotHttpPostController {
 
     @Autowired
     OneBotAdapter adapter;
+    @Autowired
+    EventBridge eventBridge;
 
     @PostMapping
     public void receiveOneBotHttpPost(@RequestBody String rawJson) {
-        System.out.println("Hello Yuni!");
-        adapter.handleReportJson(rawJson);
+        OneBotEvent oneBotEvent = adapter.handleReportJson(rawJson);
+        eventBridge.publishRawEvent(oneBotEvent);
     }
 }

@@ -28,4 +28,9 @@ public class MarkdownSegment extends MessageSegment {
     public String getContent() {
         return data != null ? data.getContent() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

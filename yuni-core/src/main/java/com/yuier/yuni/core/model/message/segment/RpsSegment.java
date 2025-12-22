@@ -28,4 +28,9 @@ public class RpsSegment extends MessageSegment {
     public String getResult() {
         return data != null ? data.getResult() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

@@ -2,7 +2,6 @@ package com.yuier.yuni.core.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.core.model.event.OneBotEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;

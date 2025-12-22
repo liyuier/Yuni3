@@ -25,4 +25,8 @@ public class MarketFaceSegment extends MessageSegment {
         super("mface");
     }
 
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

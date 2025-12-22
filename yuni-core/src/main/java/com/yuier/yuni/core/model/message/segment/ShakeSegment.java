@@ -24,4 +24,9 @@ public class ShakeSegment extends MessageSegment {
     public ShakeSegment() {
         super("shake");
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

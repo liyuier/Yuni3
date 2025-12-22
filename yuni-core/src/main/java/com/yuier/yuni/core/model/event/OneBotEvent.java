@@ -1,5 +1,6 @@
 package com.yuier.yuni.core.model.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,8 @@ import lombok.Setter;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        property = "post_type"
+        property = "post_type",
+        visible = true
 )
 public class OneBotEvent {
 
@@ -36,5 +38,6 @@ public class OneBotEvent {
      * request：请求事件
      * meta_event：元事件
      */
+    @JsonProperty("post_type")
     private String postType;
 }

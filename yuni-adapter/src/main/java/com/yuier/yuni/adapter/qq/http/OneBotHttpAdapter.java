@@ -1,9 +1,9 @@
 package com.yuier.yuni.adapter.qq.http;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
+import com.yuier.yuni.core.model.message.MessageChain;
 
 /**
  * @Title: OneBotHttpAdapter
@@ -32,22 +32,21 @@ public class OneBotHttpAdapter implements OneBotAdapter {
     }
 
     @Override
-    public void handleReportJson(String json) {
+    public OneBotEvent handleReportJson(String json) {
         try {
-            OneBotEvent oneBotEvent = deserializer.deserializeEvent(json);
-            System.out.println("deserializer succeed");
+            return deserializer.deserializeEvent(json);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void sendGroupMessage(long groupId, MessageEvent message) {
+    public void sendGroupMessage(long groupId, MessageChain message) {
 
     }
 
     @Override
-    public void sendPrivateMessage(long userId, MessageEvent message) {
+    public void sendPrivateMessage(long userId, MessageChain message) {
 
     }
 

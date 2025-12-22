@@ -24,4 +24,9 @@ public class DiceSegment extends MessageSegment {
     public DiceSegment() {
         super("dice");
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

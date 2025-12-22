@@ -33,4 +33,8 @@ public class FileSegment extends MessageSegment {
         return data != null ? data.getName() : null;
     }
 
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

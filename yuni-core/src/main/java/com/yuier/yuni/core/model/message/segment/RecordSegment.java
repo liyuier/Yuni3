@@ -36,4 +36,9 @@ public class RecordSegment extends MessageSegment {
     private String getPath() {
         return data != null ? data.getPath() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

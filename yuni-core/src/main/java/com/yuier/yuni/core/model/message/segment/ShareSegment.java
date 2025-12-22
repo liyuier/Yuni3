@@ -24,4 +24,9 @@ public class ShareSegment extends MessageSegment {
     public ShareSegment() {
         super("share");
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

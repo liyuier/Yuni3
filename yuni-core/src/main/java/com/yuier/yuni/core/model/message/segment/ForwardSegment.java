@@ -28,4 +28,9 @@ public class ForwardSegment extends MessageSegment {
     private String getId() {
         return data != null ? data.getId() : null;
     }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
+    }
 }

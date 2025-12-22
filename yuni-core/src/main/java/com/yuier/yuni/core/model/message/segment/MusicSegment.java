@@ -21,8 +21,12 @@ public class MusicSegment extends MessageSegment {
 
     private MusicData data;
 
-
     public MusicSegment() {
         super("music");
+    }
+
+    @Override
+    public String toString() {
+        return data != null ? data.toString() : "";
     }
 }
