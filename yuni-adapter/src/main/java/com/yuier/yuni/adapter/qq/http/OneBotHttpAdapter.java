@@ -33,7 +33,6 @@ public class OneBotHttpAdapter implements OneBotAdapter {
 
     @Override
     public void handleReportJson(String json) {
-        System.out.println("OneBot HTTP POST adapter ...");
         try {
             OneBotEvent oneBotEvent = deserializer.deserializeEvent(json);
             System.out.println("deserializer succeed");

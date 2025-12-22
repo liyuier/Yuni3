@@ -26,24 +26,20 @@ public class PolymorphicRegistrationProcessor {
 
     public void registerPolymorphicBaseClass(Class<?> baseClass) {
         polymorphicMappings.putIfAbsent(baseClass, new HashSet<>());
-        System.out.println("预注册基类: " + baseClass.getSimpleName());
     }
 
     public void registerSubType(Class<?> baseClass, Class<?> subType) {
         polymorphicMappings.computeIfAbsent(baseClass, k -> new HashSet<>())
                 .add(subType);
-        System.out.println("添加子类型: " + baseClass.getSimpleName() + " <- " + subType.getSimpleName());
     }
 
     // 🔥 修正：这是一个方法，不是成员变量
     public synchronized void initializeIfNeeded() {
         if (initialized) return;
 
-        System.out.println("=== 开始初始化多态类型扫描 ===");
         try {
             performScan();
             initialized = true;
-            System.out.println("=== 多态类型扫描完成 ===");
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize polymorphic types", e);
         }
@@ -59,11 +55,9 @@ public class PolymorphicRegistrationProcessor {
         java.util.Set<org.springframework.beans.factory.config.BeanDefinition> candidates =
                 scanner.findCandidateComponents(packageToScan);
 
-        System.out.println("在包 " + packageToScan + " 中找到 " + candidates.size() + " 个 @PolymorphicSubType 标记的类");
 
         for (org.springframework.beans.factory.config.BeanDefinition candidate : candidates) {
             String className = candidate.getBeanClassName();
-            System.out.println("发现类: " + className);
 
             try {
                 Class<?> clazz = Class.forName(className);
@@ -77,8 +71,6 @@ public class PolymorphicRegistrationProcessor {
                 Class<?> baseClass = findPolymorphicBaseClass(clazz);
                 if (baseClass != null) {
                     registerSubType(baseClass, clazz);
-                    System.out.println("注册类型: " + baseClass.getSimpleName() + " <- " +
-                            clazz.getSimpleName() + " (" + typeName + ")");
                 }
             } catch (Exception e) {
                 System.err.println("处理类失败: " + className);
@@ -90,27 +82,22 @@ public class PolymorphicRegistrationProcessor {
     public void applyTo(ObjectMapper mapper) {
         initializeIfNeeded(); // 🔥 确保在应用前完成初始化
 
-        System.out.println("开始应用多态类型注册到 ObjectMapper...");
         for (Map.Entry<Class<?>, Set<Class<?>>> entry : polymorphicMappings.entrySet()) {
             Class<?> baseClass = entry.getKey();
             Set<Class<?>> subTypes = entry.getValue();
 
-            System.out.println("处理基类: " + baseClass.getSimpleName() + ", 子类型数量: " + subTypes.size());
 
             List<NamedType> namedTypes = subTypes.stream()
                     .map(clazz -> {
                         String typeName = inferTypeName(clazz);
-                        System.out.println("  - 注册: " + clazz.getSimpleName() + " -> " + typeName);
                         return new NamedType(clazz, typeName);
                     })
                     .toList();
 
             if (!namedTypes.isEmpty()) {
                 mapper.registerSubtypes(namedTypes.toArray(new NamedType[0]));
-                System.out.println("  已注册 " + namedTypes.size() + " 个子类型");
             }
         }
-        System.out.println("多态类型注册完成");
     }
 
     private String inferTypeName(Class<?> clazz) {
