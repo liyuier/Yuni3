@@ -4,3 +4,12 @@ server:
 spring:
   application:
     name: yuni-application
+
+onebot:
+  communication:
+    mode: http
+
+yuni:
+  name: Yuni
+  version: v3.0.0
+  description: 基于 Spring Boot 开发的一款聊天机器人，很高兴为您服务
