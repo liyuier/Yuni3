@@ -19,14 +19,15 @@ public class AskForSeTu extends ScheduleActionPlugin {
     @Override
     public String cronExpression() {
         return CronExpressionBuilder.create()
-                .everySeconds(2).build();
+                .hours(8)
+                .build();
     }
 
     @Override
     public Action getAction() {
         return () -> {
             OneBotAdapter adapter = SpringContextUtil.getBean(OneBotAdapter.class);
-            adapter.sendGroupMessage(930198267, new MessageChain("给我色图！"));
+            adapter.sendGroupMessage(930198267, new MessageChain("偶哈哟，欧尼酱！"));
         };
     }
 }
