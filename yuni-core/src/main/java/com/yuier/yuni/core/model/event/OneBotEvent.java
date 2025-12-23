@@ -18,10 +18,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)  // 指定为 protected
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        property = "post_type",
-        visible = true
+        use = JsonTypeInfo.Id.NAME,  // 指定类型标识的生成方式为类的简短名称
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,  // 类型信息已经存在于 json 中，Jackson 无需额外添加
+        property = "post_type",  // 存储类型信息的关键字段
+        visible = true  // 反序列化后的结果显示关键字段，即此处的 postType 字段
 )
 public class OneBotEvent {
 
