@@ -149,22 +149,22 @@ public class CommandMatcher {
             CommandOptionMatched commandOptionMatched = new CommandOptionMatched(text);
             CommandOption optionModel = model.getOption(text);
             // 如果选项参数不为空，那么需要继续匹配参数
-            CommandArg optionArg = optionModel.getArg();
-            if (optionArg != null) {
+            CommandArg optionRequiredArg = optionModel.getRequiredArg();
+            if (optionRequiredArg != null) {
                 if (chainForCommand.messageSegsMatchedEnd()) {
                     return;
                 }
 
                 // 如果参数需求回复消息，需要特殊处理
-                if (optionArg.wantsSegmentType(CommandArgRequireType.REPLY)) {
+                if (optionRequiredArg.wantsSegmentType(CommandArgRequireType.REPLY)) {
                     if (chainForCommand.storesReplyData()) {
                         // 获取回复消息
                         MessageSegment replySegment = chainForCommand.getReplySegment();
                         // 构建参数匹配结果
-                        commandOptionMatched.setArg(new CommandArgMatched(
-                                optionArg.getName(),
-                                optionArg.getDescription(),
-                                optionArg.getRequiredType(),
+                        commandOptionMatched.setRequiredArg(new CommandArgMatched(
+                                optionRequiredArg.getName(),
+                                optionRequiredArg.getDescription(),
+                                optionRequiredArg.getRequiredType(),
                                 replySegment
                         ));
                         // 当前选项匹配完毕，继续匹配下一个选项
@@ -180,17 +180,26 @@ public class CommandMatcher {
                 // 指针向右移动一格
                 chainForCommand.curSegIndexStepForwardBy(1);
                 MessageSegment nextMessageSeg = chainForCommand.getCurMessageSeg();
-                if (messageSegmentMatcherArg(nextMessageSeg, optionArg)) {
+                if (messageSegmentMatcherArg(nextMessageSeg, optionRequiredArg)) {
                     // 下一个消息段恰好匹配参数，则将参数值放入选项匹配结果中
-                    commandOptionMatched.setArg(new CommandArgMatched(
-                            optionArg.getName(),
-                            optionArg.getDescription(),
-                            optionArg.getRequiredType(),
+                    commandOptionMatched.setRequiredArg(new CommandArgMatched(
+                            optionRequiredArg.getName(),
+                            optionRequiredArg.getDescription(),
+                            optionRequiredArg.getRequiredType(),
                             nextMessageSeg
                     ));
                 } else {
                     // 参数不为空，但找不到需求的消息段，参数匹配失败，返回
                     return;
+                }
+            }
+            // 对于可选参数，直接复用 matchOptionalArgs
+            CommandArg optionOptionalArg = optionModel.getOptionalArg();
+            if (optionOptionalArg != null) {
+                Map<String, CommandArgMatched> optionOptionalArgsMatched = new HashMap<>();
+                matchOptionalArgs(chainForCommand, model, optionOptionalArgsMatched);
+                if (optionOptionalArgsMatched.containsKey(optionOptionalArg.getName())) {
+                    commandOptionMatched.setOptionalArg(optionOptionalArgsMatched.get(optionOptionalArg.getName()));
                 }
             }
             // 保存选项匹配结果

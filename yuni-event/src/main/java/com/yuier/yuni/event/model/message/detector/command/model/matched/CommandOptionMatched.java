@@ -21,14 +21,20 @@ public class CommandOptionMatched {
     private String flag;
 
     // 选项参数，一个选项只允许接收一个参数
-    private CommandArgMatched arg;
+    private CommandArgMatched requiredArg;
+    private CommandArgMatched optionalArg;
 
     // 该选项需求的权限，默认为普通用户
     private UserPermission permission = UserPermission.USER;
 
-    public MessageSegment getArgValue() {
-        return arg == null ? null : arg.getValue();
+    public MessageSegment getRequiredArgValue() {
+        return requiredArg == null ? null : requiredArg.getValue();
     }
+
+    public MessageSegment getOptionalArgValue() {
+        return optionalArg == null ? null : optionalArg.getValue();
+    }
+
 
     // 传入 flag 的构造函数
     public CommandOptionMatched(String flag) {
