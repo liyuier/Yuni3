@@ -1,0 +1,8 @@
+{
+  "id": "command-example",
+  "name": "command-example",
+  "version": "0.0.1",
+  "description": "A command example plugin",
+  "author": "Your Name <<EMAIL>>",
+  "dependencies": []
+}

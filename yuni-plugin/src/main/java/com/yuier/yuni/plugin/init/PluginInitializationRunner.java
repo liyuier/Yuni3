@@ -1,9 +1,11 @@
 package com.yuier.yuni.plugin.init;
 
+import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -25,6 +27,9 @@ import java.util.List;
 public class PluginInitializationRunner implements ApplicationRunner {
 
     private final PluginInstanceAssembler pluginInstanceAssembler;
+
+    @Autowired
+    PluginManager pluginManager;
 
     @Value("${bot.app.plugin.directory:yuni-application/plugins}")
     private String pluginDirectoryPath; // 插件目录
@@ -80,11 +85,13 @@ public class PluginInitializationRunner implements ApplicationRunner {
     private void registerActivePlugin(ActivePluginInstance instance) {
         // 实现主动插件的注册逻辑
         log.info("注册主动插件: {}", instance.getPluginMetadata().getName());
+        pluginManager.registerActivePlugin(instance);
     }
 
     private void registerPassivePlugin(PassivePluginInstance instance) {
         // 实现被动插件的注册逻辑
         log.info("注册被动插件: {}", instance.getPluginMetadata().getName());
+        pluginManager.registerPassivePlugin(instance);
     }
 }
 

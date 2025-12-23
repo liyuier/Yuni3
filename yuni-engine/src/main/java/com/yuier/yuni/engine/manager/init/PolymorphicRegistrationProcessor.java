@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.yuier.yuni.core.anno.PolymorphicSubType;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageSegment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Slf4j
 public class PolymorphicRegistrationProcessor {
 
     private final Map<Class<?>, Set<Class<?>>> polymorphicMappings = new ConcurrentHashMap<>();
@@ -40,6 +42,7 @@ public class PolymorphicRegistrationProcessor {
         try {
             performScan();
             initialized = true;
+            log.info("Polymorphic types registered.");
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize polymorphic types", e);
         }
