@@ -13,7 +13,7 @@ import com.yuier.yuni.event.model.context.SpringYuniEvent;
 public interface YuniEventDetector<T extends SpringYuniEvent> {
 
     /**
-     * @return  检查消息是否命中消息探测器
+     * @return  检查事件是否命中事件探测器
      */
     Boolean match(T event);
 }

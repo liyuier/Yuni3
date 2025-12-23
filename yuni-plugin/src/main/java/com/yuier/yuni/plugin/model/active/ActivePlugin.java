@@ -1,4 +1,6 @@
-package com.yuier.yuni.plugin.model;
+package com.yuier.yuni.plugin.model.active;
+
+import com.yuier.yuni.plugin.model.YuniPlugin;
 
 /**
  * @Title: ActivePlugin

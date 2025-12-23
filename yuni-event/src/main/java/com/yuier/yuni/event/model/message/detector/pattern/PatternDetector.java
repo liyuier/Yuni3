@@ -1,9 +1,13 @@
 package com.yuier.yuni.event.model.message.detector.pattern;
 
+import com.yuier.yuni.core.enums.MessageType;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.MessageDetector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
+import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
 
 /**
  * @Title: PatternDetector
@@ -21,6 +25,16 @@ public class PatternDetector implements MessageDetector {
 
     @Override
     public Boolean match(YuniMessageEvent event) {
-        return pattern.match(event.getMessageChain());
+        return messageTypeMatches(event) && pattern.match(event.getMessageChain());
+    }
+
+    @Override
+    public MessageType listenAt() {
+        return MessageType.GROUP;
+    }
+
+    public Boolean messageTypeMatches(YuniMessageEvent event) {
+        return (listenAt() == MessageType.GROUP && event.getMessageType().equals(GROUP_MESSAGE)) ||
+                (listenAt() == MessageType.PRIVATE && event.getMessageType().equals(PRIVATE_MESSAGE));
     }
 }

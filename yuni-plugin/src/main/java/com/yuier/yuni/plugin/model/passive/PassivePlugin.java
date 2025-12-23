@@ -1,7 +1,9 @@
-package com.yuier.yuni.plugin.model;
+package com.yuier.yuni.plugin.model.passive;
 
+import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.model.context.SpringYuniEvent;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
+import com.yuier.yuni.plugin.model.YuniPlugin;
 
 /**
  * @Title: PassivePlugin
@@ -11,7 +13,7 @@ import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
  * @description: 被动触发的插件
  */
 
-public interface PassivePlugin<T extends SpringYuniEvent, S extends YuniEventDetector<?>> extends YuniPlugin{
+public interface PassivePlugin<T extends SpringYuniEvent, S extends YuniEventDetector<?>> extends YuniPlugin {
 
     /**
      * 插件执行方法
@@ -24,4 +26,6 @@ public interface PassivePlugin<T extends SpringYuniEvent, S extends YuniEventDet
      * @return  事件探测器
      */
     S getDetector();
+
+    UserPermission pluginPermission();
 }

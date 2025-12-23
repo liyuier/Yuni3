@@ -3,6 +3,7 @@ package com.yuier.yuni.core.model.message;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -23,12 +24,13 @@ import static com.yuier.yuni.core.constants.SystemConstants.FIRST_INDEX;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MessageChain {
 
     private List<MessageSegment> content = new ArrayList<>();
 
-    public MessageChain() {
-
+    public MessageChain(String text) {
+        this.addTextSegment(text);
     }
 
     @Override
@@ -70,5 +72,14 @@ public class MessageChain {
             throw new IndexOutOfBoundsException("索引越界");
         }
         return content.remove(index);
+    }
+
+    public Boolean containsString(String str) {
+        for (MessageSegment seg : content) {
+            if (seg.typeOf(TEXT) && ((TextSegment) seg).getText().contains(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package com.yuier.yuni.event.model.message.detector;
 
+import com.yuier.yuni.core.enums.MessageType;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 
 /**
@@ -12,4 +13,5 @@ import com.yuier.yuni.event.model.context.YuniMessageEvent;
 
 public interface MessageDetector extends YuniEventDetector<YuniMessageEvent> {
 
+    MessageType listenAt();
 }

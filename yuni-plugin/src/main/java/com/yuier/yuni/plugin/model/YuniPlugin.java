@@ -1,7 +1,5 @@
 package com.yuier.yuni.plugin.model;
 
-import com.yuier.yuni.core.model.event.OneBotEvent;
-
 /**
  * @Title: YuniPlugin
  * @Author yuier
@@ -12,11 +10,6 @@ import com.yuier.yuni.core.model.event.OneBotEvent;
 
 
 public interface YuniPlugin {
-
-    /**
-     * 获取插件元数据
-     */
-    PluginMetadata getMetadata();
 
     /**
      * 插件初始化

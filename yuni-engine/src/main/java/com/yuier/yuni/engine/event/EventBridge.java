@@ -58,7 +58,7 @@ public class EventBridge {
         chatSession.setGroupId(messageEvent.getGroupId());
         chatSession.setMessageType(messageEvent.getMessageType());
         // TODO 添加 OneBotBaseUrl
-        yuniMessageEvent.setSession(chatSession);
+        yuniMessageEvent.setChatSession(chatSession);
         return yuniMessageEvent;
     }
 }

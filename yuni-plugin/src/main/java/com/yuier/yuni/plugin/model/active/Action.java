@@ -1,4 +1,4 @@
-package com.yuier.yuni.plugin.model;
+package com.yuier.yuni.plugin.model.active;
 
 /**
  * @Title: Action

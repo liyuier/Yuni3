@@ -85,7 +85,7 @@ public class YuniMessageEvent extends SpringYuniEvent {
     private MessageChain messageChain;
 
     // 会话状态
-    private ChatSession session;
+    private ChatSession chatSession;
 
     // 命令匹配结果
     private CommandMatched commandMatched;

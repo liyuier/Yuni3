@@ -65,4 +65,8 @@ public class ChatSession {
             adapter.sendGroupMessage(groupId, chain);
         }
     }
+
+    public void response(String text) {
+        response(new MessageChain(text));
+    }
 }
