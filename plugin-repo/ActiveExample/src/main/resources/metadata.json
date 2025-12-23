@@ -1,0 +1,8 @@
+{
+  "id": "active-example",
+  "name": "active-example",
+  "version": "0.0.1",
+  "description": "主动插件的示例",
+  "author": "Yuier me@yuier.com",
+  "dependencies": []
+}

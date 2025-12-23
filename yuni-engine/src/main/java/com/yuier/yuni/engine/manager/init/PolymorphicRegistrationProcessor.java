@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class PolymorphicRegistrationProcessor {
 
+    // TODO 理顺逻辑
+
     private final Map<Class<?>, Set<Class<?>>> polymorphicMappings = new ConcurrentHashMap<>();
     private volatile boolean initialized = false;
 

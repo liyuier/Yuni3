@@ -2,7 +2,7 @@ package com.yuier.yuni.plugin.init;
 
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,15 @@ import java.util.List;
 @Slf4j
 public class PluginInitializationRunner implements ApplicationRunner {
 
+    // TODO 理顺逻辑
+
     private final PluginInstanceAssembler pluginInstanceAssembler;
 
     @Autowired
     PluginManager pluginManager;
 
     @Value("${bot.app.plugin.directory:yuni-application/plugins}")
-    private String pluginDirectoryPath; // 插件目录
+    private String pluginDirectoryPath;  // 插件目录
 
     public PluginInitializationRunner(PluginInstanceAssembler pluginInstanceAssembler) {
         this.pluginInstanceAssembler = pluginInstanceAssembler;
@@ -72,9 +74,9 @@ public class PluginInitializationRunner implements ApplicationRunner {
     private void registerPluginInstances(List<PluginInstance> instances) {
         // 根据插件类型注册到对应的系统中
         for (PluginInstance instance : instances) {
-            if (instance instanceof ActivePluginInstance) {
+            if (instance instanceof ScheduledPluginInstance) {
                 // 注册主动插件到定时任务系统
-                registerActivePlugin((ActivePluginInstance) instance);
+                registerActivePlugin((ScheduledPluginInstance) instance);
             } else if (instance instanceof PassivePluginInstance) {
                 // 注册被动插件到事件监听系统
                 registerPassivePlugin((PassivePluginInstance) instance);
@@ -82,7 +84,7 @@ public class PluginInitializationRunner implements ApplicationRunner {
         }
     }
 
-    private void registerActivePlugin(ActivePluginInstance instance) {
+    private void registerActivePlugin(ScheduledPluginInstance instance) {
         // 实现主动插件的注册逻辑
         log.info("注册主动插件: {}", instance.getPluginMetadata().getName());
         pluginManager.registerActivePlugin(instance);

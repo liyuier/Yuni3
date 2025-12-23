@@ -6,7 +6,7 @@ import com.yuier.yuni.event.model.context.SpringYuniEvent;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.MessageDetector;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
-import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class PluginManager {
 
-    private final Map<String, ActivePluginInstance> activePlugins = new ConcurrentHashMap<>();
+    // TODO 理顺逻辑，解决一堆管理功能
+
+    private final Map<String, ScheduledPluginInstance> activePlugins = new ConcurrentHashMap<>();
     private final Map<String, PassivePluginInstance> passivePlugins = new ConcurrentHashMap<>();
     @Autowired
     private DynamicTaskManager dynamicTaskManager;
@@ -36,7 +38,7 @@ public class PluginManager {
     /**
      * 注册主动插件
      */
-    public void registerActivePlugin(ActivePluginInstance instance) {
+    public void registerActivePlugin(ScheduledPluginInstance instance) {
         String pluginId = instance.getPluginMetadata().getId();
         activePlugins.put(pluginId, instance);
 
@@ -105,7 +107,7 @@ public class PluginManager {
      * 获取用户权限（需要从事件中提取用户信息）
      */
     private UserPermission getUserPermission(SpringYuniEvent event) {
-        // 实现权限获取逻辑
+        // TODO 实现权限获取逻辑
         return UserPermission.USER; // 默认权限
     }
 
@@ -125,7 +127,7 @@ public class PluginManager {
      */
     public void unloadPlugin(String pluginId) {
         // 移除主动插件的定时任务
-        ActivePluginInstance active = activePlugins.remove(pluginId);
+        ScheduledPluginInstance active = activePlugins.remove(pluginId);
         if (active != null) {
             // 取消定时任务
         }

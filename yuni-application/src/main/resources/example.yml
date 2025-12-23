@@ -7,13 +7,19 @@ spring:
 
 onebot:
   communication:
-    mode: http
+    mode: http  # 与 OneBot 的通信方式，目前只实现了 http
+  api:
+    url: http://127.0.0.1:3000/  # OneBot 客户端的 API 端点
 
 bot:
-  qq: 114514
-  nickname: nickname
+  qq: 123456789  # 机器人的 QQ 号
+  nickname: xcw  # 机器人的昵称
+  app:
+    command-flag: /  # 定义命令时的全局前缀
+    plugin:
+      directory: yuni-application/plugins  # 插件 jar 包的位置，默认位于 application 模块的 plugins 目录下
 
-yuni:
+yuni:  # 用于 banner.txt
   name: Yuni
   version: v3.0.0
-  description: 基于 Spring Boot 开发的一款聊天机器人，很高兴为您服务
+  description: 基于 Spring Boot 开发的一款聊天机器人

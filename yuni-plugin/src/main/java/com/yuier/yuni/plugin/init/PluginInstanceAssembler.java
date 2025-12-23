@@ -16,8 +16,8 @@ import com.yuier.yuni.event.model.message.detector.command.model.CommandModel;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;
-import com.yuier.yuni.plugin.model.active.ActivePlugin;
-import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.active.ScheduledPlugin;
+import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import org.springframework.stereotype.Component;
@@ -115,8 +115,8 @@ public class PluginInstanceAssembler {
         // 实例化插件
         YuniPlugin plugin = (YuniPlugin) pluginClass.getDeclaredConstructor().newInstance();
 
-        if (plugin instanceof ActivePlugin) {
-            return createActivePluginInstance((ActivePlugin) plugin, metadata);
+        if (plugin instanceof ScheduledPlugin) {
+            return createActivePluginInstance((ScheduledPlugin) plugin, metadata);
         } else if (plugin instanceof PassivePlugin) {
             return createPassivePluginInstance((PassivePlugin<?, ?>) plugin, metadata);
         } else {
@@ -127,13 +127,13 @@ public class PluginInstanceAssembler {
     /**
      * 创建主动插件实例
      */
-    private ActivePluginInstance createActivePluginInstance(ActivePlugin activePlugin,
-                                                            PluginMetadata metadata) {
-        ActivePluginInstance instance = new ActivePluginInstance();
-        instance.setActivePlugin(activePlugin);
+    private ScheduledPluginInstance createActivePluginInstance(ScheduledPlugin scheduledPlugin,
+                                                               PluginMetadata metadata) {
+        ScheduledPluginInstance instance = new ScheduledPluginInstance();
+        instance.setScheduledPlugin(scheduledPlugin);
         instance.setPluginMetadata(metadata);
-        instance.setCronExpression(activePlugin.cronExpression());
-        instance.setAction(activePlugin.getAction());
+        instance.setCronExpression(scheduledPlugin.cronExpression());
+        instance.setAction(scheduledPlugin.getAction());
         return instance;
     }
 

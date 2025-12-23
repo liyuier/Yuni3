@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Title: ActivePluginInstance
+ * @Title: ScheduledPluginInstance
  * @Author yuier
  * @Package com.yuier.yuni.plugin.model.active
  * @Date 2025/12/23 21:08
@@ -16,16 +16,16 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ActivePluginInstance implements PluginInstance {
+public class ScheduledPluginInstance implements PluginInstance {
 
-    private ActivePlugin activePlugin;
+    private ScheduledPlugin scheduledPlugin;
     private PluginMetadata pluginMetadata;
     private String cronExpression;
     private Action action;
 
     @Override
     public YuniPlugin getPlugin() {
-        return activePlugin;
+        return scheduledPlugin;
     }
 
     @Override
