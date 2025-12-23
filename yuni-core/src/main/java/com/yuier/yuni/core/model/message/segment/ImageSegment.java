@@ -25,11 +25,11 @@ public class ImageSegment extends MessageSegment {
         super("image");
     }
 
-    private String getFile() {
+    public String getFile() {
         return data != null ? data.getFile() : null;
     }
 
-    private String getName() {
+    public String getName() {
         return data != null ? data.getName() : null;
     }
 

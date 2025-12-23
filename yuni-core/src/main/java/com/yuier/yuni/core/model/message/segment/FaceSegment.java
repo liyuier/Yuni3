@@ -25,7 +25,7 @@ public class FaceSegment extends MessageSegment {
         super("face");
     }
 
-    private String getId() {
+    public String getId() {
         return data != null ? data.getId() : null;
     }
 

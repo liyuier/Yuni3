@@ -20,7 +20,7 @@ public class CommandOption {
     private String flag;
 
     // 选项参数，一个选项只允许接收一个参数
-    private CommandArg arg;
+    private CommandArg arg = null;
 
     // 该选项需求的权限，默认为普通用户
     private UserPermission permission = UserPermission.USER;

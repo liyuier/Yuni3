@@ -29,10 +29,80 @@ public class CommandModel {
     // 命令选项
     private List<CommandOption> options = new ArrayList<>();
 
-    // 子命令列表
-    private List<CommandModel> childCommands = new ArrayList<>();
-
     // 命令权限。对于注册了命令的插件，默认以命令权限为插件权限。
     // 默认为 USER
     private UserPermission permission = UserPermission.USER;
+
+    /**
+     * @return  命令需要的最少消息段数
+     */
+    public Integer requiredLeastSegNum() {
+        return requiredArgs.size() + 1;
+    }
+
+    /**
+     * 命令是否有选项
+     * @return  有选项：true
+     */
+    public Boolean hasOptions() {
+        return !options.isEmpty();
+    }
+
+    public Boolean hasRequiredArgs() {
+        return !requiredArgs.isEmpty();
+    }
+
+    public Boolean hasOptionalArgs() {
+        return !optionalArgs.isEmpty();
+    }
+
+    public Boolean hasArgs() {
+        return hasRequiredArgs() || hasOptionalArgs();
+    }
+
+    public Boolean hasArg(String name) {
+        for (CommandArg arg : requiredArgs) {
+            if (arg.getName().equals(name)) {
+                return true;
+            }
+        }
+        for (CommandArg arg : optionalArgs) {
+            if (arg.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public CommandArg getArg(String name) {
+        for (CommandArg arg : requiredArgs) {
+            if (arg.getName().equals(name)) {
+                return arg;
+            }
+        }
+        for (CommandArg arg : optionalArgs) {
+            if (arg.getName().equals(name)) {
+                return arg;
+            }
+        }
+        return null;
+    }
+
+    public Boolean hasOption(String flag) {
+        for (CommandOption option : options) {
+            if (option.getFlag().equals(flag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public CommandOption getOption(String flag) {
+        for (CommandOption option : options) {
+            if (option.getFlag().equals(flag)) {
+                return option;
+            }
+        }
+        return null;
+    }
 }

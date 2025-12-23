@@ -29,4 +29,9 @@ public class CommandOptionMatched {
     public MessageSegment getArgValue() {
         return arg == null ? null : arg.getValue();
     }
+
+    // 传入 flag 的构造函数
+    public CommandOptionMatched(String flag) {
+        this.flag = flag;
+    }
 }

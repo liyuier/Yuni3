@@ -25,7 +25,7 @@ public class NodeSegment extends MessageSegment {
         super("node");
     }
 
-    private String getId() {
+    public String getId() {
         return data != null ? data.getId() : null;
     }
 

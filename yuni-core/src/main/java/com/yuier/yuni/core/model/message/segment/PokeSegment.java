@@ -25,7 +25,7 @@ public class PokeSegment extends MessageSegment {
         super("poke");
     }
 
-    private Long getQq() {
+    public Long getQq() {
         return data != null ? data.getQq() : null;
     }
 

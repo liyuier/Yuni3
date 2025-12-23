@@ -1,6 +1,6 @@
 package com.yuier.yuni.event.model.message.detector.command.model;
 
-import com.yuier.yuni.core.constants.MessageSegmentTypes;
+import com.yuier.yuni.core.enums.CommandArgRequireType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,9 +17,14 @@ import lombok.NoArgsConstructor;
 public class CommandArg {
 
     // 参数名称
-    private String name;
+    private String name = "";
     // 参数描述
-    private String description;
+    private String description = "";
     // 参数需求的消息段类型，默认为文本
-    private String requiredType = MessageSegmentTypes.TEXT;
+    private CommandArgRequireType requiredType = CommandArgRequireType.PLAIN;
+
+    public Boolean wantsSegmentType(CommandArgRequireType type) {
+        return requiredType.equals(type);
+    }
+
 }

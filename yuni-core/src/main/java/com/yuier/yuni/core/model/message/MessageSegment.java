@@ -34,4 +34,6 @@ public abstract class MessageSegment {
         return this.type.equals(type);
     }
 
+
+
 }

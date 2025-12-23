@@ -25,15 +25,15 @@ public class VideoSegment extends MessageSegment {
         super("video");
     }
 
-    private String getFile() {
+    public String getFile() {
         return data != null ? data.getFile() : null;
     }
 
-    private String getName() {
+    public String getName() {
         return data != null ? data.getName() : null;
     }
 
-    private String getPath() {
+    public String getPath() {
         return data != null ? data.getPath() : null;
     }
 

@@ -29,5 +29,10 @@
       "name": "bot.nickname",
       "type": "java.lang.String",
       "description": "Description for bot.nickname."
+    },
+    {
+      "name": "bot.app.command-flag",
+      "type": "java.lang.String",
+      "description": "Description for bot.app.command-flag."
     }
   ] }

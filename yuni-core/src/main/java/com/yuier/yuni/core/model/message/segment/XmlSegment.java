@@ -25,7 +25,7 @@ public class XmlSegment extends MessageSegment {
         super("xml");
     }
 
-    private String getXmlData() {
+    public String getXmlData() {
         return data != null ? data.getData() : null;
     }
 

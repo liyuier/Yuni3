@@ -25,7 +25,7 @@ public class ForwardSegment extends MessageSegment {
         super("forward");
     }
 
-    private String getId() {
+    public String getId() {
         return data != null ? data.getId() : null;
     }
 

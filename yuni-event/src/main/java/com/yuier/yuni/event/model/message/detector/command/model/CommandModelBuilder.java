@@ -1,5 +1,6 @@
 package com.yuier.yuni.event.model.message.detector.command.model;
 
+import com.yuier.yuni.core.enums.CommandArgRequireType;
 import com.yuier.yuni.core.enums.UserPermission;
 
 
@@ -42,7 +43,7 @@ public class CommandModelBuilder {
      * @param requiredType 消息段类型
      * @return 构建器实例
      */
-    public CommandModelBuilder addRequiredArg(String name, String description, String requiredType) {
+    public CommandModelBuilder addRequiredArg(String name, String description, CommandArgRequireType requiredType) {
         validateArgNameUniqueness(name);
         CommandArg arg = new CommandArg();
         arg.setName(name);
@@ -74,7 +75,7 @@ public class CommandModelBuilder {
      * @param requiredType 消息段类型
      * @return 构建器实例
      */
-    public CommandModelBuilder addOptionalArg(String name, String description, String requiredType) {
+    public CommandModelBuilder addOptionalArg(String name, String description, CommandArgRequireType requiredType) {
         validateArgNameUniqueness(name);
         CommandArg arg = new CommandArg();
         arg.setName(name);
@@ -126,7 +127,7 @@ public class CommandModelBuilder {
      * @param argType 消息段类型
      * @return 构建器实例
      */
-    public CommandModelBuilder addOptionWithArg(String flag, String argName, String argDescription, String argType) {
+    public CommandModelBuilder addOptionWithArg(String flag, String argName, String argDescription, CommandArgRequireType argType) {
         validateOptionFlagUniqueness(flag);
         CommandOption option = new CommandOption();
         option.setFlag(flag);
@@ -167,29 +168,6 @@ public class CommandModelBuilder {
     }
 
     /**
-     * 添加子命令
-     * @param childCommand 子命令模型
-     * @return 构建器实例
-     */
-    public CommandModelBuilder addChildCommand(CommandModel childCommand) {
-        validateChildCommandHeadUniqueness(childCommand.getHead());
-        this.commandModel.getChildCommands().add(childCommand);
-        return this;
-    }
-
-    /**
-     * 添加子命令（使用构建器）
-     * @param childBuilder 子命令构建器
-     * @return 构建器实例
-     */
-    public CommandModelBuilder addChildCommand(CommandModelBuilder childBuilder) {
-        CommandModel childCommand = childBuilder.build();
-        validateChildCommandHeadUniqueness(childCommand.getHead());
-        this.commandModel.getChildCommands().add(childCommand);
-        return this;
-    }
-
-    /**
      * 验证参数名称唯一性
      * @param name 参数名称
      */
@@ -218,19 +196,6 @@ public class CommandModelBuilder {
     }
 
     /**
-     * 验证子命令头唯一性
-     * @param head 子命令头
-     */
-    private void validateChildCommandHeadUniqueness(String head) {
-        boolean exists = commandModel.getChildCommands().stream()
-                .anyMatch(child -> child.getHead().equals(head));
-
-        if (exists) {
-            throw new IllegalArgumentException("子命令 '" + head + "' 已存在");
-        }
-    }
-
-    /**
      * 构建命令模型
      * @return 完整的命令模型
      */
@@ -243,22 +208,6 @@ public class CommandModelBuilder {
         CommandModel simpleCommand = CommandModelBuilder.create("help")
             .addOptionalArg("command", "要查看帮助的命令")
             .setPermission(UserPermission.USER)
-            .build();
-
-        // 构建一个复杂的命令
-        CommandModel complexCommand = CommandModelBuilder.create("git")
-            .addChildCommand(
-                    CommandModelBuilder.create("commit")
-                        .addOptionWithArg("-m", "message", "提交信息")
-                        .addOption("-a")
-                        .setPermission(UserPermission.USER)
-            )
-            .addChildCommand(
-                    CommandModelBuilder.create("push")
-                        .addRequiredArg("remote", "远程仓库名称")
-                        .addRequiredArg("branch", "分支名称")
-                        .setPermission(UserPermission.USER)
-            )
             .build();
     }
 }

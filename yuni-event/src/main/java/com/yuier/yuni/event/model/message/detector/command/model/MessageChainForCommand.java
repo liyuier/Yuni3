@@ -2,7 +2,7 @@ package com.yuier.yuni.event.model.message.detector.command.model;
 
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.MessageSegment;
-import com.yuier.yuni.core.model.message.data.ReplyData;
+import com.yuier.yuni.core.model.message.segment.ReplySegment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +30,7 @@ public class MessageChainForCommand extends MessageChain {
      * 回复消息
      * 如果消息链中包含回复消息，此处用于暂存，辅助后续解析逻辑
      */
-    private ReplyData replyData;
+    private ReplySegment replySegment;
 
     public MessageChainForCommand() {
         super();
@@ -69,6 +69,10 @@ public class MessageChainForCommand extends MessageChain {
         return curSegIndex >= getContent().size();
     }
 
+    public Boolean indexOnLastSeg() {
+        return curSegIndex == getContent().size() - 1;
+    }
+
     /**
      * @return  从当前消息段开始（含），还剩多少消息段未匹配
      */
@@ -77,6 +81,10 @@ public class MessageChainForCommand extends MessageChain {
     }
 
     public Boolean storesReplyData() {
-        return replyData == null;
+        return replySegment == null;
+    }
+
+    public void resetCurSegIndex() {
+        curSegIndex = 0;
     }
 }
