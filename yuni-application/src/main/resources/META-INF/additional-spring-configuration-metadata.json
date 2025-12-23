@@ -34,5 +34,10 @@
       "name": "bot.app.command-flag",
       "type": "java.lang.String",
       "description": "Description for bot.app.command-flag."
+    },
+    {
+      "name": "bot.app.plugin.directory",
+      "type": "java.lang.String",
+      "description": "Description for bot.app.plugin.directory."
     }
   ] }

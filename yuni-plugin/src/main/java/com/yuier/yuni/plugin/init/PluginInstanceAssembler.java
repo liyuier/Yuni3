@@ -9,6 +9,7 @@ package com.yuier.yuni.plugin.init;
  */
 
 import com.yuier.yuni.core.enums.UserPermission;
+import com.yuier.yuni.event.model.context.SpringYuniEvent;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
 import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.model.message.detector.command.model.CommandModel;
@@ -160,7 +161,7 @@ public class PluginInstanceAssembler {
 
         // 提取执行方法
         try {
-            Method executeMethod = passivePlugin.getClass().getMethod("execute", Object.class);
+            Method executeMethod = passivePlugin.getClass().getMethod("execute", SpringYuniEvent.class);
             instance.setExecuteMethod(executeMethod);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Plugin does not have execute method", e);
