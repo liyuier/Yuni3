@@ -54,22 +54,21 @@ public class PluginInstanceAssembler {
      */
     public List<PluginInstance> assembleFromJar(File jarFile) throws Exception {
         // 创建插件类加载器
-        PluginClassLoader pluginClassLoader = classLoaderFactory.create(jarFile);
+        try (PluginClassLoader pluginClassLoader = classLoaderFactory.create(jarFile)) {
+            // 读取元数据
+            PluginMetadata metadata = metadataParser.parse(jarFile);
 
-        // 读取元数据
-        PluginMetadata metadata = metadataParser.parse(jarFile);
+            // 扫描插件类
+            List<Class<?>> pluginClasses = scanPluginClasses(jarFile, pluginClassLoader);
 
-        // 扫描插件类
-        List<Class<?>> pluginClasses = scanPluginClasses(jarFile, pluginClassLoader);
-
-        // 组装插件实例
-        List<PluginInstance> instances = new ArrayList<>();
-        for (Class<?> pluginClass : pluginClasses) {
-            PluginInstance instance = createPluginInstance(pluginClass, metadata, pluginClassLoader);
-            instances.add(instance);
+            // 组装插件实例
+            List<PluginInstance> instances = new ArrayList<>();
+            for (Class<?> pluginClass : pluginClasses) {
+                PluginInstance instance = createPluginInstance(pluginClass, metadata, pluginClassLoader);
+                instances.add(instance);
+            }
+            return instances;
         }
-
-        return instances;
     }
 
     /**
