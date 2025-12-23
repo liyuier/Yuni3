@@ -14,7 +14,7 @@ public class HelloPattern extends PatternPlugin {
 
     @Override
     public void execute(YuniMessageEvent eventContext) {
-        eventContext.getChatSession().response("Hello Pattern!");
+        eventContext.getChatSession().response("你好，我是 Yuni !");
     }
 
     @Override

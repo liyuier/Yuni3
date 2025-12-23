@@ -2,7 +2,7 @@
   "id": "example",
   "name": "example",
   "version": "0.0.1",
-  "description": "An example plugin",
-  "author": "Your Name <<EMAIL>>",
+  "description": "一个示例插件，在群聊内发送带有“你好”的消息，bot 会响应 “你好，我是 Yuni !”",
+  "author": "Yuier me@yuier.com",
   "dependencies": []
 }
