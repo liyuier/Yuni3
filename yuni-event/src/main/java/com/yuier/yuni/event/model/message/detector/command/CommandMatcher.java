@@ -10,7 +10,7 @@ import com.yuier.yuni.core.model.message.segment.AtSegment;
 import com.yuier.yuni.core.model.message.segment.ReplySegment;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import com.yuier.yuni.core.util.SpringContextUtil;
-import com.yuier.yuni.event.model.config.BotApp;
+import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.event.model.message.detector.command.model.CommandArg;
 import com.yuier.yuni.event.model.message.detector.command.model.CommandModel;
 import com.yuier.yuni.event.model.message.detector.command.model.CommandOption;

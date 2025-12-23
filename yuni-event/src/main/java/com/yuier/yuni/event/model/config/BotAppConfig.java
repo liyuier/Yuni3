@@ -1,5 +1,6 @@
 package com.yuier.yuni.event.model.config;
 
+import com.yuier.yuni.core.model.bot.BotApp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;

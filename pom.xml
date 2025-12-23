@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>yuni3</name>
-    <description>Yuni3 chat-bot app framework</description>
+    <description>Yuni3 chat-botModel app framework</description>
 
     <!-- 子模块 -->
     <modules>

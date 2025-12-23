@@ -8,12 +8,14 @@ spring:
 onebot:
   communication:
     mode: http  # 与 OneBot 的通信方式，目前只实现了 http
+    token:
   api:
-    url: http://127.0.0.1:3000/  # OneBot 客户端的 API 端点
+    url: http://127.0.0.1:3000/  # OneBot 客户端 API 的 base url
 
 bot:
   qq: 123456789  # 机器人的 QQ 号
   nickname: xcw  # 机器人的昵称
+  master-qq:
   app:
     command-flag: /  # 定义命令时的全局前缀
     plugin:

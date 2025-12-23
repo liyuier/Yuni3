@@ -39,5 +39,15 @@
       "name": "bot.app.plugin.directory",
       "type": "java.lang.String",
       "description": "Description for bot.app.plugin.directory."
+    },
+    {
+      "name": "onebot.communication.token",
+      "type": "java.lang.String",
+      "description": "Description for onebot.communication.token."
+    },
+    {
+      "name": "bot.master-qq",
+      "type": "java.lang.String",
+      "description": "Description for bot.master-qq."
     }
   ] }

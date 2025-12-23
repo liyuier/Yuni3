@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.model.config;
+package com.yuier.yuni.core.model.bot;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
