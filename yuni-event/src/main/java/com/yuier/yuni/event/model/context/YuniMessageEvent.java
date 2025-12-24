@@ -10,6 +10,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
+import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
+
 /**
  * @Title: YuniMessageEvent
  * @Author yuier
@@ -91,4 +94,12 @@ public class YuniMessageEvent extends SpringYuniEvent {
     private CommandMatched commandMatched;
 
     private MessageEvent messageEvent;
+
+    public Boolean isPrivate() {
+        return PRIVATE_MESSAGE.equals(messageType);
+    }
+
+    public Boolean isGroup() {
+        return GROUP_MESSAGE.equals(messageType);
+    }
 }

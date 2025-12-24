@@ -49,5 +49,10 @@
       "name": "bot.master-qq",
       "type": "java.lang.String",
       "description": "Description for bot.master-qq."
+    },
+    {
+      "name": "bot.app.sqlite-db-file",
+      "type": "java.lang.String",
+      "description": "Description for bot.app.sqlite-db-file."
     }
   ] }

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.yuier.yuni.core.util.PolymorphicRegistrationProcessor;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
@@ -16,7 +16,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  * @description: 用于配置项目中 jackson 反序列化行为
  */
 
-@Configuration
+@SpringBootConfiguration
 public class JacksonConfig {
 
     private final PolymorphicRegistrationProcessor registrationProcessor;

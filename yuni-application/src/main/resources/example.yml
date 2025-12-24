@@ -5,10 +5,17 @@ spring:
   application:
     name: yuni-application
   datasource:
-    url: jdbc:sqlite:./yuni3.db
+    url: jdbc:sqlite:./${bot.app.sqlite-db-file}
     driver-class-name: org.sqlite.JDBC
     username:
     password:
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    db-config:
+      id-type: auto
 
 onebot:
   communication:
@@ -25,6 +32,7 @@ bot:
     command-flag: /  # 定义命令时的全局前缀
     plugin:
       directory: yuni-application/plugins  # 插件 jar 包的位置，默认位于 application 模块的 plugins 目录下
+    sqlite-db-file: yuni3.db  # 应用使用的 sqlite 数据库文件名，该文件位于根目录下
 
 yuni:  # 用于 banner.txt
   name: Yuni

@@ -25,6 +25,12 @@
 			<artifactId>yuni-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.yuier.yuni</groupId>
+			<artifactId>yuni-event</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

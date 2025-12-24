@@ -1,11 +1,12 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.enums.UserPermission;
+import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.task.DynamicTaskManager;
-import com.yuier.yuni.event.model.context.SpringYuniEvent;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.MessageDetector;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
+import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
@@ -13,7 +14,6 @@ import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -39,6 +39,10 @@ public class PluginManager {
     private String pluginDirectoryPath;  // 插件目录
     @Autowired
     private PluginInstanceAssembler pluginInstanceAssembler;
+    @Autowired
+    PluginRegisterProcessor pluginRegisterProcessor;
+    @Autowired
+    UserPermissionManager permissionManager;
 
     private final Map<String, ScheduledPluginInstance> activePlugins = new ConcurrentHashMap<>();
     private final Map<String, PassivePluginInstance> passivePlugins = new ConcurrentHashMap<>();
@@ -140,22 +144,12 @@ public class PluginManager {
      * @param event  事件
      * @return 是否通过
      */
-    private boolean checkPermission(PassivePluginInstance instance, SpringYuniEvent event) {
-        // 获取用户权限（从事件中提取）
-        UserPermission userPermission = getUserPermission(event);
+    private boolean checkPermission(PassivePluginInstance instance, YuniMessageEvent event) {
+        // 获取用户权限
+        UserPermission userPermission = permissionManager.getUserPermissionException(event, instance.getPluginMetadata().getId());
         UserPermission requiredPermission = instance.getPermission();
 
         return userPermission.getPriority() >= requiredPermission.getPriority();
-    }
-
-    /**
-     * 获取用户权限（需要从事件中提取用户信息）
-     * @param event  事件
-     * @return 用户权限
-     */
-    private UserPermission getUserPermission(SpringYuniEvent event) {
-        // TODO 实现权限获取逻辑
-        return UserPermission.USER; // 默认权限
     }
 
     /**
