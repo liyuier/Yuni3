@@ -46,6 +46,11 @@ public class PluginInstanceAssembler {
         this.metadataParser = metadataParser;
     }
 
+    /**
+     * 加载插件目录下的所有 JAR 包
+     * @param pluginDirectoryPath 插件目录路径
+     * @return JAR 文件列表
+     */
     public File[] loadPluginJars(String pluginDirectoryPath) {
         File pluginDir = new File(pluginDirectoryPath);
 
