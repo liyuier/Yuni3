@@ -4,28 +4,25 @@ import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * @Title: ScheduledPluginInstance
+ * @Title: ActivePluginInstance
  * @Author yuier
  * @Package com.yuier.yuni.plugin.model.active
- * @Date 2025/12/23 21:08
- * @description: 主动插件实体类
+ * @Date 2025/12/25 0:17
+ * @description: 主动插件抽象基类
  */
 
 @Data
-@NoArgsConstructor
-public class ScheduledPluginInstance implements PluginInstance {
+public abstract class ActivePluginInstance implements PluginInstance {
 
-    private ScheduledPlugin scheduledPlugin;
+    private ActivePlugin plugin;
     private PluginMetadata pluginMetadata;
-    private String cronExpression;
     private Action action;
 
     @Override
     public YuniPlugin getPlugin() {
-        return scheduledPlugin;
+        return plugin;
     }
 
     @Override

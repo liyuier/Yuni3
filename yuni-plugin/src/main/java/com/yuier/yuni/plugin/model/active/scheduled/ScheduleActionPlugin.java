@@ -1,4 +1,4 @@
-package com.yuier.yuni.plugin.model.active;
+package com.yuier.yuni.plugin.model.active.scheduled;
 
 /**
  * @Title: ScheduleActionPlugin

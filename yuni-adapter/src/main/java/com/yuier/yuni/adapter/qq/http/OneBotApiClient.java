@@ -44,6 +44,29 @@ public class OneBotApiClient {
     }
 
     /**
+     * 通用POST请求方法
+     * @param endpoint API端点
+     * @param params 请求参数
+     * @return API响应结果
+     */
+    private OneBotResponse post(String endpoint, Map<String, Object> params) {
+        try {
+            String url = baseUrl + endpoint;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(params, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+            // 解析响应
+            return objectMapper.readValue(response.getBody(), OneBotResponse.class);
+        } catch (Exception e) {
+            log.error("调用OneBot API失败: {}", endpoint, e);
+            return new OneBotResponse();
+        }
+    }
+
+    /**
      * 发送私聊消息
      * @param userId 用户ID
      * @param message 消息内容
@@ -170,29 +193,9 @@ public class OneBotApiClient {
         return post("/get_msg", params);
     }
 
-
-    /**
-     * 通用POST请求方法
-     * @param endpoint API端点
-     * @param params 请求参数
-     * @return API响应结果
-     */
-    private OneBotResponse post(String endpoint, Map<String, Object> params) {
-        try {
-            String url = baseUrl + endpoint;
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(params, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-            // 解析响应
-//            ObjectMapper mapper = new ObjectMapper();
-            return objectMapper.readValue(response.getBody(), OneBotResponse.class);
-        } catch (Exception e) {
-            log.error("调用OneBot API失败: {}", endpoint, e);
-            return new OneBotResponse();
-        }
+    public OneBotResponse getGroupList() {
+        Map<String, Object> params = new HashMap<>();
+        return post("/get_group_list", params);
     }
 }
 

@@ -13,8 +13,12 @@ import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;
-import com.yuier.yuni.plugin.model.active.ScheduledPlugin;
-import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
+import com.yuier.yuni.plugin.model.active.ActivePlugin;
+import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPlugin;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
@@ -149,8 +153,8 @@ public class PluginInstanceAssembler {
         // 实例化插件
         YuniPlugin plugin = (YuniPlugin) pluginClass.getDeclaredConstructor().newInstance();
 
-        if (plugin instanceof ScheduledPlugin) {
-            return createActivePluginInstance((ScheduledPlugin) plugin, metadata);
+        if (plugin instanceof ActivePlugin) {
+            return createActivePluginInstance((ActivePlugin) plugin, metadata);
         } else if (plugin instanceof PassivePlugin) {
             return createPassivePluginInstance((PassivePlugin<?, ?>) plugin, metadata);
         } else {
@@ -172,6 +176,7 @@ public class PluginInstanceAssembler {
         for (PluginMetadata pluginMetadata : metadataList) {
             if (pluginClassName.equals(pluginMetadata.getId())) {
                 pluginMetadata.setId(pluginModuleName + "-" + pluginMetadata.getId());
+                // 真正创建实例的地方
                 return createPluginInstance(pluginClass, pluginMetadata);
             }
         }
@@ -180,17 +185,25 @@ public class PluginInstanceAssembler {
 
     /**
      * 创建定时任务插件实例
-     * @param scheduledPlugin 定时任务插件原始类
+     * @param activePlugin 定时任务插件原始类
      * @param metadata  元数据类
      * @return  定时任务插件实例
      */
-    private ScheduledPluginInstance createActivePluginInstance(ScheduledPlugin scheduledPlugin,
+    private ActivePluginInstance createActivePluginInstance(ActivePlugin activePlugin,
                                                                PluginMetadata metadata) {
-        ScheduledPluginInstance instance = new ScheduledPluginInstance();
-        instance.setScheduledPlugin(scheduledPlugin);
+        ActivePluginInstance instance = null;
+        // 判断是定时任务插件还是即使任务插件
+        if (activePlugin instanceof ScheduledPlugin scheduledPlugin) {
+            instance = new ScheduledPluginInstance();
+            instance.setPlugin(scheduledPlugin);
+            ((ScheduledPluginInstance) instance).setCronExpression(scheduledPlugin.cronExpression());
+        } else if (activePlugin instanceof ImmediatePlugin immediatePlugin) {
+            instance = new ImmediatePluginInstance();
+            instance.setPlugin(immediatePlugin);
+        }
+        assert instance != null;
         instance.setPluginMetadata(metadata);
-        instance.setCronExpression(scheduledPlugin.cronExpression());
-        instance.setAction(scheduledPlugin.getAction());
+        instance.setAction(activePlugin.getAction());
         return instance;
     }
 

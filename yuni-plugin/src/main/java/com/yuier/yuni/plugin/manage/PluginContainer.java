@@ -1,6 +1,6 @@
 package com.yuier.yuni.plugin.manage;
 
-import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
+import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class PluginContainer {
 
-    private final Map<String, ScheduledPluginInstance> activePlugins = new ConcurrentHashMap<>();
+    private final Map<String, ActivePluginInstance> activePlugins = new ConcurrentHashMap<>();
 
     /* TODO 重构接口 */
     private final Map<String, PassivePluginInstance> commandPlugins = new ConcurrentHashMap<>();

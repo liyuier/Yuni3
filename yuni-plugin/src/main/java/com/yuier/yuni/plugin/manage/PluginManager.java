@@ -3,7 +3,7 @@ package com.yuier.yuni.plugin.manage;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,13 +82,13 @@ public class PluginManager {
      */
     public void unloadPlugin(String pluginId) {
         // 移除主动插件的定时任务
-        ScheduledPluginInstance active = pluginContainer.getActivePlugins().remove(pluginId);
-        if (active != null) {
-            // 取消定时任务
-        }
+        removeActivePlugin(pluginId);
 
         // 移除被动插件
         removePassivePlugin(pluginId);
+    }
+
+    public void removeActivePlugin(String pluginId) {
     }
 
     public void removePassivePlugin(String pluginId) {

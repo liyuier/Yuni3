@@ -2,10 +2,13 @@ package com.yuier.yuni.adapter.qq;
 
 import com.yuier.yuni.adapter.qq.http.OneBotResponse;
 import com.yuier.yuni.core.api.group.GroupInfo;
+import com.yuier.yuni.core.api.group.GroupListElement;
 import com.yuier.yuni.core.api.message.GetMessage;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
+
+import java.util.List;
 
 /**
  * @Title: OneBotAdapter
@@ -36,4 +39,6 @@ public interface OneBotAdapter {
     GroupInfo getGroupInfo(long groupId, boolean noCache);
     OneBotResponse getGroupMemberInfo(long groupId, long userId, boolean noCache);
     GetMessage getMsg(long messageId);
+
+    List<GroupListElement> getGroupList();
 }

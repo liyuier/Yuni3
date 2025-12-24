@@ -5,7 +5,10 @@ import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
 import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
+import com.yuier.yuni.plugin.model.active.ActivePlugin;
+import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +35,9 @@ public class PluginRegisterProcessor {
     public void registerPluginInstances(List<PluginInstance> instances, PluginContainer pluginContainer) {
         // 根据插件类型注册到对应的系统中
         for (PluginInstance instance : instances) {
-            if (instance instanceof ScheduledPluginInstance) {
-                // 注册主动插件到定时任务系统
-                registerActivePlugin((ScheduledPluginInstance) instance, pluginContainer);
+            if (instance instanceof ActivePluginInstance) {
+                // 注册定时插件到定时任务系统
+                registerActivePlugin((ActivePluginInstance) instance, pluginContainer);
             } else if (instance instanceof PassivePluginInstance) {
                 // 注册被动插件到事件监听系统
                 registerPassivePlugin((PassivePluginInstance) instance, pluginContainer);
@@ -43,14 +46,42 @@ public class PluginRegisterProcessor {
     }
 
     /**
-     * 注册主动插件
-     * @param instance 主动插件实例
+     * 注册定时插件
+     * @param instance 定时插件实例
      */
-    private void registerActivePlugin(ScheduledPluginInstance instance, PluginContainer pluginContainer) {
-        log.info("正在注册主动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
+    private void registerActivePlugin(ActivePluginInstance instance, PluginContainer pluginContainer) {
+
+        // 先把插件保存起来
         String pluginId = instance.getPluginMetadata().getId();
         pluginContainer.getActivePlugins().put(pluginId, instance);
+        log.info("正在注册主动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
+        // 判断是否默认开启
+        Boolean defaultEnable = instance.getPluginMetadata().getDefaultEnable();
+        if (!defaultEnable) {
+            log.info("主动插件 {} 默认不生效，已经跳过", instance.getPluginMetadata().getName());
+            return;
+        }
 
+        // 判断是定时任务还是即时任务
+        if (instance instanceof ScheduledPluginInstance) {
+            registerSchedulePlugin((ScheduledPluginInstance) instance, pluginContainer);
+        } else if (instance instanceof ImmediatePluginInstance) {
+            registerImmediatePlugin((ImmediatePluginInstance) instance, pluginContainer);
+        }
+    }
+
+    // 注册即时任务
+    private void registerImmediatePlugin(ImmediatePluginInstance instance, PluginContainer pluginContainer) {
+        instance.getAction().execute();
+        log.info("即时插件 {} 已执行完毕", instance.getPluginMetadata().getName());
+    }
+
+    /**
+     * 注册定时任务
+     * @param instance 定时任务实例
+     */
+    private void registerSchedulePlugin(ScheduledPluginInstance instance, PluginContainer pluginContainer) {
+        String pluginId = instance.getPluginMetadata().getId();
         // 创建定时任务
         Runnable task = () -> {
             try {

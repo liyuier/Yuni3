@@ -2,12 +2,15 @@ package com.yuier.yuni.adapter.qq.http;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.api.group.GroupInfo;
+import com.yuier.yuni.core.api.group.GroupListElement;
 import com.yuier.yuni.core.api.message.GetMessage;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.OneBotSerialization;
+
+import java.util.List;
 
 /**
  * @Title: OneBotHttpAdapter
@@ -114,6 +117,12 @@ public class OneBotHttpAdapter implements OneBotAdapter {
     public GetMessage getMsg(long messageId) {
         OneBotResponse msg = apiClient.getMsg(messageId);
         return getData(msg, GetMessage.class);
+    }
+
+    @Override
+    public List<GroupListElement> getGroupList() {
+        OneBotResponse msg = apiClient.getGroupList();
+        return List.of(getData(msg, GroupListElement[].class));
     }
 
 
