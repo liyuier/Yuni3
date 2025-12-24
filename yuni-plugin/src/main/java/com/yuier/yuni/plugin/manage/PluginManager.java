@@ -54,7 +54,6 @@ public class PluginManager {
 
         // 注册到定时任务系统
         dynamicTaskManager.addCronTask(pluginId, instance.getCronExpression(), task);
-        log.info("注册主动插件成功: {}", pluginId);
     }
 
     /**

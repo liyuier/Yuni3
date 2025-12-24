@@ -56,7 +56,7 @@ public class DynamicTaskManager {
         }, trigger);
 
         tasks.put(taskId, future);
-        log.info("已注册定时任务: " + taskId + " | cron=" + cronExpression);
+        log.info("  已注册定时任务: " + taskId + " | cron=" + cronExpression);
     }
 
     /**

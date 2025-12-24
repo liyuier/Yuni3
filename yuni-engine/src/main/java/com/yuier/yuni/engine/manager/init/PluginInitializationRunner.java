@@ -1,5 +1,6 @@
-package com.yuier.yuni.plugin.init;
+package com.yuier.yuni.engine.manager.init;
 
+import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
@@ -25,8 +26,6 @@ import java.util.List;
 @Component
 @Slf4j
 public class PluginInitializationRunner implements ApplicationRunner {
-
-    // TODO 理顺逻辑
 
     private final PluginInstanceAssembler pluginInstanceAssembler;
 
