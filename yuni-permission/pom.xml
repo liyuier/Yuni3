@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- 父模块中以 dependencyManagement 引入了统一依赖管理，因此后边无需再次引入。
+             直接声明 dependencies 即可 -->
+	<parent>
+		<groupId>com.yuier.yuni</groupId>
+		<artifactId>yuni3</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<!-- 模块信息 -->
+	<artifactId>yuni-permission</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>yuni-permission</name>
+	<description>yuni-permission</description>
+
+	<dependencies>
+
+		<!-- 引入其他子模块 -->
+		<dependency>
+			<groupId>com.yuier.yuni</groupId>
+			<artifactId>yuni-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+		</dependency>
+
+	</dependencies>
+
+</project>

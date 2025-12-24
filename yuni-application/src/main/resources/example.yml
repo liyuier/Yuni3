@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: yuni-application
+  datasource:
+    url: jdbc:sqlite:./yuni3.db
+    driver-class-name: org.sqlite.JDBC
+    username:
+    password:
 
 onebot:
   communication:

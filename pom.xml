@@ -19,6 +19,7 @@
         <module>yuni-webapi</module>
         <module>yuni-event</module>
         <module>yuni-plugin</module>
+        <module>yuni-permission</module>
         <module>yuni-core</module>
         <module>yuni-application</module>
     </modules>

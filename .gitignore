@@ -37,3 +37,6 @@ application.yml
 **/*/target/
 # 忽略 Gradle 构建输出目录
 **/*/build/
+
+# 忽略数据库文件
+*.db
