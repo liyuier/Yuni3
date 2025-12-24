@@ -27,7 +27,7 @@ onebot:
 bot:
   qq: 123456789  # 机器人的 QQ 号
   nickname: xcw  # 机器人的昵称
-  master-qq:
+  master-qq: 987654321  # 你自己的 QQ 号
   app:
     command-flag: /  # 定义命令时的全局前缀
     plugin:
