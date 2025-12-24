@@ -1,6 +1,8 @@
 package com.yuier.yuni.adapter.qq.http;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.core.api.group.GroupInfo;
+import com.yuier.yuni.core.api.message.GetMessage;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
@@ -90,8 +92,9 @@ public class OneBotHttpAdapter implements OneBotAdapter {
      * 获取群信息
      */
     @Override
-    public OneBotResponse getGroupInfo(long groupId, boolean noCache) {
-        return apiClient.getGroupInfo(groupId, noCache);
+    public GroupInfo getGroupInfo(long groupId, boolean noCache) {
+        OneBotResponse msg = apiClient.getGroupInfo(groupId, noCache);
+        return getData(msg, GroupInfo.class);
     }
 
     /**
@@ -108,9 +111,9 @@ public class OneBotHttpAdapter implements OneBotAdapter {
      * @return 消息内容
      */
     @Override
-    public MessageEvent getMsg(long messageId) {
+    public GetMessage getMsg(long messageId) {
         OneBotResponse msg = apiClient.getMsg(messageId);
-        return getData(msg, MessageEvent.class);
+        return getData(msg, GetMessage.class);
     }
 
 

@@ -1,6 +1,7 @@
 package com.yuier.yuni.event.model.message.detector.command;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.core.api.message.GetMessage;
 import com.yuier.yuni.core.constants.MessageSegmentTypes;
 import com.yuier.yuni.core.enums.CommandArgRequireType;
 import com.yuier.yuni.core.model.event.MessageEvent;
@@ -443,7 +444,7 @@ public class CommandMatcher {
             chainForCommand.setReplySegment((ReplySegment) chainForCommand.removeSegment(FIRST_INDEX));
             // 获取回复的目标消息的发送者的 ID, 以供后续删除对应的 @ 消息
             OneBotAdapter oneBotAdapter = getOneBotAdapter();
-            MessageEvent msg = oneBotAdapter.getMsg(Long.parseLong(chainForCommand.getReplySegment().getId()));
+            GetMessage msg = oneBotAdapter.getMsg(Long.parseLong(chainForCommand.getReplySegment().getId()));
             Long userId = msg.getUserId();
             // 遍历后续消息段
             for (MessageSegment messageSeg : chainForCommand.getContent()) {

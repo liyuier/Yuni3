@@ -1,29 +1,26 @@
-package com.yuier.yuni.event.model.context;
+package com.yuier.yuni.core.api.message;
 
-import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;
-import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.event.model.message.detector.command.model.matched.CommandMatched;
-import com.yuier.yuni.event.model.util.EventLogUtil;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
-import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
-
 /**
- * @Title: YuniMessageEvent
+ * @Title: GetMessage
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event.spring
- * @Date 2025/12/22 17:19
- * @description: Yuni 机器人内部定义的消息事件
+ * @Package com.yuier.yuni.core.api.message
+ * @Date 2025/12/24 20:09
+ * @description: 获取消息接口响应类
  */
 
-@Data
-public class YuniMessageEvent extends SpringYuniEvent {
+@Getter
+@Setter
+@NoArgsConstructor
+public class GetMessage {
 
     /**
      * 消息类型。
@@ -84,28 +81,4 @@ public class YuniMessageEvent extends SpringYuniEvent {
     // 真实 ID 就是最真实的 ID （划掉）
     // 其实这个字段在协议的 get_msg() 接口上会响应出来
     private Long realId;
-
-    // 消息链
-    private MessageChain messageChain;
-
-    // 会话状态
-    private ChatSession chatSession;
-
-    // 命令匹配结果
-    private CommandMatched commandMatched;
-
-    private MessageEvent messageEvent;
-
-    public Boolean isPrivate() {
-        return PRIVATE_MESSAGE.equals(messageType);
-    }
-
-    public Boolean isGroup() {
-        return GROUP_MESSAGE.equals(messageType);
-    }
-
-    @Override
-    public String toLogString() {
-        return EventLogUtil.toLog(this);
-    }
 }

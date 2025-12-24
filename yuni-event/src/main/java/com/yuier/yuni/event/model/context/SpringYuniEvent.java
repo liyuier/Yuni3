@@ -31,4 +31,6 @@ public abstract class SpringYuniEvent {
      * meta_event：元事件
      */
     private String postType;
+
+    public abstract String toLogString();
 }

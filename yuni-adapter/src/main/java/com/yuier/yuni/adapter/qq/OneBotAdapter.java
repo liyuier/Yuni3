@@ -1,6 +1,8 @@
 package com.yuier.yuni.adapter.qq;
 
 import com.yuier.yuni.adapter.qq.http.OneBotResponse;
+import com.yuier.yuni.core.api.group.GroupInfo;
+import com.yuier.yuni.core.api.message.GetMessage;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
@@ -31,7 +33,7 @@ public interface OneBotAdapter {
     // 信息查询相关
     OneBotResponse getLoginInfo();
     OneBotResponse getStrangerInfo(long userId, boolean noCache);
-    OneBotResponse getGroupInfo(long groupId, boolean noCache);
+    GroupInfo getGroupInfo(long groupId, boolean noCache);
     OneBotResponse getGroupMemberInfo(long groupId, long userId, boolean noCache);
-    MessageEvent getMsg(long messageId);
+    GetMessage getMsg(long messageId);
 }
