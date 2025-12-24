@@ -22,8 +22,6 @@ public class IAmBack extends ImmediatelyActPlugin {
     public Action getAction() {
         return () -> {
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-            List<GroupListElement> groupList = oneBotAdapter.getGroupList();
-            groupList.forEach(group -> System.out.println(group.getGroupName()));
             oneBotAdapter.sendGroupMessage(930198267,new MessageChain("我是后背"));
         };
     }

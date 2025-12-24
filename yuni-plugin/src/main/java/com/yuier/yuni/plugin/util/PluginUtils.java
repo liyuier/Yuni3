@@ -75,20 +75,29 @@ public class PluginUtils {
         return getBotAppConfig().getCommandFlag();
     }
 
+    /**
+     * 向 SpringBoot 容器中动态注册 bean
+     * @param bean 实例
+     * @param <T> bean 的类型
+     */
+    public static <T> void registerBeanUtil(T bean) {
+        String beanName = StringUtils.uncapitalize(bean.getClass().getSimpleName());
+        registerBeanUtil(bean, beanName);
+    }
+
     public static <T> void registerBeanUtil(T bean, String beanName) {
 
         // 获取 Spring 上下文
         ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
-
+        // 强转为 ConfigurableApplicationContext ，获取更高级 BeanFactory 操作能力
         ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) applicationContext;
+        // 获取 BeanFactory
         AutowireCapableBeanFactory factory = ctx.getAutowireCapableBeanFactory();
+        // 注入依赖
         factory.autowireBean(bean);
+        // 初始化 Bean
         factory.initializeBean(bean, beanName);
+        // 注册为单例
         ctx.getBeanFactory().registerSingleton(beanName, bean);
-    }
-
-    public static <T> void registerBeanUtil(T bean) {
-        String beanName = StringUtils.uncapitalize(bean.getClass().getSimpleName());
-        registerBeanUtil(bean, beanName);
     }
 }
