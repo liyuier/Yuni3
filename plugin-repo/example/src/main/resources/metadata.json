@@ -34,5 +34,23 @@
     "author": "Yuier me@yuier.com",
     "dependencies": [],
     "default_enable": true
+  },
+  {
+    "id": "dynamicinjection.ImmediateInjector",
+    "name": "动态注入示例",
+    "version": "0.0.1",
+    "description": "采用即时插件动态注入一个类到 SpringBoot 容器中",
+    "author": "Yuier me@yuier.com",
+    "dependencies": [],
+    "default_enable": true
+  },
+  {
+    "id": "dynamicinjection.InjectionResultTest",
+    "name": "动态注入结果测试",
+    "version": "0.0.1",
+    "description": "简单测试一下动态注入的结果",
+    "author": "Yuier me@yuier.com",
+    "dependencies": [],
+    "default_enable": true
   }
 ]

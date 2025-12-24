@@ -4,6 +4,10 @@ import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.bot.BotModel;
 import com.yuier.yuni.core.util.SpringContextUtil;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StringUtils;
 
 /**
  * @Title: PluginUtils
@@ -71,4 +75,20 @@ public class PluginUtils {
         return getBotAppConfig().getCommandFlag();
     }
 
+    public static <T> void registerBeanUtil(T bean, String beanName) {
+
+        // 获取 Spring 上下文
+        ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+
+        ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) applicationContext;
+        AutowireCapableBeanFactory factory = ctx.getAutowireCapableBeanFactory();
+        factory.autowireBean(bean);
+        factory.initializeBean(bean, beanName);
+        ctx.getBeanFactory().registerSingleton(beanName, bean);
+    }
+
+    public static <T> void registerBeanUtil(T bean) {
+        String beanName = StringUtils.uncapitalize(bean.getClass().getSimpleName());
+        registerBeanUtil(bean, beanName);
+    }
 }
