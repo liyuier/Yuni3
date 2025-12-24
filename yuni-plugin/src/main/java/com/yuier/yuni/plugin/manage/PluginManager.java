@@ -1,7 +1,6 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.task.DynamicTaskManager;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.MessageDetector;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Title: PluginManager
@@ -43,12 +40,12 @@ public class PluginManager {
     PluginRegisterProcessor pluginRegisterProcessor;
     @Autowired
     UserPermissionManager permissionManager;
-
-    private final Map<String, ScheduledPluginInstance> activePlugins = new ConcurrentHashMap<>();
-    private final Map<String, PassivePluginInstance> passivePlugins = new ConcurrentHashMap<>();
     @Autowired
-    private DynamicTaskManager dynamicTaskManager;
+    PluginContainer pluginContainer;
 
+    /**
+     * 初始化插件系统
+     */
     public void initializePlugins() {
         // 加载插件 jar 包
         File[] pluginJars = pluginInstanceAssembler.loadPluginJars(pluginDirectoryPath);
@@ -56,8 +53,10 @@ public class PluginManager {
         for (File jarFile : pluginJars) {
             log.info("正在加载 jar 包: {}", jarFile.getName());
             try {
+                // 加载插件
                 List<PluginInstance> pluginInstances = pluginInstanceAssembler.assembleFromJar(jarFile);
-                registerPluginInstances(pluginInstances);
+                // 注册插件
+                pluginRegisterProcessor.registerPluginInstances(pluginInstances, pluginContainer);
             } catch (Exception e) {
                 log.error("加载 jar 包失败: {}", jarFile.getName(), e);
             }
@@ -65,57 +64,12 @@ public class PluginManager {
         }
     }
 
-    private void registerPluginInstances(List<PluginInstance> instances) {
-        // 根据插件类型注册到对应的系统中
-        for (PluginInstance instance : instances) {
-            if (instance instanceof ScheduledPluginInstance) {
-                // 注册主动插件到定时任务系统
-                registerActivePlugin((ScheduledPluginInstance) instance);
-            } else if (instance instanceof PassivePluginInstance) {
-                // 注册被动插件到事件监听系统
-                registerPassivePlugin((PassivePluginInstance) instance);
-            }
-        }
-    }
-
     /**
-     * 注册主动插件
-     * @param instance 主动插件实例
-     */
-    public void registerActivePlugin(ScheduledPluginInstance instance) {
-        log.info("正在注册主动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
-        String pluginId = instance.getPluginMetadata().getId();
-        activePlugins.put(pluginId, instance);
-
-        // 创建定时任务
-        Runnable task = () -> {
-            try {
-                instance.getAction().execute();
-            } catch (Exception e) {
-                log.error("执行主动插件失败: {}", pluginId, e);
-            }
-        };
-
-        // 注册到定时任务系统
-        dynamicTaskManager.addCronTask(pluginId, instance.getCronExpression(), task);
-    }
-
-    /**
-     * 注册被动插件
-     * @param instance 被动插件实例
-     */
-    public void registerPassivePlugin(PassivePluginInstance instance) {
-        log.info("正在注册被动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
-        String pluginId = instance.getPluginMetadata().getId();
-        passivePlugins.put(pluginId, instance);
-    }
-
-    /**
-     * 处理事件
-     * @param event
+     * 处理消息事件
+     * @param event  消息事件
      */
     public void handleMessageEvent(YuniMessageEvent event) {
-        for (PassivePluginInstance instance : passivePlugins.values()) {
+        for (PassivePluginInstance instance : pluginContainer.getPassivePlugins().values()) {
             // 权限检查
             if (!checkPermission(instance, event)) {
                 continue;
@@ -168,13 +122,13 @@ public class PluginManager {
      */
     public void unloadPlugin(String pluginId) {
         // 移除主动插件的定时任务
-        ScheduledPluginInstance active = activePlugins.remove(pluginId);
+        ScheduledPluginInstance active = pluginContainer.getActivePlugins().remove(pluginId);
         if (active != null) {
             // 取消定时任务
         }
 
         // 移除被动插件
-        passivePlugins.remove(pluginId);
+        pluginContainer.getPassivePlugins().remove(pluginId);
     }
 }
 

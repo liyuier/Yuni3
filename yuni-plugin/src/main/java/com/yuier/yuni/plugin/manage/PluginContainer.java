@@ -2,6 +2,7 @@ package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description: 插件容器
  */
 
+@Data
 @Component
 public class PluginContainer {
 
@@ -22,4 +24,7 @@ public class PluginContainer {
     private final Map<String, PassivePluginInstance> passivePlugins = new ConcurrentHashMap<>();
 
     /* TODO 重构接口 */
+    private final Map<String, PassivePluginInstance> commandPlugins = new ConcurrentHashMap<>();
+    private final Map<String, PassivePluginInstance> patternPlugins = new ConcurrentHashMap<>();
+    private final Map<String, PassivePluginInstance> noticeAndRequestPlugins = new ConcurrentHashMap<>();
 }
