@@ -1,5 +1,6 @@
 package com.yuier.yuni.core.task;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -18,6 +19,7 @@ import java.util.concurrent.ScheduledFuture;
  */
 
 @Component
+@Slf4j
 public class DynamicTaskManager {
 
     // Spring 提供的线程安全调度器，自动注入
@@ -49,12 +51,12 @@ public class DynamicTaskManager {
                 task.run();
             } catch (Exception e) {
                 // 记录异常，避免静默失败
-                System.err.println("任务 [" + taskId + "] 执行出错: " + e.getMessage());
+                log.info("任务 [" + taskId + "] 执行出错: " + e.getMessage());
             }
         }, trigger);
 
         tasks.put(taskId, future);
-        System.out.println("✅ 已动态注册任务: " + taskId + " | cron=" + cronExpression);
+        log.info("已注册定时任务: " + taskId + " | cron=" + cronExpression);
     }
 
     /**

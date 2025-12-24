@@ -62,13 +62,13 @@ public class PluginInitializationRunner implements ApplicationRunner {
         }
 
         for (File jarFile : jarFiles) {
-            log.info("正在加载插件: {}", jarFile.getName());
+            log.info("正在加载 jar 包: {}", jarFile.getName());
             try {
                 List<PluginInstance> instances = pluginInstanceAssembler.assembleFromJar(jarFile);
                 // 注册插件
                 registerPluginInstances(instances);
             } catch (Exception e) {
-                log.error("加载插件失败: {}", jarFile.getName(), e);
+                log.error("加载 jar 包失败: {}", jarFile.getName(), e);
             }
         }
     }
@@ -88,13 +88,13 @@ public class PluginInitializationRunner implements ApplicationRunner {
 
     private void registerActivePlugin(ScheduledPluginInstance instance) {
         // 实现主动插件的注册逻辑
-        log.info("注册主动插件: {}", instance.getPluginMetadata().getName());
+        log.info("注册主动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
         pluginManager.registerActivePlugin(instance);
     }
 
     private void registerPassivePlugin(PassivePluginInstance instance) {
         // 实现被动插件的注册逻辑
-        log.info("注册被动插件: {}", instance.getPluginMetadata().getName());
+        log.info("注册被动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
         pluginManager.registerPassivePlugin(instance);
     }
 }

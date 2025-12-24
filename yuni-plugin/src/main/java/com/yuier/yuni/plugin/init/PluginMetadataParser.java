@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -30,7 +31,10 @@ public class PluginMetadataParser {
     }
 
     /**
-     * 解析 JAR 包中的元数据
+     * 解析插件元数据
+     * @param jarFile  包含插件的 jar 包
+     * @return  插件元数据
+     * @throws Exception  异常
      */
     public PluginMetadata parse(File jarFile) throws Exception {
         // 使用 try-with-resources 确保 JAR 文件被正确关闭
@@ -44,6 +48,38 @@ public class PluginMetadataParser {
             // 读取元数据文件，反序列化为 PluginMetadata 对象
             try (InputStream is = jar.getInputStream(metadataEntry)) {
                 return objectMapper.readValue(is, PluginMetadata.class);
+            }
+        }
+    }
+
+    /**
+     * 批量解析插件元数据
+     * @param jarFile  包含插件的 jar 包
+     * @return  插件元数据列表
+     * @throws Exception  异常
+     */
+    public List<PluginMetadata> parseAll(File jarFile) throws Exception {
+        // 使用 try-with-resources 确保 JAR 文件被正确关闭
+        try (JarFile jar = new JarFile(jarFile)) {
+            // 从 JAR 文件中获取元数据文件
+            JarEntry metadataEntry = (JarEntry) jar.getEntry("metadata.json");
+            if (metadataEntry == null) {
+                throw new IllegalArgumentException("metadata.json not found in JAR: " + jarFile.getName());
+            }
+
+            // 读取元数据文件，反序列化为 PluginMetadata 对象
+            try (InputStream is = jar.getInputStream(metadataEntry)) {
+                try {
+                    PluginMetadata[] dataArr = objectMapper.readValue(is, PluginMetadata[].class);
+                    return List.of(dataArr);
+                } catch (Exception e) {
+                    // 如果无法解析为数组，尝试解析为单个对象
+                    is.close();  // 关闭当前流
+                    try (InputStream is2 = jar.getInputStream(metadataEntry)) {  // 重新打开流  /* 圈复杂度爆表 */
+                        PluginMetadata singleResult = objectMapper.readValue(is2, PluginMetadata.class);
+                        return List.of(singleResult);
+                    }
+                }
             }
         }
     }

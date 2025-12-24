@@ -8,11 +8,8 @@ package com.yuier.yuni.plugin.init;
  * @description: 插件组装器
  */
 
-import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.model.context.SpringYuniEvent;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
-import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.model.message.detector.command.model.CommandModel;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;
@@ -56,15 +53,18 @@ public class PluginInstanceAssembler {
         // 为每个 jar 包单独创建插件类加载器，用于隔离加载 jar 包中的类
         try (PluginClassLoader pluginClassLoader = classLoaderFactory.create(jarFile)) {
             // 读取元数据
-            PluginMetadata metadata = metadataParser.parse(jarFile);
+            List<PluginMetadata> metadataList = metadataParser.parseAll(jarFile);
 
             // 扫描插件类
             List<Class<?>> pluginClasses = scanPluginClasses(jarFile, pluginClassLoader);
 
+            // 将 jar 包名以 "-" 进行分割，取第一部分作为插件模块名
+            String pluginModuleName = jarFile.getName().split("-", 2)[0];
+
             // 组装插件实例
             List<PluginInstance> instances = new ArrayList<>();
             for (Class<?> pluginClass : pluginClasses) {
-                PluginInstance instance = createPluginInstance(pluginClass, metadata);
+                PluginInstance instance = createPluginInstance(pluginClass, metadataList, pluginModuleName);
                 instances.add(instance);
             }
             return instances;
@@ -118,8 +118,8 @@ public class PluginInstanceAssembler {
      * 创建插件实例
      * @param pluginClass  插件类
      * @param metadata  元数据类
-     * @return
-     * @throws Exception
+     * @return  插件实例
+     * @throws Exception  异常
      */
     private PluginInstance createPluginInstance(Class<?> pluginClass, PluginMetadata metadata) throws Exception {
         // 实例化插件
@@ -132,6 +132,26 @@ public class PluginInstanceAssembler {
         } else {
             throw new IllegalArgumentException("Unknown plugin type: " + pluginClass.getName());
         }
+    }
+
+    /**
+     * 创建插件实例
+     *
+     * @param pluginClass      插件类
+     * @param metadataList     元数据类列表
+     * @param pluginModuleName 插件模块名
+     * @return 插件实例
+     * @throws Exception 异常
+     */
+    private PluginInstance createPluginInstance(Class<?> pluginClass, List<PluginMetadata> metadataList, String pluginModuleName) throws Exception {
+        String pluginClassName = pluginClass.getName();
+        for (PluginMetadata pluginMetadata : metadataList) {
+            if (pluginClassName.equals(pluginMetadata.getId())) {
+                pluginMetadata.setId(pluginModuleName + "-" + pluginMetadata.getId());
+                return createPluginInstance(pluginClass, pluginMetadata);
+            }
+        }
+        throw new RuntimeException("Plugin " + pluginClassName + " 没有找到与之对应的元数据配置！");
     }
 
     /**

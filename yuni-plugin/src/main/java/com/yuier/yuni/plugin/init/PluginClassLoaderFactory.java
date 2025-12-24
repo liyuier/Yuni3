@@ -27,7 +27,7 @@ public class PluginClassLoaderFactory {
     public PluginClassLoader create(File jarFile) throws MalformedURLException {
         URL jarUrl = null;
         try {
-            // 将 jar 包转换为 URL ，供类加载器加载
+            // 将 jar 包转换为 URL ，供 URLClassLoader 类加载器加载
             jarUrl = jarFile.toURI().toURL();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
