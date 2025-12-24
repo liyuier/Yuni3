@@ -54,6 +54,7 @@ public class PluginInitializationRunner implements ApplicationRunner {
             return;
         }
 
+        // 使用 FilenameFilter 过滤 jar 包
         File[] jarFiles = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
         if (jarFiles == null) {
             log.warn("插件目录为空: {}", pluginDirectoryPath);
@@ -64,6 +65,7 @@ public class PluginInitializationRunner implements ApplicationRunner {
             log.info("正在加载插件: {}", jarFile.getName());
             try {
                 List<PluginInstance> instances = pluginInstanceAssembler.assembleFromJar(jarFile);
+                // 注册插件
                 registerPluginInstances(instances);
             } catch (Exception e) {
                 log.error("加载插件失败: {}", jarFile.getName(), e);

@@ -33,12 +33,15 @@ public class PluginMetadataParser {
      * 解析 JAR 包中的元数据
      */
     public PluginMetadata parse(File jarFile) throws Exception {
+        // 使用 try-with-resources 确保 JAR 文件被正确关闭
         try (JarFile jar = new JarFile(jarFile)) {
+            // 从 JAR 文件中获取元数据文件
             JarEntry metadataEntry = (JarEntry) jar.getEntry("metadata.json");
             if (metadataEntry == null) {
                 throw new IllegalArgumentException("metadata.json not found in JAR: " + jarFile.getName());
             }
 
+            // 读取元数据文件，反序列化为 PluginMetadata 对象
             try (InputStream is = jar.getInputStream(metadataEntry)) {
                 return objectMapper.readValue(is, PluginMetadata.class);
             }
