@@ -1,10 +1,12 @@
+package command;
+
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.model.message.detector.command.model.CommandModelBuilder;
 import com.yuier.yuni.plugin.model.passive.CommandPlugin;
 
 /**
- * @Title: HelloCommand
+ * @Title: command.HelloCommand
  * @Author yuier
  * @Package PACKAGE_NAME
  * @Date 2025/12/23 21:03

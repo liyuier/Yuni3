@@ -1,8 +1,26 @@
-{
-  "id": "example",
-  "name": "example",
-  "version": "0.0.1",
-  "description": "一个示例插件，在群聊内发送带有“你好”的消息，bot 会响应 “你好，我是 Yuni !”",
-  "author": "Yuier me@yuier.com",
-  "dependencies": []
-}
+[
+  {
+    "id": "active.OhaYo",
+    "name": "主动插件示例",
+    "version": "0.0.1",
+    "description": "定时任务插件示例，每天早上会向 bot master 问好。",
+    "author": "Yuier me@yuier.com",
+    "dependencies": []
+  },
+  {
+    "id": "command.HelloCommand",
+    "name": "指令插件示例",
+    "version": "0.0.1",
+    "description": "一个示例插件，在群聊内发送“/test”，bot 会响应 “Hello Command!”",
+    "author": "Yuier me@yuier.com",
+    "dependencies": []
+  },
+  {
+    "id": "pattern.HelloPattern",
+    "name": "规则插件示例",
+    "version": "0.0.1",
+    "description": "一个示例插件，在群聊内发送带有“你好”的消息，bot 会响应 “你好，我是 {bot 昵称} !”",
+    "author": "Yuier me@yuier.com",
+    "dependencies": []
+  }
+]

@@ -1,9 +1,12 @@
+package pattern;
+
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.passive.PatternPlugin;
+import com.yuier.yuni.plugin.util.PluginUtils;
 
 /**
- * @Title: HelloPattern
+ * @Title: pattern.HelloPattern
  * @Author yuier
  * @Package PACKAGE_NAME
  * @Date 2025/12/23 20:06
@@ -14,7 +17,7 @@ public class HelloPattern extends PatternPlugin {
 
     @Override
     public void execute(YuniMessageEvent eventContext) {
-        eventContext.getChatSession().response("你好，我是 Yuni !");
+        eventContext.getChatSession().response("你好，我是 " + PluginUtils.getBotNickName() + " !");
     }
 
     @Override
