@@ -17,6 +17,7 @@ import com.yuier.yuni.plugin.model.active.ScheduledPlugin;
 import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -33,6 +34,7 @@ import java.util.jar.JarFile;
  */
 
 @Component
+@Slf4j
 public class PluginInstanceAssembler {
 
     private final PluginClassLoaderFactory classLoaderFactory;
@@ -42,6 +44,23 @@ public class PluginInstanceAssembler {
                                    PluginMetadataParser metadataParser) {
         this.classLoaderFactory = classLoaderFactory;
         this.metadataParser = metadataParser;
+    }
+
+    public File[] loadPluginJars(String pluginDirectoryPath) {
+        File pluginDir = new File(pluginDirectoryPath);
+
+        if (!pluginDir.exists() || !pluginDir.isDirectory()) {
+            log.warn("插件目录不存在: {}", pluginDirectoryPath);
+            return new File[] {};
+        }
+
+        // 使用 FilenameFilter 过滤 jar 包
+        File[] jarFiles = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
+        if (jarFiles == null) {
+            log.warn("插件目录为空: {}", pluginDirectoryPath);
+            return new File[] {};
+        }
+        return jarFiles;
     }
 
     /**
