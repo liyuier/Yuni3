@@ -1,6 +1,8 @@
 package com.yuier.yuni.plugin.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -13,6 +15,7 @@ import java.util.List;
  */
 
 @Data
+@NoArgsConstructor
 public class PluginMetadata {
     /**
      * 插件 ID，当前实现为 模块名-插件全限定名
@@ -41,5 +44,5 @@ public class PluginMetadata {
     /**
      * 插件默认是否启用 true 为默认启用，false 为默认禁用
      */
-    private Boolean defaultEnabled;
+    private Boolean defaultEnable;
 }

@@ -15,7 +15,7 @@
     "description": "一个示例插件，在群聊内发送“/test”，bot 会响应 “Hello Command!”",
     "author": "Yuier me@yuier.com",
     "dependencies": [],
-    "default_enable": true
+    "default_enable": false
   },
   {
     "id": "pattern.HelloPattern",

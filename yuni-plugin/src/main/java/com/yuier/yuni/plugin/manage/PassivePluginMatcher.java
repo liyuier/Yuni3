@@ -25,6 +25,9 @@ public class PassivePluginMatcher {
     @Autowired
     UserPermissionManager permissionManager;
 
+    @Autowired
+    PluginEnableProcessor pluginEnableProcessor;
+
     /**
      * 处理消息事件
      * @param event  消息事件
@@ -33,8 +36,8 @@ public class PassivePluginMatcher {
         // 先匹配指令，如果匹配到了指令，那么不再继续匹配模式
         boolean isCommand = false;
         for (PassivePluginInstance instance : pluginContainer.getCommandPlugins().values()) {
-            // 权限检查
-            if (checkPermission(instance, event)) {
+            // 权限检查与使能情况检查
+            if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
                 CommandDetector detector = (CommandDetector) instance.getDetector();
                 if (detector.match(event)) {
                     isCommand = true;
@@ -52,7 +55,7 @@ public class PassivePluginMatcher {
         }
         for (PassivePluginInstance instance : pluginContainer.getPatternPlugins().values()) {
             // 权限检查
-            if (checkPermission(instance, event)) {
+            if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
                 PatternDetector detector = (PatternDetector) instance.getDetector();
                 if (detector.match(event)) {
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
@@ -78,5 +81,11 @@ public class PassivePluginMatcher {
         UserPermission requiredPermission = instance.getPermission();
 
         return userPermission.getPriority() >= requiredPermission.getPriority();
+    }
+
+
+    // 检查插件是否使能
+    public Boolean isPluginEnabled(YuniMessageEvent event, PassivePluginInstance instance) {
+        return pluginEnableProcessor.isPluginEnabled(event, instance);
     }
 }

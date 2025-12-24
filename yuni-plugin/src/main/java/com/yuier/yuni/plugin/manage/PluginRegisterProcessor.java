@@ -1,7 +1,6 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.task.DynamicTaskManager;
-import com.yuier.yuni.event.model.message.detector.MessageDetector;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
 import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
