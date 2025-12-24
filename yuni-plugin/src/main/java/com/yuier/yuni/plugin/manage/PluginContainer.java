@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PluginContainer {
 
     private final Map<String, ScheduledPluginInstance> activePlugins = new ConcurrentHashMap<>();
-    private final Map<String, PassivePluginInstance> passivePlugins = new ConcurrentHashMap<>();
 
     /* TODO 重构接口 */
     private final Map<String, PassivePluginInstance> commandPlugins = new ConcurrentHashMap<>();

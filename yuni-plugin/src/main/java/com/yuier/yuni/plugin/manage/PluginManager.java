@@ -1,15 +1,9 @@
 package com.yuier.yuni.plugin.manage;
 
-import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.core.task.DynamicTaskManager;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
-import com.yuier.yuni.event.model.message.detector.MessageDetector;
-import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
-import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
-import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +33,9 @@ public class PluginManager {
     @Autowired
     PluginRegisterProcessor pluginRegisterProcessor;
     @Autowired
-    UserPermissionManager permissionManager;
-    @Autowired
     PluginContainer pluginContainer;
+    @Autowired
+    PassivePluginMatcher passivePluginMatcher;
 
     /**
      * 初始化插件系统
@@ -69,41 +63,7 @@ public class PluginManager {
      * @param event  消息事件
      */
     public void handleMessageEvent(YuniMessageEvent event) {
-        for (PassivePluginInstance instance : pluginContainer.getPassivePlugins().values()) {
-            // 权限检查
-            if (!checkPermission(instance, event)) {
-                continue;
-            }
-
-            YuniEventDetector<?> detector = instance.getDetector();
-            if (!(detector instanceof MessageDetector messageDetector)) {
-                continue;
-            }
-
-            // 探测器匹配
-            if (messageDetector.match(event)) {
-                try {
-                    // 执行插件
-                    instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
-                } catch (Exception e) {
-                    log.error("执行被动插件失败: {}", instance.getPluginMetadata().getId(), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * 权限检查
-     * @param instance 被动插件实例
-     * @param event  事件
-     * @return 是否通过
-     */
-    private boolean checkPermission(PassivePluginInstance instance, YuniMessageEvent event) {
-        // 获取用户权限
-        UserPermission userPermission = permissionManager.getUserPermissionException(event, instance.getPluginMetadata().getId());
-        UserPermission requiredPermission = instance.getPermission();
-
-        return userPermission.getPriority() >= requiredPermission.getPriority();
+        passivePluginMatcher.matchMessageEvent(event, pluginContainer);
     }
 
     /**
@@ -128,7 +88,12 @@ public class PluginManager {
         }
 
         // 移除被动插件
-        pluginContainer.getPassivePlugins().remove(pluginId);
+        removePassivePlugin(pluginId);
+    }
+
+    public void removePassivePlugin(String pluginId) {
+        // 移除被动插件
+
     }
 }
 

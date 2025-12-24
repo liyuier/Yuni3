@@ -1,6 +1,10 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.task.DynamicTaskManager;
+import com.yuier.yuni.event.model.message.detector.MessageDetector;
+import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
+import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
+import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -66,9 +70,15 @@ public class PluginRegisterProcessor {
      * @param instance 被动插件实例
      */
     private void registerPassivePlugin(PassivePluginInstance instance, PluginContainer pluginContainer) {
+        /* TODO 重构 */
         log.info("正在注册被动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
+        YuniEventDetector<?> detector = instance.getDetector();
         String pluginId = instance.getPluginMetadata().getId();
-        pluginContainer.getPassivePlugins().put(pluginId, instance);
+        if (detector instanceof CommandDetector) {
+            pluginContainer.getCommandPlugins().put(pluginId, instance);
+        } else if (detector instanceof PatternDetector) {
+            pluginContainer.getPatternPlugins().put(pluginId, instance);
+        }
     }
 
 }
