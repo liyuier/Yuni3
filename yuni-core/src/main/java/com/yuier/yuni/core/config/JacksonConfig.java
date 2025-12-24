@@ -1,12 +1,11 @@
-package com.yuier.yuni.engine.config;
+package com.yuier.yuni.core.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.yuier.yuni.engine.manager.init.PolymorphicRegistrationProcessor;
+import com.yuier.yuni.core.util.PolymorphicRegistrationProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
