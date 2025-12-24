@@ -4,6 +4,7 @@ import com.yuier.yuni.core.util.CronExpressionBuilder;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.ScheduleActionPlugin;
+import com.yuier.yuni.plugin.util.PluginUtils;
 
 /**
  * @Title: AskForSeTu
@@ -19,7 +20,7 @@ public class AskForSeTu extends ScheduleActionPlugin {
     @Override
     public String cronExpression() {
         return CronExpressionBuilder.create()
-                .hours(8)
+                .dailyAt(10, 0)
                 .build();
     }
 
@@ -27,7 +28,7 @@ public class AskForSeTu extends ScheduleActionPlugin {
     public Action getAction() {
         return () -> {
             OneBotAdapter adapter = SpringContextUtil.getBean(OneBotAdapter.class);
-            adapter.sendGroupMessage(930198267, new MessageChain("偶哈哟，欧尼酱！"));
+            adapter.sendPrivateMessage(PluginUtils.getBotMasterId(), new MessageChain("偶哈哟，欧尼酱！"));
         };
     }
 }
