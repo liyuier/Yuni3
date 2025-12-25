@@ -3,7 +3,13 @@ package com.yuier.yuni.adapter.qq.http;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupListElement;
+import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.message.GetMessage;
+import com.yuier.yuni.core.api.message.GetRecord;
+import com.yuier.yuni.core.api.message.SendGroupMessage;
+import com.yuier.yuni.core.api.message.SendPrivateMessage;
+import com.yuier.yuni.core.api.system.LoginInfo;
+import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
@@ -79,16 +85,18 @@ public class OneBotHttpAdapter implements OneBotAdapter {
      * 获取登录号信息
      */
     @Override
-    public OneBotResponse getLoginInfo() {
-        return apiClient.getLoginInfo();
+    public LoginInfo getLoginInfo() {
+        OneBotResponse msg = apiClient.getLoginInfo();
+        return getData(msg, LoginInfo.class);
     }
 
     /**
      * 获取陌生人信息
      */
     @Override
-    public OneBotResponse getStrangerInfo(long userId, boolean noCache) {
-        return apiClient.getStrangerInfo(userId, noCache);
+    public GetStrangerInfo getStrangerInfo(long userId, boolean noCache) {
+        OneBotResponse msg = apiClient.getStrangerInfo(userId, noCache);
+        return getData(msg, GetStrangerInfo.class);
     }
 
     /**
@@ -104,8 +112,9 @@ public class OneBotHttpAdapter implements OneBotAdapter {
      * 获取群成员信息
      */
     @Override
-    public OneBotResponse getGroupMemberInfo(long groupId, long userId, boolean noCache) {
-        return apiClient.getGroupMemberInfo(groupId, userId, noCache);
+    public GroupMemberInfo getGroupMemberInfo(long groupId, long userId, boolean noCache) {
+        OneBotResponse groupMemberInfo = apiClient.getGroupMemberInfo(groupId, userId, noCache);
+        return getData(groupMemberInfo, GroupMemberInfo.class);
     }
 
     /**
@@ -120,6 +129,12 @@ public class OneBotHttpAdapter implements OneBotAdapter {
     }
 
     @Override
+    public GetRecord getRecord(String file, String outFormat) {
+        OneBotResponse msg = apiClient.getRecord(file, outFormat);
+        return getData(msg, GetRecord.class);
+    }
+
+    @Override
     public List<GroupListElement> getGroupList() {
         OneBotResponse msg = apiClient.getGroupList();
         return List.of(getData(msg, GroupListElement[].class));
@@ -127,13 +142,15 @@ public class OneBotHttpAdapter implements OneBotAdapter {
 
 
     @Override
-    public void sendGroupMessage(long groupId, MessageChain message) {
-        apiClient.sendGroupMessage(groupId, message);
+    public SendGroupMessage sendGroupMessage(long groupId, MessageChain message) {
+        OneBotResponse response = apiClient.sendGroupMessage(groupId, message);
+        return getData(response, SendGroupMessage.class);
     }
 
     @Override
-    public void sendPrivateMessage(long userId, MessageChain message) {
-        apiClient.sendPrivateMessage(userId, message);
+    public SendPrivateMessage sendPrivateMessage(long userId, MessageChain message) {
+        OneBotResponse response = apiClient.sendPrivateMessage(userId, message);
+        return getData(response, SendPrivateMessage.class);
     }
 
     // 从 OneBotResponse 的 data 字段中通过 ObjectMapper 先序列化再反序列化得到需要的类

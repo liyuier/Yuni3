@@ -1,5 +1,7 @@
 package com.yuier.yuni.core.constants;
 
+import java.util.List;
+
 /**
  * @Title: MessageSegmentTypes
  * @Author yuier
@@ -32,8 +34,9 @@ public final class MessageSegmentTypes {
     public static final String TEXT = "text";
     public static final String VIDEO = "video";
     public static final String XML = "xml";
-    public static final String[] ALL = new String[]{
+    private static final String[] allArr = new String[]{
             TEXT, ANONYMOUS, AT, CONTACT, DICE, FACE, FILE, FORWARD, IMAGE, JSON, LOCATION, MARKDOWN, MARKETFACE, MUSIC,
             NODE, POKE, RECORD, REPLY, RPS, SHAKE, SHARE, VIDEO, XML
     };
+    public static final List<String> ALL = List.of(allArr);
 }

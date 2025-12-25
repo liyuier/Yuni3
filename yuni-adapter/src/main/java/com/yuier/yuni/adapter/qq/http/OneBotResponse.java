@@ -14,4 +14,5 @@ public class OneBotResponse {
     private String status;
     private Integer retcode;
     private Object data;
+    private String echo;
 }

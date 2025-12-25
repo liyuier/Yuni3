@@ -1,6 +1,7 @@
 package com.yuier.yuni.event.model.context;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.core.api.message.SendMessage;
 import com.yuier.yuni.core.enums.MessageType;
 import com.yuier.yuni.core.model.message.MessageChain;
 import lombok.AllArgsConstructor;
@@ -58,15 +59,15 @@ public class ChatSession {
         }
     }
 
-    public void response(MessageChain chain) {
+    public SendMessage response(MessageChain chain) {
         if (messageType.equals(MessageType.PRIVATE)) {
-            adapter.sendPrivateMessage(selfId, chain);
-        } else if (messageType.equals(MessageType.GROUP)) {
-            adapter.sendGroupMessage(groupId, chain);
+            return adapter.sendPrivateMessage(selfId, chain);
+        } else {
+            return adapter.sendGroupMessage(groupId, chain);
         }
     }
 
-    public void response(String text) {
-        response(new MessageChain(text));
+    public SendMessage response(String text) {
+        return  response(new MessageChain(text));
     }
 }

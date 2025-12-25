@@ -38,4 +38,9 @@ public class DefaultBusinessMessageProxyHandler implements BusinessMessageProxyH
         log.info("[默认处理]连接 {} 已关闭: {}", connectionId, status);
         // 默认实现：打印关闭信息
     }
+
+    @Override
+    public String getBusinessHeartBeatMessage() {
+        return "";
+    }
 }

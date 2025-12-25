@@ -1,5 +1,6 @@
 package com.yuier.yuni.core.model.message;
 
+import com.yuier.yuni.core.constants.MessageSegmentTypes;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yuier.yuni.core.constants.MessageSegmentTypes.REPLY;
-import static com.yuier.yuni.core.constants.MessageSegmentTypes.TEXT;
+import static com.yuier.yuni.core.constants.MessageSegmentTypes.*;
 import static com.yuier.yuni.core.constants.SystemConstants.FIRST_INDEX;
 
 /**
@@ -77,6 +77,33 @@ public class MessageChain {
     public Boolean containsString(String str) {
         for (MessageSegment seg : content) {
             if (seg.typeOf(TEXT) && ((TextSegment) seg).getText().contains(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public MessageChain addAll(List<MessageSegment> messageSegmentList) {
+        content.addAll(messageSegmentList);
+        return this;
+    }
+
+    public Boolean containsForwardMessage() {
+        for (MessageSegment seg : content) {
+            if (seg.typeOf(FORWARD)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 是否包含 MessageSegmentTypes 中定义的某个消息段
+    public Boolean contains(String type) {
+        if (!MessageSegmentTypes.ALL.contains(type)) {
+            return false;
+        }
+        for (MessageSegment seg : content) {
+            if (seg.typeOf(type)) {
                 return true;
             }
         }

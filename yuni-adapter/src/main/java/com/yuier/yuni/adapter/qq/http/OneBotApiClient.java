@@ -10,6 +10,7 @@ package com.yuier.yuni.adapter.qq.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.core.model.message.MessageChain;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * OneBot API HTTP 客户端工具类
- */
+@Data
 @Component
 public class OneBotApiClient {
 
@@ -41,6 +39,38 @@ public class OneBotApiClient {
         this.baseUrl = baseUrl;
         this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();
+    }
+
+    /**
+     * POST请求方法
+     * @param endpoint API端点
+     * @param jsonBody 请求参数
+     * @return API响应结果
+     */
+    public String postJsonForRawJson(String endpoint, String jsonBody) {
+        String url = baseUrl + endpoint;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        return response.getBody();
+    }
+
+    /**
+     * POST请求方法
+     * @param endpoint API端点
+     * @param params 请求参数
+     * @return API响应结果
+     */
+    public String postForRawJson(String endpoint, Map<String, Object> params) {
+        String url = baseUrl + endpoint;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(params, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        return response.getBody();
     }
 
     /**
@@ -193,9 +223,26 @@ public class OneBotApiClient {
         return post("/get_msg", params);
     }
 
+    /**
+     * 获取群列表
+     * @return 群列表
+     */
     public OneBotResponse getGroupList() {
         Map<String, Object> params = new HashMap<>();
         return post("/get_group_list", params);
+    }
+
+    /**
+     * 获取语音
+     * @param file 语音文件名
+     * @param outFormat 输出格式
+     * @return 语音内容
+     */
+    public OneBotResponse getRecord(String file, String outFormat) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("file", file);
+        params.put("out_format", outFormat);
+        return post("/get_record", params);
     }
 }
 

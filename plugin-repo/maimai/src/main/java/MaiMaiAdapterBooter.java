@@ -3,16 +3,19 @@ import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatelyActPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
+import config.MaiMaiAdapterConfig;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
 
 /**
- * @Title: MaiMaiAdapter
+ * @Title: MaiMaiAdapterBooter
  * @Author yuier
  * @Package PACKAGE_NAME
  * @Date 2025/12/25 1:54
  * @description: maimai机器人适配器
  */
 
-public class MaiMaiAdapter extends ImmediatelyActPlugin {
+public class MaiMaiAdapterBooter extends ImmediatelyActPlugin {
     @Override
     public Action getAction() {
         return () -> {
@@ -24,12 +27,17 @@ public class MaiMaiAdapter extends ImmediatelyActPlugin {
             CommonWebSocketManager wsManager = PluginUtils.getBean(CommonWebSocketManager.class);
             // 创建 handler
             CommonWebSocketHandler maimaiAdapterHandler = getCommonWebSocketHandler(config, wsManager);
+            PluginUtils.registerBeanUtil(maimaiAdapterHandler, "maimaiAdapterHandler");
             // 创建连接配置
             wsManager.createConnection(
                     config.getConnectionId(),
                     config.getServerUrl(),
                     maimaiAdapterHandler);
             wsManager.setAuthToken(config.getConnectionId(), config.getToken());
+            WebSocketConnectionManager connectionManager = wsManager.getConnectionManager(config.getConnectionId());
+            HttpHeaders headers = connectionManager.getHeaders();
+            headers.add("X-Self-ID", PluginUtils.getBotModelConfig() + "");
+            headers.add("X-Client-Role", "Universal");
             // 启动连接
             wsManager.startConnection(config.getConnectionId());
         };

@@ -1,6 +1,7 @@
 package com.yuier.yuni.core.net.ws;
 
 import jakarta.annotation.PreDestroy;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 该类为通用组件，业务无关，一般不需要修改
  */
 
+@Data
 @Component
 @Slf4j
 public class CommonWebSocketManager {
@@ -33,6 +35,9 @@ public class CommonWebSocketManager {
 
     // 存储连接状态
     private final Map<String, Boolean> connectionStatus = new ConcurrentHashMap<>();
+
+    // 存储WebSocket处理器
+    private final Map<String, WebSocketHandler> webSocketHandlers = new ConcurrentHashMap<>();
 
     /**
      * 创建并配置新的WebSocket连接
@@ -62,11 +67,18 @@ public class CommonWebSocketManager {
         // 保存连接管理器
         connectionManagers.put(connectionId, manager);
         connectionStatus.put(connectionId, false);
+        // 保存 WebSocket 处理器
+        webSocketHandlers.put(connectionId, handler);
 
         log.info("WebSocket连接配置完成: {}, URL: {}", connectionId, serverUrl);
         return true;
     }
 
+    /**
+     * 设置连接的认证令牌
+     * @param connectionId 连接的唯一标识符
+     * @param authToken 认证令牌
+     */
     public void setAuthToken(String connectionId, String authToken) {
         WebSocketConnectionManager manager = connectionManagers.get(connectionId);
         if (manager == null) {
@@ -76,7 +88,6 @@ public class CommonWebSocketManager {
 
         HttpHeaders headers = manager.getHeaders();
         headers.add("Authorization", "Bearer " + authToken);
-        log.info("已设置连接的认证令牌: {}, 令牌: {}", connectionId, authToken);
     }
 
     /**

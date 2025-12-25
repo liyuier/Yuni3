@@ -71,8 +71,6 @@ public class CommonWebSocketHandler extends TextWebSocketHandler {
         this.heartbeatInterval = heartbeatInterval != null ? heartbeatInterval : 30000L;
         this.reconnectInterval = reconnectInterval != null ? reconnectInterval : 30000L;
 
-        log.info("[处理器创建]为连接 {} 创建处理器，心跳间隔: {}ms, 重连间隔: {}ms",
-                connectionId, this.heartbeatInterval, this.reconnectInterval);
     }
 
     @Override
@@ -138,7 +136,7 @@ public class CommonWebSocketHandler extends TextWebSocketHandler {
     private void sendHeartbeat() {
         if (connected.get() && session != null && session.isOpen()) {
             try {
-                session.sendMessage(new TextMessage("ping"));
+                session.sendMessage(new TextMessage(businessHandler.getBusinessHeartBeatMessage()));
                 log.debug("[心跳发送]连接 {} 发送心跳: ping", connectionId);
             } catch (IOException e) {
                 log.error("[心跳失败]连接 {} 发送心跳失败: {}", connectionId, e.getMessage(), e);

@@ -31,4 +31,6 @@ public interface BusinessMessageProxyHandler {
      * 连接关闭时的回调
      */
     void onConnectionClosed(String connectionId, CloseStatus status);
+
+    String getBusinessHeartBeatMessage();
 }

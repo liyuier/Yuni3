@@ -41,11 +41,4 @@ public class GroupInfo {
     @JsonProperty("groupAll")
     private GroupAll groupAll;
 
-    // 辅助方法：将时间戳转为 LocalDateTime
-    public LocalDateTime getGroupCreateTimeAsLocalDateTime() {
-        if (groupCreateTime == null) return null;
-        return Instant.ofEpochSecond(groupCreateTime)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-    }
 }

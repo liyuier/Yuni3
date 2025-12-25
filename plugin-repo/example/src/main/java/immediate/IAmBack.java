@@ -2,6 +2,7 @@ package immediate;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.api.group.GroupListElement;
+import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatelyActPlugin;
@@ -22,7 +23,7 @@ public class IAmBack extends ImmediatelyActPlugin {
     public Action getAction() {
         return () -> {
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-            oneBotAdapter.sendGroupMessage(930198267,new MessageChain("我是后背"));
+            SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(930198267, new MessageChain("我是后背"));
         };
     }
 }

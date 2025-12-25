@@ -1,8 +1,10 @@
+package config;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Title: MaiMaiAdapterConfig
+ * @Title: config.MaiMaiAdapterConfig
  * @Author yuier
  * @Package PACKAGE_NAME
  * @Date 2025/12/25 15:28

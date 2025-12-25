@@ -1,5 +1,6 @@
 package pattern;
 
+import com.yuier.yuni.core.api.message.SendMessage;
 import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.passive.PatternPlugin;
@@ -17,7 +18,7 @@ public class HelloPattern extends PatternPlugin {
 
     @Override
     public void execute(YuniMessageEvent eventContext) {
-        eventContext.getChatSession().response("你好，我是 " + PluginUtils.getBotNickName() + " !");
+        SendMessage response = eventContext.getChatSession().response("你好，我是 " + PluginUtils.getBotNickName() + " !");
     }
 
     @Override

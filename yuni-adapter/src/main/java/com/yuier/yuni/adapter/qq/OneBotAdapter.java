@@ -1,10 +1,14 @@
 package com.yuier.yuni.adapter.qq;
 
-import com.yuier.yuni.adapter.qq.http.OneBotResponse;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupListElement;
+import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.message.GetMessage;
-import com.yuier.yuni.core.model.event.MessageEvent;
+import com.yuier.yuni.core.api.message.GetRecord;
+import com.yuier.yuni.core.api.message.SendGroupMessage;
+import com.yuier.yuni.core.api.message.SendPrivateMessage;
+import com.yuier.yuni.core.api.system.LoginInfo;
+import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
 
@@ -23,8 +27,8 @@ public interface OneBotAdapter {
     void startListening();
     void stopListening();
     OneBotEvent handleReportJson(String json);
-    void sendGroupMessage(long groupId, MessageChain message);
-    void sendPrivateMessage(long userId, MessageChain message);
+    SendGroupMessage sendGroupMessage(long groupId, MessageChain message);
+    SendPrivateMessage sendPrivateMessage(long userId, MessageChain message);
 
     // 消息管理相关
     void deleteMessage(long messageId);
@@ -34,11 +38,17 @@ public interface OneBotAdapter {
     void setGroupBan(long groupId, long userId, long duration);
 
     // 信息查询相关
-    OneBotResponse getLoginInfo();
-    OneBotResponse getStrangerInfo(long userId, boolean noCache);
-    GroupInfo getGroupInfo(long groupId, boolean noCache);
-    OneBotResponse getGroupMemberInfo(long groupId, long userId, boolean noCache);
-    GetMessage getMsg(long messageId);
+    LoginInfo getLoginInfo();
 
+    // 用户相关
+    GetStrangerInfo getStrangerInfo(long userId, boolean noCache);
+
+    // 消息相关
+    GetMessage getMsg(long messageId);
+    GetRecord getRecord(String file, String outFormat);
+
+    // 群组相关
+    GroupInfo getGroupInfo(long groupId, boolean noCache);
     List<GroupListElement> getGroupList();
+    GroupMemberInfo getGroupMemberInfo(long groupId, long userId, boolean noCache);
 }
