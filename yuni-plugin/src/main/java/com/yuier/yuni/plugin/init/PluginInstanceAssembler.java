@@ -92,7 +92,7 @@ public class PluginInstanceAssembler {
             // 组装插件实例
             List<PluginInstance> instances = new ArrayList<>();
             for (Class<?> pluginClass : pluginClasses) {
-                PluginInstance instance = createPluginInstance(pluginClass, metadataList, pluginModuleName);
+                PluginInstance instance = createPluginInstance(pluginClass, metadataList, pluginModuleName, jarFile);
                 instances.add(instance);
             }
             return instances;
@@ -149,14 +149,14 @@ public class PluginInstanceAssembler {
      * @return  插件实例
      * @throws Exception  异常
      */
-    private PluginInstance createPluginInstance(Class<?> pluginClass, PluginMetadata metadata) throws Exception {
+    private PluginInstance createPluginInstance(Class<?> pluginClass, PluginMetadata metadata, File jarFile) throws Exception {
         // 实例化插件
         YuniPlugin plugin = (YuniPlugin) pluginClass.getDeclaredConstructor().newInstance();
 
         if (plugin instanceof ActivePlugin) {
-            return createActivePluginInstance((ActivePlugin) plugin, metadata);
+            return createActivePluginInstance((ActivePlugin) plugin, metadata, jarFile);
         } else if (plugin instanceof PassivePlugin) {
-            return createPassivePluginInstance((PassivePlugin<?, ?>) plugin, metadata);
+            return createPassivePluginInstance((PassivePlugin<?, ?>) plugin, metadata, jarFile);
         } else {
             throw new IllegalArgumentException("Unknown plugin type: " + pluginClass.getName());
         }
@@ -171,13 +171,13 @@ public class PluginInstanceAssembler {
      * @return 插件实例
      * @throws Exception 异常
      */
-    private PluginInstance createPluginInstance(Class<?> pluginClass, List<PluginMetadata> metadataList, String pluginModuleName) throws Exception {
+    private PluginInstance createPluginInstance(Class<?> pluginClass, List<PluginMetadata> metadataList, String pluginModuleName, File jarFile) throws Exception {
         String pluginClassName = pluginClass.getName();
         for (PluginMetadata pluginMetadata : metadataList) {
             if (pluginClassName.equals(pluginMetadata.getId())) {
                 pluginMetadata.setId(pluginModuleName + "-" + pluginMetadata.getId());
                 // 真正创建实例的地方
-                return createPluginInstance(pluginClass, pluginMetadata);
+                return createPluginInstance(pluginClass, pluginMetadata, jarFile);
             }
         }
         throw new RuntimeException("Plugin " + pluginClassName + " 没有找到与之对应的元数据配置！");
@@ -190,7 +190,8 @@ public class PluginInstanceAssembler {
      * @return  定时任务插件实例
      */
     private ActivePluginInstance createActivePluginInstance(ActivePlugin activePlugin,
-                                                               PluginMetadata metadata) {
+                                                            PluginMetadata metadata,
+                                                            File jarFile) {
         ActivePluginInstance instance = null;
         // 判断是定时任务插件还是即使任务插件
         if (activePlugin instanceof ScheduledPlugin scheduledPlugin) {
@@ -204,6 +205,7 @@ public class PluginInstanceAssembler {
         assert instance != null;
         instance.setPluginMetadata(metadata);
         instance.setAction(activePlugin.getAction());
+        instance.setJarFileName(jarFile.getName());
         return instance;
     }
 
@@ -214,7 +216,8 @@ public class PluginInstanceAssembler {
      * @return  被动插件实例
      */
     private PassivePluginInstance createPassivePluginInstance(PassivePlugin<?, ?> passivePlugin,
-                                                              PluginMetadata metadata) {
+                                                              PluginMetadata metadata,
+                                                              File jarFile) {
         PassivePluginInstance instance = new PassivePluginInstance();
         instance.setPassivePlugin(passivePlugin);
         instance.setPluginMetadata(metadata);
@@ -233,6 +236,8 @@ public class PluginInstanceAssembler {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Plugin does not have execute method", e);
         }
+
+        instance.setJarFileName(jarFile.getName());
 
         return instance;
     }

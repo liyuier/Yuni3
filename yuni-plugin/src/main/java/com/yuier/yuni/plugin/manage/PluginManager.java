@@ -4,13 +4,16 @@ import com.yuier.yuni.event.model.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Title: PluginManager
@@ -20,6 +23,7 @@ import java.util.List;
  * @description: 插件管理器
  */
 
+@Data
 @Component
 @Slf4j
 public class PluginManager {
@@ -56,6 +60,15 @@ public class PluginManager {
             }
             log.info("{} 加载完成", jarFile.getName());
         }
+    }
+
+    /**
+     * 根据插件 id 获取插件实例
+     * @param pluginId 插件 id
+     * @return 插件实例
+     */
+    public PluginInstance getPluginInstanceById(String pluginId) {
+        return pluginContainer.getPluginInstanceById(pluginId);
     }
 
     /**

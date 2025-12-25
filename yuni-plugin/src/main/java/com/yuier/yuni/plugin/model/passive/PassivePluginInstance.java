@@ -3,6 +3,7 @@ package com.yuier.yuni.plugin.model.passive;
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.model.context.SpringYuniEvent;
 import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
+import com.yuier.yuni.plugin.model.AbstractPluginInstance;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;
@@ -21,7 +22,7 @@ import java.lang.reflect.Method;
 
 @Data
 @NoArgsConstructor
-public class PassivePluginInstance implements PluginInstance {
+public class PassivePluginInstance extends AbstractPluginInstance {
 
     private PassivePlugin<?, ?> passivePlugin;
     private PluginMetadata pluginMetadata;

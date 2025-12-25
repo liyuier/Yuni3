@@ -1,5 +1,6 @@
 package com.yuier.yuni.plugin.model.active;
 
+import com.yuier.yuni.plugin.model.AbstractPluginInstance;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;
@@ -14,7 +15,7 @@ import lombok.Data;
  */
 
 @Data
-public abstract class ActivePluginInstance implements PluginInstance {
+public abstract class ActivePluginInstance extends AbstractPluginInstance {
 
     private ActivePlugin plugin;
     private PluginMetadata pluginMetadata;

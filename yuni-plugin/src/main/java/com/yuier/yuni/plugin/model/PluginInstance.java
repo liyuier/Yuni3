@@ -13,5 +13,6 @@ public interface PluginInstance {
     YuniPlugin getPlugin();
     void initialize() throws Exception;
     void destroy() throws Exception;
+    String getJarFileName();
 }
 

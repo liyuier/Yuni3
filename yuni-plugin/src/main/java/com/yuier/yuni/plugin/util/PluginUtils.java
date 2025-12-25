@@ -3,11 +3,17 @@ package com.yuier.yuni.plugin.util;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.bot.BotModel;
+import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.SpringContextUtil;
+import com.yuier.yuni.plugin.manage.PluginManager;
+import com.yuier.yuni.plugin.manage.PluginRegisterProcessor;
+import com.yuier.yuni.plugin.model.YuniPlugin;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
+
+import java.util.jar.JarFile;
 
 /**
  * @Title: PluginUtils
@@ -99,5 +105,102 @@ public class PluginUtils {
         factory.initializeBean(bean, beanName);
         // 注册为单例
         ctx.getBeanFactory().registerSingleton(beanName, bean);
+    }
+
+    //  包装一下，方便使用
+    public static <T> T getBean(Class<T> clazz) {
+        return SpringContextUtil.getBean(clazz);
+    }
+
+    public static Object getBean(String beanName) {
+        return SpringContextUtil.getBean(beanName);
+    }
+
+    /**
+     * 加载配置文件为字符串
+     * @param configFilePath 配置文件路径
+     * @return 配置文件内容
+     */
+    public static String loadConfigJsonToString(String configFilePath, YuniPlugin plugin) {
+        if (!isJsonFile(configFilePath)) {
+            throw new RuntimeException("传入的文件路径不是 json 文件！");
+        }
+
+        return loadTextFromPluginJar(plugin, configFilePath);
+    }
+
+    /**
+     * 加载配置文件为 bean
+     * @param configFilePath 配置文件路径
+     * @param clazz bean 的类型
+     * @param <T> bean 的类型
+     * @return bean
+     */
+    public static <T> T loadConfigJsonToBean(String configFilePath, Class<T> clazz, YuniPlugin plugin) {
+        if (!isJsonFile(configFilePath)) {
+            throw new RuntimeException("传入的文件路径不是 json 文件！");
+        }
+
+        String json = loadConfigJsonToString(configFilePath, plugin);
+        OneBotDeserializer serialization = SpringContextUtil.getBean(OneBotDeserializer.class);
+        try {
+            return serialization.deserialize(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 获取插件 jar 包
+     * @return 插件 jar 包
+     */
+    public static String getPluginJarFileName(YuniPlugin plugin) {
+        // 先根据 plugin 获取 plugin id
+        PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
+        String pluginId = pluginRegisterProcessor.mapToPluginId(plugin);
+        // 再根据 plugin id 获取 plugin jar 包
+        PluginManager pluginManager = SpringContextUtil.getBean(PluginManager.class);
+        return pluginManager.getPluginInstanceById(pluginId).getJarFileName();
+    }
+
+    /**
+     * 从插件 jar 包中读取文件
+     * @param jarFile 插件 jar 包
+     * @param filePath 文件路径
+     * @return 文件内容
+     */
+    public static String readFileFromJar(JarFile jarFile, String filePath) {
+        try {
+            return new String(jarFile.getInputStream(jarFile.getEntry(filePath)).readAllBytes());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从插件 jar 包中加载配置文件
+     * @param plugin 插件
+     * @param filePathInsideJar 文件路径
+     * @return 配置文件内容
+     */
+    public static String loadTextFromPluginJar(YuniPlugin plugin, String filePathInsideJar) {
+        String jarFileName = getPluginJarFileName(plugin);
+        String pluginDirectoryPath = getPluginManager().getPluginDirectoryPath();
+        String text = "";
+        try (JarFile jarFile = new JarFile(pluginDirectoryPath + "/" + jarFileName)) {
+            text = readFileFromJar(jarFile, filePathInsideJar);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return text;
+    }
+
+    // 检查文件名是否为 json
+    public static boolean isJsonFile(String fileName) {
+        return fileName.endsWith(".json");
+    }
+
+    public static PluginManager getPluginManager() {
+        return SpringContextUtil.getBean(PluginManager.class);
     }
 }

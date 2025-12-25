@@ -5,6 +5,7 @@ import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
 import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.ActivePlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
@@ -14,7 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Title: PluginRegisterProcessor
@@ -32,7 +35,14 @@ public class PluginRegisterProcessor {
     @Autowired
     private DynamicTaskManager dynamicTaskManager;
 
+    private Map<YuniPlugin, String> pluginBeanToIdMap = new HashMap<>();
+
     public void registerPluginInstances(List<PluginInstance> instances, PluginContainer pluginContainer) {
+        // 在入口处统一维护插件示例-id映射
+        for (PluginInstance instance : instances) {
+            mapPluginBeanToId(instance);
+        }
+
         // 根据插件类型注册到对应的系统中
         for (PluginInstance instance : instances) {
             if (instance instanceof ActivePluginInstance) {
@@ -43,6 +53,14 @@ public class PluginRegisterProcessor {
                 registerPassivePlugin((PassivePluginInstance) instance, pluginContainer);
             }
         }
+    }
+
+    public String mapToPluginId(YuniPlugin bean) {
+        return pluginBeanToIdMap.get(bean);
+    }
+
+    private void mapPluginBeanToId(PluginInstance instance) {
+        pluginBeanToIdMap.put(instance.getPlugin(), instance.getPluginMetadata().getId());
     }
 
     /**

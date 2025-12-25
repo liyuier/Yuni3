@@ -76,7 +76,6 @@ public class CommonWebSocketManager {
 
         HttpHeaders headers = manager.getHeaders();
         headers.add("Authorization", "Bearer " + authToken);
-        manager.setHeaders(headers);
         log.info("已设置连接的认证令牌: {}, 令牌: {}", connectionId, authToken);
     }
 
