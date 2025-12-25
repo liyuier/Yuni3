@@ -17,25 +17,25 @@ public class DefaultBusinessMessageProxyHandler implements BusinessMessageProxyH
 
     @Override
     public void handleMessage(String connectionId, String message) {
-        log.info("【默认处理】连接 {} 收到业务消息: {}", connectionId, message);
+        log.info("[默认处理]连接 {} 收到业务消息: {}", connectionId, message);
         // 默认实现：简单打印消息
     }
 
     @Override
     public void onConnectionEstablished(String connectionId, WebSocketSession session) {
-        log.info("【默认处理】连接 {} 已建立", connectionId);
+        log.info("[默认处理]连接 {} 已建立", connectionId);
         // 默认实现：打印连接信息
     }
 
     @Override
     public void onConnectionError(String connectionId, Throwable exception) {
-        log.error("【默认处理】连接 {} 发生错误: {}", connectionId, exception.getMessage(), exception);
+        log.error("[默认处理]连接 {} 发生错误: {}", connectionId, exception.getMessage(), exception);
         // 默认实现：打印错误信息
     }
 
     @Override
     public void onConnectionClosed(String connectionId, CloseStatus status) {
-        log.info("【默认处理】连接 {} 已关闭: {}", connectionId, status);
+        log.info("[默认处理]连接 {} 已关闭: {}", connectionId, status);
         // 默认实现：打印关闭信息
     }
 }
