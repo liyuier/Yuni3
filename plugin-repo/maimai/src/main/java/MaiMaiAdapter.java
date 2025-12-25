@@ -19,6 +19,7 @@ public class MaiMaiAdapter extends ImmediatelyActPlugin {
             /* 向 MaiBot-Napcat-Adapter 发起连接 */
             // 获取配置
             MaiMaiAdapterConfig config = PluginUtils.loadConfigJsonToBean("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
+            PluginUtils.registerBeanUtil(config, "maimaiAdapterPluginConfig");
             // 获取 wsManager
             CommonWebSocketManager wsManager = PluginUtils.getBean(CommonWebSocketManager.class);
             // 创建 handler
