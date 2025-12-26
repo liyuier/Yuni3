@@ -41,80 +41,43 @@ public class OneBotWsRequestController {
     @WsRequestHandlerMethod(value = "get_group_info")
     public void getGroupInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        Object groupId = model.get("group_id");
-        GroupInfo groupInfo = oneBotAdapter.getGroupInfo(((Integer) groupId).longValue(), true);
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(groupInfo), GroupInfo.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        GroupInfo groupInfo = oneBotAdapter.getGroupInfo(parseGroupIdFromModel(model), true);
+        quickSendOneBotResponse(groupInfo, GroupInfo.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "get_group_member_info")
     public void getGroupMemberInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        GroupMemberInfo groupInfo = oneBotAdapter.getGroupMemberInfo(parseGroupIdFromModel(model), (Long) model.get("user_id"),true);
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(groupInfo), GroupMemberInfo.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        GroupMemberInfo groupMemberInfo = oneBotAdapter.getGroupMemberInfo(parseGroupIdFromModel(model), parseUserIdFromModel(model),true);
+        quickSendOneBotResponse(groupMemberInfo, GroupMemberInfo.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "get_login_info")
     public void getLoginInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        LoginInfo groupInfo = oneBotAdapter.getLoginInfo();
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(groupInfo), LoginInfo.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        LoginInfo loginInfo = oneBotAdapter.getLoginInfo();
+        quickSendOneBotResponse(loginInfo, LoginInfo.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "get_stranger_info")
     public void getStrangerInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        GetStrangerInfo groupInfo = oneBotAdapter.getStrangerInfo(Long.parseLong((String) model.get("user_id")), true);
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(groupInfo), GetStrangerInfo.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        GetStrangerInfo strangerInfo = oneBotAdapter.getStrangerInfo(parseUserIdFromModel(model), true);
+        quickSendOneBotResponse(strangerInfo, GetStrangerInfo.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "get_msg")
     public void getMsg(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        GetMessage groupInfo = oneBotAdapter.getMsg(Long.parseLong((String) model.get("message_id")));
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(groupInfo), GetMessage.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        GetMessage getMessage = oneBotAdapter.getMsg(parseMessageIdFromModel(model));
+        quickSendOneBotResponse(getMessage, GetMessage.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "get_record")
     public void getRecord(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        GetRecord groupInfo = oneBotAdapter.getRecord((String) model.get("file"), (String) model.get("out_format"));
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(groupInfo), GetRecord.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        GetRecord getRecord = oneBotAdapter.getRecord((String) model.get("file"), (String) model.get("out_format"));
+        quickSendOneBotResponse(getRecord, GetRecord.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "send_group_msg")
@@ -122,13 +85,7 @@ public class OneBotWsRequestController {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         MessageChain messageChain = parseMessageSegmentToChain(model);
         SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(parseGroupIdFromModel(model), messageChain);
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(sendGroupMessage), GetRecord.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        quickSendOneBotResponse(sendGroupMessage, SendGroupMessage.class, connectionId, echoId);
     }
 
     @WsRequestHandlerMethod(value = "send_private_msg")
@@ -136,13 +93,7 @@ public class OneBotWsRequestController {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         MessageChain messageChain = parseMessageSegmentToChain(model);
         SendPrivateMessage sendPrivateMsg = oneBotAdapter.sendPrivateMessage(parseGroupIdFromModel(model), messageChain);
-        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        try {
-            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(sendPrivateMsg), GetRecord.class, echoId));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        quickSendOneBotResponse(sendPrivateMsg, SendPrivateMessage.class, connectionId, echoId);
     }
 
     private MessageChain parseMessageSegmentToChain(Map<String, Object> model) {
@@ -164,6 +115,25 @@ public class OneBotWsRequestController {
     }
     
     private static Long parseGroupIdFromModel(Map<String, Object> model) {
-        return Long.parseLong((String) model.get("group_id"));
+        return Long.parseLong(String.valueOf(model.get("group_id")));
+    }
+
+    private static Long parseUserIdFromModel(Map<String, Object> model) {
+        return Long.parseLong(String.valueOf(model.get("user_id")));
+    }
+
+    private static Long parseMessageIdFromModel(Map<String, Object> model) {
+        return Long.parseLong(String.valueOf(model.get("message_id")));
+    }
+
+    private static <T> void quickSendOneBotResponse(T OneBotResponse, Class<T> responseClass, String connectionId, String echoId) {
+
+        CommonWebSocketHandler handler = MaiMaiAdapterUtils.getMaiMaiAdapterHandler(connectionId);
+        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
+        try {
+            handler.sendMessage(OneBotResponseWrapUtil.wrapRawJson(serialization.serialize(OneBotResponse), responseClass, echoId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

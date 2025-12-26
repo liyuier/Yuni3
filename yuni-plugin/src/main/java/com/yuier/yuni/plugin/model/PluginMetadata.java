@@ -46,4 +46,33 @@ public class PluginMetadata {
      * 插件默认是否启用 true 为默认启用，false 为默认禁用
      */
     private Boolean defaultEnable;
+
+    // TODO 待实现的字段
+
+    /**
+     * 类别
+     */
+    private String type;
+
+    /**
+     * 关键词
+     */
+    List<String> keyWords;
+
+    /**
+     * 插件图标
+     */
+    private String icon;
+
+    /**
+     * 插件主页
+     */
+    private String homePage;
+
+    /**
+     * 源码地址
+     */
+    private String sourceCodeAddress;
+
+    // TODO
 }
