@@ -6,6 +6,7 @@ import com.yuier.yuni.event.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
+import com.yuier.yuni.plugin.persistence.SavePluginCallEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class PassivePluginMatcher {
     @Autowired
     PluginEnableProcessor pluginEnableProcessor;
 
+    @Autowired
+    SavePluginCallEvent savePluginCallEvent;
+
     /**
      * 处理消息事件
      * @param event  消息事件
@@ -43,6 +47,7 @@ public class PassivePluginMatcher {
                     isCommand = true;
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     try {
+                        savePluginCallEvent.saveEvent(event, instance);
                         instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
                     } catch (Exception e) {
                         log.error("执行被动插件失败: {}", instance.getPluginMetadata().getId(), e);

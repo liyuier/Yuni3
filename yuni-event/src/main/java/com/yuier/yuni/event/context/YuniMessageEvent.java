@@ -96,6 +96,11 @@ public class YuniMessageEvent extends SpringYuniEvent {
 
     private MessageEvent messageEvent;
 
+    /**
+     * 纯日志字符串
+     */
+    private String plainLogStr;
+
     public Boolean isPrivate() {
         return PRIVATE_MESSAGE.equals(messageType);
     }
@@ -110,6 +115,8 @@ public class YuniMessageEvent extends SpringYuniEvent {
     }
 
     public String toPlainLogString() {
-        return EventLogUtil.toPlainLog(this);
+        String plainLog = EventLogUtil.toPlainLog(this);
+        setPlainLogStr(plainLog);
+        return plainLog;
     }
 }

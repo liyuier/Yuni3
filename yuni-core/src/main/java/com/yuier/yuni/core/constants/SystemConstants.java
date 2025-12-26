@@ -13,4 +13,6 @@ public class SystemConstants {
     public static final int FIRST_INDEX = 0;
 
     public static final String BLANK_SPACE = " ";
+
+    public static final String UNKNOWN = "unknown";
 }

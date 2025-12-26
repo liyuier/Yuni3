@@ -49,10 +49,13 @@ public class PluginMetadata {
 
     // TODO 待实现的字段
 
+    // 插件模块名
+    private String moduleName;
+
     /**
-     * 类别
+     * 提供的功能的类型（娱乐、学习、工具）
      */
-    private String type;
+    private String functionType;
 
     /**
      * 关键词
