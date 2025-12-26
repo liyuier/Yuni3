@@ -59,7 +59,15 @@ public class ImageData {
 
     @Override
     public String toString() {
-        return "[图片" + (("show".equals(this.type)) ? "" : "<闪照>") + "<file=" + this.file + ">" + ((null == this.url) ? "" : "<url=" + this.url  + ">") +"]";
+        String imageType = "";
+        if ("flash".equals(this.type)) {
+            imageType = "闪照";
+        } else if ("show".equals(this.type)) {
+            imageType = "";
+        } else {
+            imageType = "";
+        }
+        return "[图片" + imageType + "<file=" + this.file + ">" + ((null == this.url) ? "" : "<url=" + this.url  + ">") +"]";
     }
 
     @Override

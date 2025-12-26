@@ -29,6 +29,7 @@ public class OneBotHttpPostController {
     @PostMapping
     public void receiveOneBotHttpPost(@RequestBody String rawJson) {
         OneBotEvent oneBotEvent = adapter.handleReportJson(rawJson);
+        oneBotEvent.setRawJson(rawJson);
         eventBridge.publishRawEvent(oneBotEvent);
     }
 }

@@ -1,9 +1,9 @@
 package command;
 
 import com.yuier.yuni.core.api.message.SendMessage;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
-import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.model.message.detector.command.model.CommandModelBuilder;
+import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.message.detector.command.CommandDetector;
+import com.yuier.yuni.event.message.detector.command.model.CommandModelBuilder;
 import com.yuier.yuni.plugin.model.passive.CommandPlugin;
 
 /**

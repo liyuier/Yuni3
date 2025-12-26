@@ -40,4 +40,6 @@ public class OneBotEvent {
      */
     @JsonProperty("post_type")
     private String postType;
+
+    private String rawJson;
 }

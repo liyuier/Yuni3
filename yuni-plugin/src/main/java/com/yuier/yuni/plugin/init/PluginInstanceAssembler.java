@@ -8,8 +8,8 @@ package com.yuier.yuni.plugin.init;
  * @description: 插件组装器
  */
 
-import com.yuier.yuni.event.model.context.SpringYuniEvent;
-import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
+import com.yuier.yuni.event.context.SpringYuniEvent;
+import com.yuier.yuni.event.message.detector.YuniEventDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;

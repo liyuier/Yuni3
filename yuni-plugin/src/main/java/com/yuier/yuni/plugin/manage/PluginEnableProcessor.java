@@ -1,6 +1,6 @@
 package com.yuier.yuni.plugin.manage;
 
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.service.GroupPluginAbilityService;
 import org.springframework.beans.factory.annotation.Autowired;

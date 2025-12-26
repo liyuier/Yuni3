@@ -6,9 +6,9 @@ import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.BeanCopyUtils;
 import com.yuier.yuni.engine.manager.context.RequestContextManager;
-import com.yuier.yuni.event.model.context.ChatSession;
-import com.yuier.yuni.event.model.context.SpringYuniEvent;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.ChatSession;
+import com.yuier.yuni.event.context.SpringYuniEvent;
+import com.yuier.yuni.event.context.YuniMessageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -30,6 +30,7 @@ public class EventBridge {
     public void publishRawEvent(OneBotEvent oneBotEvent) {
         // 将 OneBot 事件转为 Yuni 内部事件
         SpringYuniEvent springYuniEvent = convertToYuniEvent(oneBotEvent);
+        springYuniEvent.setRawJson(oneBotEvent.getRawJson());
         // 借助 Spring 的 EventListener 机制发布事件
         springPublisher.publishEvent(springYuniEvent);
     }

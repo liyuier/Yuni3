@@ -1,9 +1,9 @@
 package dynamicinjection;
 
 import com.yuier.yuni.core.util.SpringContextUtil;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
-import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.model.message.detector.command.model.CommandModelBuilder;
+import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.message.detector.command.CommandDetector;
+import com.yuier.yuni.event.message.detector.command.model.CommandModelBuilder;
 import com.yuier.yuni.plugin.model.passive.CommandPlugin;
 import lombok.extern.slf4j.Slf4j;
 

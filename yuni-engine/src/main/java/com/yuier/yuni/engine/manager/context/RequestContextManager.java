@@ -1,6 +1,6 @@
 package com.yuier.yuni.engine.manager.context;
 
-import com.yuier.yuni.event.model.context.ChatSession;
+import com.yuier.yuni.event.context.ChatSession;
 import org.springframework.stereotype.Component;
 
 /**

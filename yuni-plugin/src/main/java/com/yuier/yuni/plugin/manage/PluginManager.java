@@ -1,9 +1,8 @@
 package com.yuier.yuni.plugin.manage;
 
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Title: PluginManager

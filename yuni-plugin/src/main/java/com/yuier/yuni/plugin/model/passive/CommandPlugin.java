@@ -1,8 +1,8 @@
 package com.yuier.yuni.plugin.model.passive;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
-import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
+import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.message.detector.command.CommandDetector;
 
 /**
  * @Title: CommandPlugin

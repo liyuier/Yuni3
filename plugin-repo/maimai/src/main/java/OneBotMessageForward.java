@@ -1,8 +1,8 @@
 import com.yuier.yuni.core.net.ws.CommonWebSocketHandler;
 import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
 import com.yuier.yuni.core.util.OneBotSerialization;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
-import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.passive.PatternPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import config.MaiMaiAdapterConfig;

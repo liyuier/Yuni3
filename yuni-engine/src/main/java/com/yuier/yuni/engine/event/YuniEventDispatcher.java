@@ -1,13 +1,9 @@
 package com.yuier.yuni.engine.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.adapter.qq.http.OneBotHttpAdapter;
-import com.yuier.yuni.adapter.qq.http.OneBotResponse;
-import com.yuier.yuni.core.model.event.MessageEvent;
-import com.yuier.yuni.core.model.event.OneBotEvent;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.persistence.YuniEventSaver;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +28,13 @@ public class YuniEventDispatcher {
     ObjectMapper mapper;
     @Autowired
     PluginManager pluginManager;
+    @Autowired
+    YuniEventSaver eventSaver;
 
     @EventListener
     public void messageEventHandler(YuniMessageEvent event) {
         log.info(event.toLogString());
+        eventSaver.saveEvent(event);
         pluginManager.handleMessageEvent(event);
     }
 }

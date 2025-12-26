@@ -4,7 +4,7 @@ import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.core.model.bot.BotModel;
 import com.yuier.yuni.core.util.BusinessMappingUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
-import com.yuier.yuni.event.model.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.permission.init.UserPermissionInitProcessor;
 import com.yuier.yuni.permission.service.GroupUserPluginPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
 
 /**
  * @Title: UserPermissionManager

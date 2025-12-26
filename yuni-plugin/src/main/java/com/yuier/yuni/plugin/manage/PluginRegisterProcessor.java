@@ -1,12 +1,11 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.task.DynamicTaskManager;
-import com.yuier.yuni.event.model.message.detector.YuniEventDetector;
-import com.yuier.yuni.event.model.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.model.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.event.message.detector.YuniEventDetector;
+import com.yuier.yuni.event.message.detector.command.CommandDetector;
+import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
-import com.yuier.yuni.plugin.model.active.ActivePlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
 import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
