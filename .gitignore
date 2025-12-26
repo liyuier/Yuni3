@@ -40,3 +40,5 @@ application.yml
 
 # 忽略数据库文件
 *.db
+
+logs/
