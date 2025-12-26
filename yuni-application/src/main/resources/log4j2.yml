@@ -1,0 +1,179 @@
+Configuration:
+  status: WARN  # Log4j2 内部日志级别，用于调试配置问题
+  name: YuniLog4j2CConfig
+
+  Properties:  # 变量定义
+    Property:
+      - name: CONSOLE_PATTERN  # 输出到控制台的日志格式
+        value: "%clr{%d{HH:mm:ss.SSS}}{faint} %clr{[%t]}{faint} %clr{%-5level}{level} %clr{%logger{36}}{cyan} - %msg%n"
+      - name: FILE_PATTERN  # 输出到文件的日志格式
+        value: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      - name: ROLLING_INTERVAL  # 滚动时间间隔
+        value: "24"
+      - name: MAX_SIZE  # 单个日志文件的最大大小
+        value: "100MB"
+      - name: MAX_FILES  # 单个日志文件最大保存的归档文件数量
+        value: "7"
+      - name: DATA_PATH  # 根据日期创建的日志文件路径
+        value: "$${date:yyyy-MM-dd}/"
+
+  Appenders:
+    Console:  # 控制台输出器
+      name: Console
+      target: SYSTEM_OUT  # 输出目标
+      PatternLayout:
+        Pattern: "${CONSOLE_PATTERN}"  # 输出到控制台的模式，使能高亮
+        disableAnsi: false  # 启用 ANSI 转义符
+        noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+
+    RollingFile:  # 滚动文件输出器
+      - name: AllFile  # ALL 级别日志
+        fileName: "logs/${DATA_PATH}/all.log"  # 日志路径: logs/年/月/日/all.log
+        filePattern: "logs/${DATA_PATH}/all.%d{HH}-%i.log.gz"  # 滚动后的文件命名模式
+        PatternLayout:
+          Replace:  # 使用 Replace 过滤器过滤 ANSI 转义符
+            - regex: "\u001b\\[[0-9;]*[a-zA-Z]"
+              replacement: ""
+          disableAnsi: true
+          noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+          Pattern: "${FILE_PATTERN}"
+        Policies:  # 滚动策略
+          TimeBasedTriggeringPolicy:  # 基于时间的滚动策略
+            interval: "${ROLLING_INTERVAL}"  # 滚动时间间隔
+            modulate: true  # 是否调整时间以使其均匀间隔，例如如果在 10:30 开始，interval=1 时，下次滚动将在整点时间
+          SizeBasedTriggeringPolicy:  # 基于大小的滚动策略
+            size: "${MAX_SIZE}"  # 单个日志文件的最大大小，超过此大小会触发滚动
+        DefaultRolloverStrategy:  # 滚动策略（如何处理滚动后的文件）
+          max: "${MAX_FILES}"  # 最大保留的归档文件数量，超过此数量会删除最旧的文件
+
+      - name: TraceFile
+        fileName: "logs/${DATA_PATH}/trace.log"
+        filePattern: "logs/${DATA_PATH}/trace.%d{HH}-%i.log.gz"
+        PatternLayout:
+          Replace:  # 使用 Replace 过滤器过滤 ANSI 转义符
+            - regex: "\u001b\\[[0-9;]*[a-zA-Z]"
+              replacement: ""
+          disableAnsi: true
+          noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+          Pattern: "${FILE_PATTERN}"
+        Filters:
+          ThresholdFilter:  # 级别过滤器
+            level: TRACE
+            onMatch: ACCEPT  # 匹配时的操作
+            onMismatch: DENY  # 不匹配时的操作
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: "${ROLLING_INTERVAL}"
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "${MAX_SIZE}"
+        DefaultRolloverStrategy:
+          max: "${MAX_FILES}"
+
+      - name: DebugFile
+        fileName: "logs/${DATA_PATH}/debug.log"
+        filePattern: "logs/${DATA_PATH}/debug.%d{HH}-%i.log.gz"
+        PatternLayout:
+          Replace:  # 使用 Replace 过滤器过滤 ANSI 转义符
+            - regex: "\u001b\\[[0-9;]*[a-zA-Z]"
+              replacement: ""
+          disableAnsi: true
+          noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+          Pattern: "${FILE_PATTERN}"
+        Filters:
+          ThresholdFilter:
+            level: DEBUG
+            onMatch: ACCEPT
+            onMismatch: DENY
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: "${ROLLING_INTERVAL}"
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "${MAX_SIZE}"
+        DefaultRolloverStrategy:
+          max: "${MAX_FILES}"
+
+      - name: InfoFile
+        fileName: "logs/${DATA_PATH}/info.log"
+        filePattern: "logs/${DATA_PATH}/info.%d{HH}-%i.log.gz"
+        PatternLayout:
+          Replace:  # 使用 Replace 过滤器过滤 ANSI 转义符
+            - regex: "\u001b\\[[0-9;]*[a-zA-Z]"
+              replacement: ""
+          disableAnsi: true
+          noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+          Pattern: "${FILE_PATTERN}"
+        Filters:
+          ThresholdFilter:
+            level: INFO
+            onMatch: ACCEPT
+            onMismatch: DENY
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: "${ROLLING_INTERVAL}"
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "${MAX_SIZE}"
+        DefaultRolloverStrategy:
+          max: "${MAX_FILES}"
+
+      - name: WarnFile
+        fileName: "logs/${DATA_PATH}/warn.log"
+        filePattern: "logs/${DATA_PATH}/warn.%d{HH}-%i.log.gz"
+        PatternLayout:
+          Replace:  # 使用 Replace 过滤器过滤 ANSI 转义符
+            - regex: "\u001b\\[[0-9;]*[a-zA-Z]"
+              replacement: ""
+          disableAnsi: true
+          noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+          Pattern: "${FILE_PATTERN}"
+        Filters:
+          ThresholdFilter:
+            level: WARN
+            onMatch: ACCEPT
+            onMismatch: DENY
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: "${ROLLING_INTERVAL}"
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "${MAX_SIZE}"
+        DefaultRolloverStrategy:
+          max: "${MAX_FILES}"
+
+      - name: ErrorFile
+        fileName: "logs/${DATA_PATH}/error.log"
+        filePattern: "logs/${DATA_PATH}/error.%d{HH}-%i.log.gz"
+        PatternLayout:
+          Replace:  # 使用 Replace 过滤器过滤 ANSI 转义符
+            - regex: "\u001b\\[[0-9;]*[a-zA-Z]"
+              replacement: ""
+          disableAnsi: true
+          noConsoleNoAnsi: true  # 输出到文本时不使用转义字符
+          Pattern: "${FILE_PATTERN}"
+        Filters:
+          ThresholdFilter:
+            level: ERROR
+            onMatch: ACCEPT
+            onMismatch: DENY
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: "${ROLLING_INTERVAL}"
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: "${MAX_SIZE}"
+        DefaultRolloverStrategy:
+          max: "${MAX_FILES}"
+
+  Loggers:  # 日志记录器配置
+    Root:  # 根记录器，所有日志的默认处理者
+      level: INFO  # 根记录器的日志级别
+      AppenderRef:  # 引用的输出器
+        - ref: Console
+        - ref: AllFile
+        - ref: TraceFile
+        - ref: DebugFile
+        - ref: InfoFile
+        - ref: WarnFile
+        - ref: ErrorFile

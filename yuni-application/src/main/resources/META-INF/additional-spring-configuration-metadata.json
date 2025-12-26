@@ -54,5 +54,35 @@
       "name": "bot.app.sqlite-db-file",
       "type": "java.lang.String",
       "description": "Description for bot.app.sqlite-db-file."
+    },
+    {
+      "name": "log.rolling.enabled",
+      "type": "java.lang.String",
+      "description": "Description for log.rolling.enabled."
+    },
+    {
+      "name": "log.rolling.interval",
+      "type": "java.lang.String",
+      "description": "Description for log.rolling.interval."
+    },
+    {
+      "name": "log.rolling.max-size",
+      "type": "java.lang.String",
+      "description": "Description for log.rolling.max-size."
+    },
+    {
+      "name": "log.rolling.max-files",
+      "type": "java.lang.String",
+      "description": "Description for log.rolling.max-files."
+    },
+    {
+      "name": "log.pattern.file",
+      "type": "java.lang.String",
+      "description": "Description for log.pattern.file."
+    },
+    {
+      "name": "log.pattern.console",
+      "type": "java.lang.String",
+      "description": "Description for log.pattern.console."
     }
   ] }

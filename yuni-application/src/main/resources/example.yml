@@ -4,9 +4,9 @@ server:
 spring:
   application:
     name: yuni-application
-  datasource:
-    url: jdbc:sqlite:./${bot.app.sqlite-db-file}
-    driver-class-name: org.sqlite.JDBC
+  datasource:  # 数据库配置，如果非专业开发者，不建议修改
+    url: jdbc:sqlite:./${bot.app.sqlite-db-file}  # 数据库使用 sqlite, 数据库文件默认在跟目录下。文件名由下方的 sqlite-db-file 属性指定
+    driver-class-name: org.sqlite.JDBC  # 数据库驱动
     username:
     password:
 
@@ -16,6 +16,9 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+
+logging:
+  config: classpath:log4j2.yml  # 日志配置文件，详见其中内容
 
 onebot:
   communication:
