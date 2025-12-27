@@ -53,11 +53,11 @@ public class PluginMetadata {
     @JsonProperty("default_enable")
     private Boolean defaultEnable = true;
 
-    // 插件所属的模块名
-    private String moduleName;
-
     // 模块 ID
     private String moduleId;
+
+    // 插件所属的模块名
+    private String moduleName;
 
     // TODO 待实现的字段
 

@@ -1,5 +1,7 @@
 package com.yuier.yuni.plugin.model;
 
+import lombok.Data;
+
 /**
  * @Title: PluginInstance
  * @Author yuier
@@ -8,11 +10,14 @@ package com.yuier.yuni.plugin.model;
  * @description: 插件实体类基类
  */
 
-public interface PluginInstance {
-    PluginMetadata getPluginMetadata();
-    YuniPlugin getPlugin();
-    void initialize() throws Exception;
-    void destroy() throws Exception;
-    String getJarFileName();
+@Data
+public abstract class PluginInstance {
+
+    private YuniPlugin plugin;
+    private PluginMetadata pluginMetadata;
+    private String jarFileName;
+
+    public abstract void initialize() throws Exception;
+    public abstract void destroy() throws Exception;
 }
 

@@ -2,8 +2,7 @@ package com.yuier.yuni.plugin.model.passive;
 
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.message.detector.YuniEventDetector;
-import com.yuier.yuni.plugin.model.AbstractPluginInstance;
-import com.yuier.yuni.plugin.model.PluginMetadata;
+import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ import java.lang.reflect.Method;
 
 @Data
 @NoArgsConstructor
-public class PassivePluginInstance extends AbstractPluginInstance {
+public class PassivePluginInstance extends PluginInstance {
 
     private PassivePlugin<?, ?> passivePlugin;
     private UserPermission permission;

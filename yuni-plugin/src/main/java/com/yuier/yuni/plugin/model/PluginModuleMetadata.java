@@ -34,7 +34,7 @@ public class PluginModuleMetadata {
      * 插件列表
      */
     @JsonProperty("plugins")
-    List<PluginMetadata> pluginMetadataList;
+    List<PluginMetadata> plugins;
 
 
 }

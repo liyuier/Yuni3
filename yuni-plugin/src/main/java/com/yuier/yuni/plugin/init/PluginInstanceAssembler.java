@@ -91,7 +91,8 @@ public class PluginInstanceAssembler {
             // 组装插件实例
             List<PluginInstance> instances = new ArrayList<>();
             for (Class<?> pluginClass : pluginClasses) {
-                PluginInstance instance = createPluginInstance(pluginClass, pluginModuleMetadata, jarFile);
+                PluginInstance instance = createPluginInstances(pluginClass, pluginModuleMetadata);
+                instance.setJarFileName(jarFile.getName());
                 instances.add(instance);
             }
             pluginModuleInstance.setPluginInstances(instances);
@@ -150,14 +151,14 @@ public class PluginInstanceAssembler {
      * @return 插件实例
      * @throws Exception 异常
      */
-    private PluginInstance createPluginInstance(Class<?> pluginClass, PluginModuleMetadata pluginModuleMetadata, File jarFile) throws Exception {
+    private PluginInstance createPluginInstances(Class<?> pluginClass, PluginModuleMetadata pluginModuleMetadata) throws Exception {
         String pluginClassName = pluginClass.getName();
-        for (PluginMetadata pluginMetadata : pluginModuleMetadata.getPluginMetadataList()) {
+        for (PluginMetadata pluginMetadata : pluginModuleMetadata.getPlugins()) {
             if (pluginClassName.equals(pluginMetadata.getId())) {
-                pluginMetadata.setId(pluginModuleMetadata.getModuleId());
-                pluginMetadata.setModuleName(pluginModuleMetadata.getModuleName());
+                pluginMetadata.setModuleId(pluginModuleMetadata.getModuleId());
+                pluginMetadata.setModuleName(pluginMetadata.getModuleName());
                 // 真正创建实例的地方
-                return createPluginInstance(pluginClass, pluginMetadata, jarFile);
+                return createSinglePluginInstance(pluginClass, pluginMetadata);
             }
         }
         throw new RuntimeException("Plugin " + pluginClassName + " 没有找到与之对应的元数据配置！");
@@ -170,14 +171,14 @@ public class PluginInstanceAssembler {
      * @return  插件实例
      * @throws Exception  异常
      */
-    private PluginInstance createPluginInstance(Class<?> pluginClass, PluginMetadata metadata, File jarFile) throws Exception {
+    private PluginInstance createSinglePluginInstance(Class<?> pluginClass, PluginMetadata metadata) throws Exception {
         // 实例化插件
         YuniPlugin plugin = (YuniPlugin) pluginClass.getDeclaredConstructor().newInstance();
 
         if (plugin instanceof ActivePlugin) {
-            return createActivePluginInstance((ActivePlugin) plugin, metadata, jarFile);
+            return createActivePluginInstance((ActivePlugin) plugin, metadata);
         } else if (plugin instanceof PassivePlugin) {
-            return createPassivePluginInstance((PassivePlugin<?, ?>) plugin, metadata, jarFile);
+            return createPassivePluginInstance((PassivePlugin<?, ?>) plugin, metadata);
         } else {
             throw new IllegalArgumentException("Unknown plugin type: " + pluginClass.getName());
         }
@@ -190,8 +191,7 @@ public class PluginInstanceAssembler {
      * @return  定时任务插件实例
      */
     private ActivePluginInstance createActivePluginInstance(ActivePlugin activePlugin,
-                                                            PluginMetadata metadata,
-                                                            File jarFile) {
+                                                            PluginMetadata metadata) {
         ActivePluginInstance instance = null;
         // 判断是定时任务插件还是即使任务插件
         if (activePlugin instanceof ScheduledPlugin scheduledPlugin) {
@@ -205,7 +205,6 @@ public class PluginInstanceAssembler {
         assert instance != null;
         instance.setPluginMetadata(metadata);
         instance.setAction(activePlugin.getAction());
-        instance.setJarFileName(jarFile.getName());
         return instance;
     }
 
@@ -216,8 +215,7 @@ public class PluginInstanceAssembler {
      * @return  被动插件实例
      */
     private PassivePluginInstance createPassivePluginInstance(PassivePlugin<?, ?> passivePlugin,
-                                                              PluginMetadata metadata,
-                                                              File jarFile) {
+                                                              PluginMetadata metadata) {
         PassivePluginInstance instance = new PassivePluginInstance();
         instance.setPassivePlugin(passivePlugin);
         instance.setPluginMetadata(metadata);
@@ -236,8 +234,6 @@ public class PluginInstanceAssembler {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Plugin does not have execute method", e);
         }
-
-        instance.setJarFileName(jarFile.getName());
 
         return instance;
     }

@@ -38,6 +38,7 @@ public class PluginRegisterProcessor {
     private Map<YuniPlugin, String> pluginBeanToIdMap = new HashMap<>();
 
     public void registerPluginModuleInstance(PluginModuleInstance instance, PluginContainer pluginContainer) {
+        pluginContainer.getPluginModules().put(instance.getPluginModuleMetadata().getModuleId(), instance);
         registerPluginInstances(instance.getPluginInstances(), pluginContainer);
     }
 
@@ -47,13 +48,13 @@ public class PluginRegisterProcessor {
             mapPluginBeanToId(instance);
         }
 
-        // 根据插件类型注册到对应的系统中
+        // 根据插件类型注册
         for (PluginInstance instance : instances) {
             if (instance instanceof ActivePluginInstance) {
-                // 注册定时插件到定时任务系统
+                // 注册定时插件
                 registerActivePlugin((ActivePluginInstance) instance, pluginContainer);
             } else if (instance instanceof PassivePluginInstance) {
-                // 注册被动插件到事件监听系统
+                // 注册被动插件
                 registerPassivePlugin((PassivePluginInstance) instance, pluginContainer);
             }
         }

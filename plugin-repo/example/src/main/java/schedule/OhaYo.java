@@ -5,6 +5,8 @@ import com.yuier.yuni.core.api.message.SendPrivateMessage;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.CronExpressionBuilder;
 import com.yuier.yuni.core.util.SpringContextUtil;
+import com.yuier.yuni.plugin.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.scheduled.ScheduleActionPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
@@ -35,5 +37,15 @@ public class OhaYo extends ScheduleActionPlugin {
             OneBotAdapter adapter = SpringContextUtil.getBean(OneBotAdapter.class);
             SendPrivateMessage sendPrivateMessage = adapter.sendPrivateMessage(PluginUtils.getBotMasterId(), new MessageChain("偶哈哟，欧尼酱！"));
         };
+    }
+
+    @Override
+    public void enable(PluginEnableEvent event) {
+
+    }
+
+    @Override
+    public void disable(PluginDisableEvent event) {
+
     }
 }

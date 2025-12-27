@@ -48,5 +48,9 @@ public class PluginContainer {
             return passivePlugin;
         }
         return null;
-     }
+    }
+
+    public PluginModuleInstance getPluginModuleById(String moduleId) {
+        return pluginModules.get(moduleId);
+    }
 }
