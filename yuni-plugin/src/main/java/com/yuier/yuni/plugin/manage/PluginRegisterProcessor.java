@@ -1,10 +1,12 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.task.DynamicTaskManager;
+import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.message.detector.YuniEventDetector;
 import com.yuier.yuni.event.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
@@ -73,15 +75,15 @@ public class PluginRegisterProcessor {
      * @param instance 定时插件实例
      */
     private void registerActivePlugin(ActivePluginInstance instance, PluginContainer pluginContainer) {
-
+        PluginMetadata pluginMetadata = instance.getPluginMetadata();
         // 先把插件保存起来
-        String pluginId = instance.getPluginMetadata().getId();
+        String pluginId = pluginMetadata.getId();
         pluginContainer.getActivePlugins().put(pluginId, instance);
-        log.info("正在注册主动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
+        log.info("注册主动插件: {} | {}", LogStringUtil.buildBrightBlueLog(pluginMetadata.getName()), LogStringUtil.buildBrightBlueLog(pluginMetadata.getId()));
         // 判断是否默认开启
-        Boolean defaultEnable = instance.getPluginMetadata().getDefaultEnable();
+        Boolean defaultEnable = pluginMetadata.getDefaultEnable();
         if (!defaultEnable) {
-            log.info("主动插件 {} 默认不生效，已经跳过", instance.getPluginMetadata().getName());
+            log.info("主动插件 {} 默认不生效，已跳过执行流程", LogStringUtil.buildBrightBlueLog(pluginMetadata.getName()));
             return;
         }
 
@@ -96,7 +98,7 @@ public class PluginRegisterProcessor {
     // 注册即时任务
     private void registerImmediatePlugin(ImmediatePluginInstance instance, PluginContainer pluginContainer) {
         instance.getAction().execute();
-        log.info("即时插件 {} 已执行完毕", instance.getPluginMetadata().getName());
+        log.info("即时插件 {} 执行完毕", LogStringUtil.buildBrightBlueLog(instance.getPluginMetadata().getName()));
     }
 
     /**
@@ -110,7 +112,7 @@ public class PluginRegisterProcessor {
             try {
                 instance.getAction().execute();
             } catch (Exception e) {
-                log.error("执行主动插件失败: {}", pluginId, e);
+                log.error("执行主动插件失败: {}", LogStringUtil.buildBrightBlueLog(pluginId), e);
             }
         };
 
@@ -123,10 +125,11 @@ public class PluginRegisterProcessor {
      * @param instance 被动插件实例
      */
     private void registerPassivePlugin(PassivePluginInstance instance, PluginContainer pluginContainer) {
+        PluginMetadata pluginMetadata = instance.getPluginMetadata();
         /* TODO 重构 */
-        log.info("正在注册被动插件: {} | {}", instance.getPluginMetadata().getName(), instance.getPluginMetadata().getId());
+        log.info("注册被动插件: {} | {}", LogStringUtil.buildBrightBlueLog(pluginMetadata.getName()), LogStringUtil.buildBrightBlueLog(pluginMetadata.getId()));
         YuniEventDetector<?> detector = instance.getDetector();
-        String pluginId = instance.getPluginMetadata().getId();
+        String pluginId = pluginMetadata.getId();
         if (detector instanceof CommandDetector) {
             pluginContainer.getCommandPlugins().put(pluginId, instance);
         } else if (detector instanceof PatternDetector) {

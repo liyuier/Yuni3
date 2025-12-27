@@ -111,7 +111,7 @@ public class CommonWebSocketManager {
         try {
             manager.start();
             connectionStatus.put(connectionId, true);
-            log.info("WebSocket连接已启动: {}", connectionId);
+            log.info("正在启动 WebSocket 连接: {}", connectionId);
             return true;
         } catch (Exception e) {
             log.error("启动连接失败: {}, 错误: {}", connectionId, e.getMessage(), e);

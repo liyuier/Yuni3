@@ -1,5 +1,6 @@
 package com.yuier.yuni.core.task;
 
+import com.yuier.yuni.core.util.LogStringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
@@ -56,7 +57,7 @@ public class DynamicTaskManager {
         }, trigger);
 
         tasks.put(taskId, future);
-        log.info("  已注册定时任务: " + taskId + " | cron=" + cronExpression);
+        log.info("已注册定时任务: " + taskId + " | cron = " + LogStringUtil.buildBrightRedLog(cronExpression));
     }
 
     /**

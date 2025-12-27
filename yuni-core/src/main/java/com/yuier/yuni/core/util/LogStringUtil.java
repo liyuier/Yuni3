@@ -30,6 +30,10 @@ public class LogStringUtil {
     public static String buildPurpleLog(String input) {
         return "\033[35m" + input + "\033[0m";
     }
+    // 黄色
+    public static String buildYellowLog(String input) {
+        return "\033[33m" + input + "\033[0m";
+    }
 
     /**
      * 特殊字符转换

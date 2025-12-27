@@ -5,9 +5,9 @@ Configuration:
   Properties:  # 变量定义
     Property:
       - name: CONSOLE_PATTERN  # 输出到控制台的日志格式
-        value: "%clr{%d{HH:mm:ss.SSS}}{faint} %clr{[%t]}{faint} %clr{%-5level}{level} %clr{%logger{36}}{cyan} - %msg%n"
+        value: "%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{%5p}{} %clr{%pid}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{39}}{cyan} %clr{:}{faint} %m%n%xEx"
       - name: FILE_PATTERN  # 输出到文件的日志格式
-        value: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+        value: "%d{yyyy-MM-dd HH:mm:ss.SSS} %pid --- [%15.15t] %-40.40c{39} : %m%n%ex"
       - name: ROLLING_INTERVAL  # 滚动时间间隔
         value: "24"
       - name: MAX_SIZE  # 单个日志文件的最大大小

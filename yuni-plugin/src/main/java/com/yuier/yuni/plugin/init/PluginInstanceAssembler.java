@@ -8,6 +8,7 @@ package com.yuier.yuni.plugin.init;
  * @description: 插件组装器
  */
 
+import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import com.yuier.yuni.event.message.detector.YuniEventDetector;
 import com.yuier.yuni.plugin.model.*;
@@ -84,6 +85,7 @@ public class PluginInstanceAssembler {
             // 读取元数据
             PluginModuleMetadata pluginModuleMetadata = metadataParser.parseModuleMetadata(jarFile);
             pluginModuleInstance.setPluginModuleMetadata(pluginModuleMetadata);
+            log.info("加载插件模块 {}", LogStringUtil.buildYellowLog(pluginModuleMetadata.getModuleName()));
 
             // 扫描插件类
             List<Class<?>> pluginClasses = scanPluginClasses(jarFile, pluginClassLoader);

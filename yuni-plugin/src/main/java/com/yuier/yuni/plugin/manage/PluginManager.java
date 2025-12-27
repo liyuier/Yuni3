@@ -1,5 +1,6 @@
 package com.yuier.yuni.plugin.manage;
 
+import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
@@ -47,7 +48,7 @@ public class PluginManager {
         File[] pluginJars = pluginInstanceAssembler.loadPluginJars(pluginDirectoryPath);
         // 注册插件
         for (File jarFile : pluginJars) {
-            log.info("正在加载 jar 包: {}", jarFile.getName());
+            log.info("扫描 jar 包: {}", LogStringUtil.buildYellowLog(jarFile.getName()));
             try {
                 // 加载插件
                 PluginModuleInstance pluginModuleInstance = pluginInstanceAssembler.assemblePluginModuleFromJar(jarFile);
@@ -56,7 +57,7 @@ public class PluginManager {
             } catch (Exception e) {
                 log.error("加载 jar 包失败: {}", jarFile.getName(), e);
             }
-            log.info("{} 加载完成", jarFile.getName());
+            log.info("{} 加载完毕", LogStringUtil.buildYellowLog(jarFile.getName()));
         }
     }
 
