@@ -53,14 +53,17 @@ public class PluginMetadata {
     @JsonProperty("default_enable")
     private Boolean defaultEnable = true;
 
+    // 插件所属的模块名
+    private String moduleName;
+
+    // 模块 ID
+    private String moduleId;
+
     // TODO 待实现的字段
 
     // 是否为系统内置插件
     @JsonProperty("build_in")
     private Boolean buildIn = false;
-
-    // 插件模块名
-    private String moduleName;
 
     /**
      * 提供的功能的类型（娱乐、学习、工具）

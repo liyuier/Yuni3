@@ -1,6 +1,7 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.Data;
@@ -20,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Component
 public class PluginContainer {
+
+    private final Map<String, PluginModuleInstance> pluginModules = new ConcurrentHashMap<>();
 
     private final Map<String, ActivePluginInstance> activePlugins = new ConcurrentHashMap<>();
 

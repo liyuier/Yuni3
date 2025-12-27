@@ -18,7 +18,6 @@ import lombok.Data;
 public abstract class ActivePluginInstance extends AbstractPluginInstance {
 
     private ActivePlugin plugin;
-    private PluginMetadata pluginMetadata;
     private Action action;
 
     @Override

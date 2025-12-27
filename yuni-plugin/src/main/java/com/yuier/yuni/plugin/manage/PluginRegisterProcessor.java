@@ -5,6 +5,7 @@ import com.yuier.yuni.event.message.detector.YuniEventDetector;
 import com.yuier.yuni.event.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
@@ -35,6 +36,10 @@ public class PluginRegisterProcessor {
     private DynamicTaskManager dynamicTaskManager;
 
     private Map<YuniPlugin, String> pluginBeanToIdMap = new HashMap<>();
+
+    public void registerPluginModuleInstance(PluginModuleInstance instance, PluginContainer pluginContainer) {
+        registerPluginInstances(instance.getPluginInstances(), pluginContainer);
+    }
 
     public void registerPluginInstances(List<PluginInstance> instances, PluginContainer pluginContainer) {
         // 在入口处统一维护插件示例-id映射

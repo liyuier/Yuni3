@@ -3,6 +3,7 @@ package com.yuier.yuni.plugin.manage;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,9 @@ public class PluginManager {
             log.info("正在加载 jar 包: {}", jarFile.getName());
             try {
                 // 加载插件
-                List<PluginInstance> pluginInstances = pluginInstanceAssembler.assembleFromJar(jarFile);
+                PluginModuleInstance pluginModuleInstance = pluginInstanceAssembler.assemblePluginModuleFromJar(jarFile);
                 // 注册插件
-                pluginRegisterProcessor.registerPluginInstances(pluginInstances, pluginContainer);
+                pluginRegisterProcessor.registerPluginModuleInstance(pluginModuleInstance, pluginContainer);
             } catch (Exception e) {
                 log.error("加载 jar 包失败: {}", jarFile.getName(), e);
             }

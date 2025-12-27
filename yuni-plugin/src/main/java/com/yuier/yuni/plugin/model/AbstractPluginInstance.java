@@ -11,12 +11,9 @@ import lombok.Data;
  */
 
 @Data
-public abstract class AbstractPluginInstance implements PluginInstance{
+public abstract class AbstractPluginInstance implements PluginInstance {
 
+    private YuniPlugin plugin;
+    private PluginMetadata pluginMetadata;
     private String jarFileName;
-
-    @Override
-    public String getJarFileName() {
-        return jarFileName;
-    }
 }

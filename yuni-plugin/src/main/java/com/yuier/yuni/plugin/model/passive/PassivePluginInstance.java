@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 public class PassivePluginInstance extends AbstractPluginInstance {
 
     private PassivePlugin<?, ?> passivePlugin;
-    private PluginMetadata pluginMetadata;
     private UserPermission permission;
     private YuniEventDetector<?> detector;
     private Method executeMethod;

@@ -32,11 +32,11 @@ public class SystemInitializeRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.debug("检查数据库文件");
+        log.info("检查数据库文件");
         systemInitializeProcessor.checkDatabaseFile();
         log.info("开始初始化插件系统...");
         pluginManager.initializePlugins();
-        log.debug("初始化权限系统");
+        log.info("初始化权限系统");
         userPermissionManager.initUserPermission();
     }
 }

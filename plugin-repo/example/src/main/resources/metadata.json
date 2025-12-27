@@ -1,56 +1,60 @@
-[
-  {
-    "id": "schedule.OhaYo",
-    "name": "定时插件示例",
-    "version": "0.0.1",
-    "description": "定时任务插件示例，每天早上会向 bot master 问好。",
-    "author": "Yuier me@yuier.com",
-    "dependencies": [],
-    "default_enable": true
-  },
-  {
-    "id": "command.HelloCommand",
-    "name": "指令插件示例",
-    "version": "0.0.1",
-    "description": "一个示例插件，在群聊内发送“/test”，bot 会响应 “Hello Command!”",
-    "author": "Yuier me@yuier.com",
-    "dependencies": [],
-    "default_enable": true
-  },
-  {
-    "id": "pattern.HelloPattern",
-    "name": "规则插件示例",
-    "version": "0.0.1",
-    "description": "一个示例插件，在群聊内发送带有“你好”的消息，bot 会响应 “你好，我是 {bot 昵称} !”",
-    "author": "Yuier me@yuier.com",
-    "dependencies": [],
-    "default_enable": true
-  },
-  {
-    "id": "immediate.IAmBack",
-    "name": "即时插件示例",
-    "version": "0.0.1",
-    "description": "即时任务插件实例，插件中定义的动作会且仅会在注册后立即执行一次。启动后会向特定群聊发送一条消息“我是后背”",
-    "author": "Yuier me@yuier.com",
-    "dependencies": [],
-    "default_enable": true
-  },
-  {
-    "id": "dynamicinjection.ImmediateInjector",
-    "name": "动态注入示例",
-    "version": "0.0.1",
-    "description": "采用即时插件动态注入一个类到 SpringBoot 容器中",
-    "author": "Yuier me@yuier.com",
-    "dependencies": [],
-    "default_enable": true
-  },
-  {
-    "id": "dynamicinjection.InjectionResultTest",
-    "name": "动态注入结果测试",
-    "version": "0.0.1",
-    "description": "简单测试一下动态注入的结果",
-    "author": "Yuier me@yuier.com",
-    "dependencies": [],
-    "default_enable": true
-  }
-]
+{
+  "module_id": "example",
+  "module_name": "示例模块",
+  "plugins": [
+    {
+      "id": "schedule.OhaYo",
+      "name": "定时插件示例",
+      "version": "0.0.1",
+      "description": "定时任务插件示例，每天早上会向 bot master 问好。",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
+    },
+    {
+      "id": "command.HelloCommand",
+      "name": "指令插件示例",
+      "version": "0.0.1",
+      "description": "一个示例插件，在群聊内发送“/test”，bot 会响应 “Hello Command!”",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
+    },
+    {
+      "id": "pattern.HelloPattern",
+      "name": "规则插件示例",
+      "version": "0.0.1",
+      "description": "一个示例插件，在群聊内发送带有“你好”的消息，bot 会响应 “你好，我是 {bot 昵称} !”",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
+    },
+    {
+      "id": "immediate.IAmBack",
+      "name": "即时插件示例",
+      "version": "0.0.1",
+      "description": "即时任务插件实例，插件中定义的动作会且仅会在注册后立即执行一次。启动后会向特定群聊发送一条消息“我是后背”",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
+    },
+    {
+      "id": "dynamicinjection.ImmediateInjector",
+      "name": "动态注入示例",
+      "version": "0.0.1",
+      "description": "采用即时插件动态注入一个类到 SpringBoot 容器中",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
+    },
+    {
+      "id": "dynamicinjection.InjectionResultTest",
+      "name": "动态注入结果测试",
+      "version": "0.0.1",
+      "description": "简单测试一下动态注入的结果",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
+    }
+  ]
+}

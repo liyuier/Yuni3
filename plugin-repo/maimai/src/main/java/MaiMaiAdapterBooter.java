@@ -1,7 +1,9 @@
 import com.yuier.yuni.core.net.ws.CommonWebSocketHandler;
 import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
+import com.yuier.yuni.plugin.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
-import com.yuier.yuni.plugin.model.active.immediate.ImmediatelyActPlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import config.MaiMaiAdapterConfig;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +17,7 @@ import org.springframework.web.socket.client.WebSocketConnectionManager;
  * @description: maimai机器人适配器
  */
 
-public class MaiMaiAdapterBooter extends ImmediatelyActPlugin {
+public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
     @Override
     public Action getAction() {
         return () -> {
@@ -55,5 +57,15 @@ public class MaiMaiAdapterBooter extends ImmediatelyActPlugin {
                 config.getReconnectInterval()
         );
         return maimaiAdapterHandler;
+    }
+
+    @Override
+    public void enable(PluginEnableEvent event) {
+        // TODO 启动连接
+    }
+
+    @Override
+    public void disable(PluginDisableEvent event) {
+        // TODO 停止连接
     }
 }

@@ -3,6 +3,8 @@ package com.yuier.yuni.plugin.model.passive;
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.plugin.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.event.PluginEnableEvent;
 
 /**
  * @Title: PatternPlugin
@@ -20,6 +22,16 @@ public abstract class PatternPlugin implements PassivePlugin<YuniMessageEvent, P
 
     @Override
     public void destroy() {
+
+    }
+
+    @Override
+    public void enable(PluginEnableEvent event) {
+
+    }
+
+    @Override
+    public void disable(PluginDisableEvent event) {
 
     }
 

@@ -1,14 +1,13 @@
 package immediate;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.api.group.GroupListElement;
 import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.model.message.MessageChain;
+import com.yuier.yuni.plugin.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
-import com.yuier.yuni.plugin.model.active.immediate.ImmediatelyActPlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
-
-import java.util.List;
 
 /**
  * @Title: IAmBack
@@ -18,12 +17,22 @@ import java.util.List;
  * @description: 我是后背
  */
 
-public class IAmBack extends ImmediatelyActPlugin {
+public class IAmBack extends ImmediateActionPlugin {
     @Override
     public Action getAction() {
         return () -> {
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
             SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(930198267, new MessageChain("我是后背"));
         };
+    }
+
+    @Override
+    public void enable(PluginEnableEvent event) {
+
+    }
+
+    @Override
+    public void disable(PluginDisableEvent event) {
+
     }
 }
