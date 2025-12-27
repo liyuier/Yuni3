@@ -43,7 +43,7 @@ public class SavePluginCallEvent {
         pluginCallEntity.setPluginDetectorType(PluginBusinessMapUtil.pluginDetectorTypeName(instance.getDetector()));
         pluginCallEntity.setPluginFunctionType(pluginMetadata.getFunctionType());
         pluginCallEntity.setIcon(pluginMetadata.getIcon());
-        pluginCallEntity.setHomePage(pluginMetadata.getHomePage());
+        pluginCallEntity.setHomePage(pluginMetadata.getHomepage());
         pluginCallEntity.setSourceCodeAddress(pluginMetadata.getSourceCodeAddress());
         pluginCallService.saveEvent(pluginCallEntity);
     }
