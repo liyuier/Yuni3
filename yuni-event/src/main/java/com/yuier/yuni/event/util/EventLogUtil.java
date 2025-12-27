@@ -30,17 +30,17 @@ public class EventLogUtil {
         String groupInfoLog = "";
         String senderInfoLog = "";
         String messageLog = "";
-        String senderName = "";
+        String senderName = event.getSender().getNickname();
         if (event.isGroup()) {
             receiveDescription = LogStringUtil.buildPurpleLog("群->收");
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
             String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
             groupInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]";
-            senderName = event.getSender().getCard();
+            String card = event.getSender().getCard();
+            senderName = card != null && !card.isEmpty() ? card : senderName;
         } else if (event.isPrivate()) {
             receiveDescription = LogStringUtil.buildPurpleLog("私->收");
-            senderName = event.getSender().getNickname();
         }
         senderInfoLog = LogStringUtil.buildCyanLog(senderName) + "(" + event.getUserId() + "): ";
         messageLog = LogStringUtil.buildBrightBlueLog(event.getMessageChain().toString());
@@ -54,16 +54,19 @@ public class EventLogUtil {
         String groupInfoLog = "";
         String senderInfoLog = "";
         String messageLog = "";
+        String senderName = event.getSender().getNickname();
         if (event.isGroup()) {
             receiveDescription = "群->收";
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
             String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
             groupInfoLog = "[" + groupName + "(" + groupIdStr + ")]";
+            String card = event.getSender().getCard();
+            senderName = card != null && !card.isEmpty() ? card : senderName;
         } else if (event.isPrivate()) {
             receiveDescription = "私->收";
         }
-        senderInfoLog = event.getSender().getNickname()+ "(" + event.getUserId() + "): ";
+        senderInfoLog = senderName+ "(" + event.getUserId() + "): ";
         messageLog = event.getMessageChain().toString();
         String logStr = receiveDescription + "丨" + groupInfoLog + senderInfoLog + messageLog;
         return LogStringUtil.escapeString(logStr);
