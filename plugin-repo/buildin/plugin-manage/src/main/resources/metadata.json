@@ -1,0 +1,16 @@
+{
+  "module_id": "plugin-manage",
+  "module_name": "插件管理模块",
+  "plugins": [
+    {
+      "id": "PluginManage",
+      "name": "插件管理入口",
+      "version": "0.0.1",
+      "description": "用于管理插件",
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true,
+      "build_in": true
+    }
+  ]
+}

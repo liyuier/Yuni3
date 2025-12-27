@@ -30,16 +30,19 @@ public class EventLogUtil {
         String groupInfoLog = "";
         String senderInfoLog = "";
         String messageLog = "";
+        String senderName = "";
         if (event.isGroup()) {
             receiveDescription = LogStringUtil.buildPurpleLog("群->收");
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
             String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
             groupInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]";
+            senderName = event.getSender().getCard();
         } else if (event.isPrivate()) {
             receiveDescription = LogStringUtil.buildPurpleLog("私->收");
+            senderName = event.getSender().getNickname();
         }
-        senderInfoLog = LogStringUtil.buildCyanLog(event.getSender().getNickname()) + "(" + event.getUserId() + "): ";
+        senderInfoLog = LogStringUtil.buildCyanLog(senderName) + "(" + event.getUserId() + "): ";
         messageLog = LogStringUtil.buildBrightBlueLog(event.getMessageChain().toString());
         String logStr = receiveDescription + "丨" + groupInfoLog + senderInfoLog + messageLog;
         return LogStringUtil.escapeString(logStr);
