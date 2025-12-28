@@ -1,6 +1,5 @@
 package com.yuier.yuni.event.message.detector.command.model;
 
-import com.yuier.yuni.core.enums.UserPermission;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +23,4 @@ public class CommandOption {
 
     private CommandArg optionalArg = null;
 
-    // 该选项需求的权限，默认为普通用户
-    private UserPermission permission = UserPermission.USER;
 }

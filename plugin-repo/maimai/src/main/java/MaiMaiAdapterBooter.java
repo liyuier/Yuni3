@@ -23,7 +23,7 @@ public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
         return () -> {
             /* 向 MaiBot-Napcat-Adapter 发起连接 */
             // 获取配置
-            MaiMaiAdapterConfig config = PluginUtils.loadConfigJsonToBean("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
+            MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromJar("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
             PluginUtils.registerBeanUtil(config, "maimaiAdapterPluginConfig");
             // 获取 wsManager
             CommonWebSocketManager wsManager = PluginUtils.getBean(CommonWebSocketManager.class);
@@ -38,7 +38,7 @@ public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
             wsManager.setAuthToken(config.getConnectionId(), config.getToken());
             WebSocketConnectionManager connectionManager = wsManager.getConnectionManager(config.getConnectionId());
             HttpHeaders headers = connectionManager.getHeaders();
-            headers.add("X-Self-ID", PluginUtils.getBotModelConfig() + "");
+            headers.add("X-Self-ID", PluginUtils.getBotId() + "");
             headers.add("X-Client-Role", "Universal");
             // 启动连接
             wsManager.startConnection(config.getConnectionId());

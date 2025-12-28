@@ -1,6 +1,7 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.service.GroupPluginAbilityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PluginEnableProcessor {
     Map<String, Boolean> pluginEnableMap = new HashMap<>(); // TODO initialize
 
     // 判断插件是否使能
-    public Boolean isPluginEnabled(YuniMessageEvent event, PassivePluginInstance instance) {
+    public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
         Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginMetadata().getId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
@@ -35,7 +36,7 @@ public class PluginEnableProcessor {
     }
 
     // 获取插件默认使能情况
-    private Boolean getPluginDefaultEnabled(PassivePluginInstance instance) {
+    private Boolean getPluginDefaultEnabled(PluginInstance instance) {
         return instance.getPluginMetadata().getDefaultEnable();
     }
 

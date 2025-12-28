@@ -43,7 +43,7 @@ public class UserPermissionManager {
      * @param pluginId 插件 ID
      * @return 用户权限
      */
-    public UserPermission getUserPermissionException(YuniMessageEvent event, String pluginId) {
+    public UserPermission getUserPermission(YuniMessageEvent event, String pluginId) {
         UserPermission userPermission = getUserPermissionException(event.getGroupId(), pluginId, event.getUserId());
         if (userPermission != null) {
             return userPermission;

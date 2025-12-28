@@ -22,4 +22,6 @@ public class PluginModuleInstance {
     private PluginModuleMetadata pluginModuleMetadata;
 
     private List<PluginInstance> pluginInstances;
+
+
 }

@@ -117,26 +117,13 @@ public class PluginUtils {
     }
 
     /**
-     * 加载配置文件为字符串
-     * @param configFilePath 配置文件路径
-     * @return 配置文件内容
-     */
-    public static String loadConfigJsonToString(String configFilePath, YuniPlugin plugin) {
-        if (!isJsonFile(configFilePath)) {
-            throw new RuntimeException("传入的文件路径不是 json 文件！");
-        }
-
-        return loadTextFromPluginJar(plugin, configFilePath);
-    }
-
-    /**
      * 加载配置文件为 bean
      * @param configFilePath 配置文件路径
      * @param clazz bean 的类型
      * @param <T> bean 的类型
      * @return bean
      */
-    public static <T> T loadConfigJsonToBean(String configFilePath, Class<T> clazz, YuniPlugin plugin) {
+    public static <T> T loadJsonConfigFromJar(String configFilePath, Class<T> clazz, YuniPlugin plugin) {
         if (!isJsonFile(configFilePath)) {
             throw new RuntimeException("传入的文件路径不是 json 文件！");
         }
@@ -151,8 +138,21 @@ public class PluginUtils {
     }
 
     /**
-     * 获取插件 jar 包
-     * @return 插件 jar 包
+     * 加载配置文件为字符串
+     * @param configFilePath 配置文件路径
+     * @return 配置文件内容
+     */
+    private static String loadConfigJsonToString(String configFilePath, YuniPlugin plugin) {
+        if (!isJsonFile(configFilePath)) {
+            throw new RuntimeException("传入的文件路径不是 json 文件！");
+        }
+
+        return loadTextFromPluginJar(plugin, configFilePath);
+    }
+
+    /**
+     * 获取插件 jar 包文件名
+     * @return 插件所在的 jar 包文件名
      */
     public static String getPluginJarFileName(YuniPlugin plugin) {
         // 先根据 plugin 获取 plugin id
@@ -164,12 +164,21 @@ public class PluginUtils {
     }
 
     /**
-     * 从插件 jar 包中读取文件
+     * 获取插件 jar 包在 SpringBoot app 中的路径
+     * @param plugin 插件对象
+     * @return  插件 jar 包在 SpringBoot app 中的路径
+     */
+    public static String getPluginJarAppPath(YuniPlugin plugin) {
+        return getPluginManager().getPluginDirectoryPath() + "/" + getPluginJarFileName(plugin);
+    }
+
+    /**
+     * 从 jar 包中读取文本文件内容
      * @param jarFile 插件 jar 包
      * @param filePath 文件路径
      * @return 文件内容
      */
-    public static String readFileFromJar(JarFile jarFile, String filePath) {
+    private static String readFileTextFromJar(JarFile jarFile, String filePath) {
         try {
             return new String(jarFile.getInputStream(jarFile.getEntry(filePath)).readAllBytes());
         } catch (Exception e) {
@@ -178,17 +187,15 @@ public class PluginUtils {
     }
 
     /**
-     * 从插件 jar 包中加载配置文件
+     * 从插件 jar 包中加载文本文件内容字符串
      * @param plugin 插件
-     * @param filePathInsideJar 文件路径
+     * @param resourcePath 文件在 jar 包内路径
      * @return 配置文件内容
      */
-    public static String loadTextFromPluginJar(YuniPlugin plugin, String filePathInsideJar) {
-        String jarFileName = getPluginJarFileName(plugin);
-        String pluginDirectoryPath = getPluginManager().getPluginDirectoryPath();
+    public static String loadTextFromPluginJar(YuniPlugin plugin, String resourcePath) {
         String text = "";
-        try (JarFile jarFile = new JarFile(pluginDirectoryPath + "/" + jarFileName)) {
-            text = readFileFromJar(jarFile, filePathInsideJar);
+        try (JarFile jarFile = new JarFile(getPluginJarAppPath(plugin))) {
+            text = readFileTextFromJar(jarFile, resourcePath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

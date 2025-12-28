@@ -24,6 +24,11 @@
             <artifactId>yuni-plugin</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <scope>provided</scope> <!-- 由机器人主项目提供 -->
+        </dependency>
 
     </dependencies>
 

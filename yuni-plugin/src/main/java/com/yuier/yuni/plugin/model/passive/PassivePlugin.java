@@ -16,16 +16,16 @@ import com.yuier.yuni.plugin.model.YuniPlugin;
 public interface PassivePlugin<T extends SpringYuniEvent, S extends YuniEventDetector<?>> extends YuniPlugin {
 
     /**
-     * 插件执行方法
-     * @param eventContext  事件上下文
-     */
-    void execute(T eventContext);
-
-    /**
      * 获取事件探测器
      * @return  事件探测器
      */
     S getDetector();
+
+    /**
+     * 插件执行方法
+     * @param eventContext  事件上下文
+     */
+    void execute(T eventContext);
 
     UserPermission pluginPermission();
 }

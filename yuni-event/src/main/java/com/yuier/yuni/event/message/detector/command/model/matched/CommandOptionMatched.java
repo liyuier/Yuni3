@@ -21,8 +21,8 @@ public class CommandOptionMatched {
     private String flag;
 
     // 选项参数，一个选项只允许接收一个参数
-    private CommandArgMatched requiredArg;
-    private CommandArgMatched optionalArg;
+    private CommandArgMatched requiredArg = null;
+    private CommandArgMatched optionalArg = null;
 
     // 该选项需求的权限，默认为普通用户
     private UserPermission permission = UserPermission.USER;
@@ -39,5 +39,20 @@ public class CommandOptionMatched {
     // 传入 flag 的构造函数
     public CommandOptionMatched(String flag) {
         this.flag = flag;
+    }
+
+    // 判断是否存在必选参数
+    public Boolean hasRequiredArg() {
+        return requiredArg != null;
+    }
+
+    // 判断是否存在可选参数
+    public Boolean hasOptionalArg() {
+        return optionalArg != null;
+    }
+
+    // 判断是否存在参数
+    public Boolean hasArg() {
+        return hasRequiredArg() || hasOptionalArg();
     }
 }

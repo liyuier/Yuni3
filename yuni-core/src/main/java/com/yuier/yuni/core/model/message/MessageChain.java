@@ -33,6 +33,12 @@ public class MessageChain {
         this.addTextSegment(text);
     }
 
+    // 传入 MessageSegment 的构造函数
+    public MessageChain(MessageSegment messageSegment) {
+        content = new ArrayList<>();
+        this.addSegment(messageSegment);
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -55,12 +61,13 @@ public class MessageChain {
                 !((TextSegment) getSegment(FIRST_INDEX)).getText().trim().isEmpty();  // 文本消息段内容不为空
     }
 
-    public void addSegment(MessageSegment segment) {
+    public MessageChain addSegment(MessageSegment segment) {
         content.add(segment);
+        return this;
     }
 
-    public void addTextSegment(String text) {
-        addSegment(new TextSegment(text));
+    public MessageChain addTextSegment(String text) {
+        return addSegment(new TextSegment(text));
     }
 
     public boolean startWithReplyData() {

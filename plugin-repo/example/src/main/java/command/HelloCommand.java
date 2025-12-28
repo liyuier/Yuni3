@@ -3,7 +3,7 @@ package command;
 import com.yuier.yuni.core.api.message.SendMessage;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.message.detector.command.model.CommandModelBuilder;
+import com.yuier.yuni.event.message.detector.command.model.CommandBuilder;
 import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
 
 /**
@@ -23,7 +23,7 @@ public class HelloCommand extends CommandPlugin {
 
     @Override
     public CommandDetector getDetector() {
-        return new CommandDetector(CommandModelBuilder.create("test").build());
+        return new CommandDetector(CommandBuilder.create("test").build());
     }
 
 }

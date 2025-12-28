@@ -1,7 +1,8 @@
 import com.yuier.yuni.core.enums.CommandArgRequireType;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.message.detector.command.model.CommandModelBuilder;
+import com.yuier.yuni.event.message.detector.command.model.CommandBuilder;
+import com.yuier.yuni.event.message.detector.command.model.matched.CommandMatched;
 import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
 
 /**
@@ -13,16 +14,31 @@ import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
  */
 
 public class PluginManage extends CommandPlugin {
+
+    private final String HEAD = "插件";
+
+    private final String VIEW = "查看";
+    private final String VIEW_SEQ = "pluginSeq";
+
+    private PluginShow pluginShow = new PluginShow();
+
     @Override
     public void execute(YuniMessageEvent eventContext) {
-
+        CommandMatched commandMatched = eventContext.getCommandMatched();
+        if (commandMatched.hasOption(VIEW)) {
+            if (commandMatched.optionHasOptionalArg(VIEW)) {
+                pluginShow.showPluginDetail(eventContext, commandMatched.getOptionOptionalArgValue(VIEW));
+            } else {
+                pluginShow.showPluginList(eventContext);
+            }
+        }
     }
 
     @Override
     public CommandDetector getDetector() {
-        return new CommandDetector(CommandModelBuilder.create("test")
+        return new CommandDetector(CommandBuilder.create(HEAD)
                 // 命令选项 -查看，携带可选参数 pluginSeq ，含义是插件序号
-                .addOptionWithOptionalArg("-查看", "pluginSeq", "查看消息内容", CommandArgRequireType.NUMBER)
+                .addOptionWithOptionalArg(VIEW, VIEW_SEQ, "查看指定插件详情", CommandArgRequireType.NUMBER)
                 .build()) ;
     }
 }

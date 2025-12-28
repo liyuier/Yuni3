@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
 import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
+import static com.yuier.yuni.core.constants.SystemConstants.UNKNOWN;
 
 /**
  * @Title: YuniMessageEvent
@@ -119,4 +120,15 @@ public class YuniMessageEvent extends SpringYuniEvent {
         setPlainLogStr(plainLog);
         return plainLog;
     }
+
+    public String getPosition() {
+        if (isPrivate()) {
+            return PRIVATE_MESSAGE + "@" + userId;
+        } else if (isGroup()) {
+            return GROUP_MESSAGE + "@" + groupId;
+        } else {
+            return UNKNOWN + "@" + userId;
+        }
+    }
+
 }

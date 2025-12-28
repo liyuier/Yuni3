@@ -3,7 +3,7 @@ package dynamicinjection;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.message.detector.command.model.CommandModelBuilder;
+import com.yuier.yuni.event.message.detector.command.model.CommandBuilder;
 import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +29,6 @@ public class InjectionResultTest extends CommandPlugin {
 
     @Override
     public CommandDetector getDetector() {
-        return new CommandDetector(CommandModelBuilder.create("test2").build());
+        return new CommandDetector(CommandBuilder.create("test2").build());
     }
 }

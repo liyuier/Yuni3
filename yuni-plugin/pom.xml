@@ -56,6 +56,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <scope>provided</scope> <!-- 由机器人主项目提供 -->
+        </dependency>
+
     </dependencies>
 
 </project>

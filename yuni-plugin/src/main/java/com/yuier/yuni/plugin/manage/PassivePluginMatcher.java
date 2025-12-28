@@ -5,6 +5,7 @@ import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.message.detector.command.CommandDetector;
 import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
+import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.persistence.SavePluginCallEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +83,7 @@ public class PassivePluginMatcher {
      */
     private boolean checkPermission(PassivePluginInstance instance, YuniMessageEvent event) {
         // 获取用户权限
-        UserPermission userPermission = permissionManager.getUserPermissionException(event, instance.getPluginMetadata().getId());
+        UserPermission userPermission = permissionManager.getUserPermission(event, instance.getPluginMetadata().getId());
         UserPermission requiredPermission = instance.getPermission();
 
         return userPermission.getPriority() >= requiredPermission.getPriority();
@@ -90,7 +91,7 @@ public class PassivePluginMatcher {
 
 
     // 检查插件是否使能
-    public Boolean isPluginEnabled(YuniMessageEvent event, PassivePluginInstance instance) {
+    public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
         return pluginEnableProcessor.isPluginEnabled(event, instance);
     }
 }
