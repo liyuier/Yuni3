@@ -1,7 +1,7 @@
 package com.yuier.yuni.adapter.qq.http;
 
 /**
- * @Title: OneBotApiClient
+ * @Title: OneBotApiHttpClient
  * @Author yuier
  * @Package com.yuier.yuni.adapter.qq.http
  * @Date 2025/12/23 2:50
@@ -26,16 +26,16 @@ import java.util.Map;
 
 @Data
 @Component
-public class OneBotApiClient {
+public class OneBotApiHttpClient {
 
-    private static final Logger log = LoggerFactory.getLogger(OneBotApiClient.class);
+    private static final Logger log = LoggerFactory.getLogger(OneBotApiHttpClient.class);
 
     private final RestTemplate restTemplate;
     private final String baseUrl;
 
     private final ObjectMapper objectMapper;
 
-    public OneBotApiClient(@Value("${onebot.api.url:http://localhost:3000}") String baseUrl, ObjectMapper objectMapper) {
+    public OneBotApiHttpClient(@Value("${onebot.api.url:http://localhost:3000}") String baseUrl, ObjectMapper objectMapper) {
         this.baseUrl = baseUrl;
         this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();

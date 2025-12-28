@@ -10,7 +10,6 @@ import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.api.message.SendPrivateMessage;
 import com.yuier.yuni.core.api.system.LoginInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
-import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.model.message.MessageChain;
@@ -29,10 +28,10 @@ import java.util.List;
 public class OneBotHttpAdapter implements OneBotAdapter {
 
     private OneBotDeserializer deserializer;
-    private OneBotApiClient apiClient;
+    private OneBotApiHttpClient apiClient;
     private OneBotSerialization serialization;
 
-    public OneBotHttpAdapter(OneBotDeserializer deserializer, OneBotSerialization serialization, OneBotApiClient apiClient) {
+    public OneBotHttpAdapter(OneBotDeserializer deserializer, OneBotSerialization serialization, OneBotApiHttpClient apiClient) {
         this.deserializer = deserializer;
         this.apiClient = apiClient;
         this.serialization = serialization;
