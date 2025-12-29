@@ -1,5 +1,7 @@
 package com.yuier.yuni.core.model.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.yuier.yuni.core.anno.PolymorphicSubType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,7 @@ public class MetaEvent extends OneBotEvent{
      * lifecycle：生命周期事件
      * heartbeat：心跳事件
      */
+    @JsonProperty("meta_event_type")
     private String metaEventType;
 
     /**
@@ -36,4 +39,16 @@ public class MetaEvent extends OneBotEvent{
      *   - heartbeat：心跳
      */
     private String subType;
+
+    /* 心跳事件字段 */
+
+    /**
+     * 状态
+     */
+    private Object status;
+
+    /**
+     * 心跳间隔
+     */
+    private Long interval;
 }

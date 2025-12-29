@@ -1,5 +1,6 @@
 package com.yuier.yuni.engine.manager.init;
 
+import com.yuier.yuni.event.init.EventManager;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public class SystemInitializeRunner implements ApplicationRunner {
 
     @Autowired
     UserPermissionManager userPermissionManager;
+    @Autowired
+    EventManager eventManager;
 
 
     @Override
@@ -38,6 +41,8 @@ public class SystemInitializeRunner implements ApplicationRunner {
         pluginManager.initializePlugins();
         log.info("初始化权限系统");
         userPermissionManager.initUserPermission();
+        log.info("初始化事件系统");
+        eventManager.init();
         log.info("开始对接 OneBot 事件推送");
         systemInitializeProcessor.startOneBotEventSession();
     }
