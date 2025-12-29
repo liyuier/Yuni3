@@ -7,6 +7,7 @@ import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.engine.event.EventBridge;
+import com.yuier.yuni.event.detector.message.command.CommandMatcher;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -59,9 +60,13 @@ public class OneBotEventWsListener extends YuniWebSocketListener {
 
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-        OneBotEvent oneBotEvent = adapter.handleReportJson(text);
-        oneBotEvent.setRawJson(text);
-        eventBridge.publishRawEvent(oneBotEvent);
+        try {
+            handleTextMessage(text);
+        } catch (Exception e) {
+            log.error("处理 OneBot 消息时发生错误。错误信息：{}", e.getMessage());
+        } finally {
+            clearSystemAfterHandleMessage();
+        }
     }
 
     @Override
@@ -72,5 +77,15 @@ public class OneBotEventWsListener extends YuniWebSocketListener {
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
         log.info("到 {} 的连接建立成功。",  config.getWsUrl() + "/event");
+    }
+
+    private void handleTextMessage(String text) {
+        OneBotEvent oneBotEvent = adapter.handleReportJson(text);
+        oneBotEvent.setRawJson(text);
+        eventBridge.publishRawEvent(oneBotEvent);
+    }
+
+    private void clearSystemAfterHandleMessage() {
+        CommandMatcher.clear();
     }
 }

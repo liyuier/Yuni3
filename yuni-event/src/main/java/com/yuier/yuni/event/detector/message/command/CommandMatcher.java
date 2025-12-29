@@ -474,4 +474,8 @@ public class CommandMatcher {
         matched.setMatchSuccess(false);
         return matched;
     }
+
+    public static void clear() {
+        chainForCommand = null;
+    }
 }

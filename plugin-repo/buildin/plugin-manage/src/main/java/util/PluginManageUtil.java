@@ -23,6 +23,19 @@ import java.util.Objects;
 
 public class PluginManageUtil {
 
+    public static Integer getPluginModulesHashCodeCache(YuniMessageEvent eventContext) {
+        return null;  // TODO
+    }
+
+    public static String getPluginListImageCache(YuniMessageEvent eventContext) {
+        return null;  // TODO
+    }
+
+    /**
+     * 获取消息发送位置下的插件列表的 hashCode
+     * @param event 消息事件
+     * @return 插件列表的 hashCode
+     */
     public static int getHashCodeForShowingPluginList(YuniMessageEvent event) {
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         Map<String, PluginModuleInstance> pluginModules = container.getPluginModules();
@@ -36,6 +49,12 @@ public class PluginManageUtil {
         return Arrays.hashCode(singleHashes);
     }
 
+    /**
+     * 获取消息发送位置下，单个插件模块下的插件列表的 hashCode
+     * @param moduleInstance 插件模块实例
+     * @param event 消息事件
+     * @return 插件列表的 hashCode
+     */
     private static int getModuleInstanceHashCodeForShowingPluginList(PluginModuleInstance moduleInstance, YuniMessageEvent event) {
         List<PluginInstance> pluginInstances = moduleInstance.getPluginInstances();
         int[] singleHashes = new int[pluginInstances.size()];
@@ -49,6 +68,12 @@ public class PluginManageUtil {
         return Arrays.hashCode(singleHashes);
     }
 
+    /**
+     * 获取消息发送位置下，单个插件的 hashCode
+     * @param pluginInstance 插件实例
+     * @param event 消息事件
+     * @return 插件的 hashCode
+     */
     private static int getPluginHashCodeForShowingPluginList(PluginInstance pluginInstance, YuniMessageEvent event) {
         PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
         PluginMetadata pluginMetadata = pluginInstance.getPluginMetadata();
@@ -57,13 +82,5 @@ public class PluginManageUtil {
                 pluginMetadata.getDescription(),  // 插件描述
                 processor.isPluginEnabled(event, pluginInstance)  // 插件使能情况
         );
-    }
-
-    public static Integer getPluginModulesHashCodeCache(YuniMessageEvent eventContext) {
-        return null;  // TODO
-    }
-
-    public static String getPluginListImageCache(YuniMessageEvent eventContext) {
-        return null;  // TODO
     }
 }

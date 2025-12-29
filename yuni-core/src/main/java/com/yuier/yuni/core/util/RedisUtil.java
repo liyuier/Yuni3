@@ -33,7 +33,13 @@ public class RedisUtil {
         staticRedisTemplate = this.redisTemplate;
     }
 
-    // ====================== String类型静态方法 ======================
+    /* String类型静态方法 */
+
+    /**
+     * 设置 Redis 中的 String 类型数据，key 为字符串，value 为任意对象
+     * @param key  key
+     * @param value  value
+     */
     public static void set(String key, Object value) {
         try {
             ValueOperations<String, Object> valueOperations = staticRedisTemplate.opsForValue();
@@ -44,6 +50,13 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 带过期时间的设置 Redis 中的 String 类型数据，key 为字符串，value 为任意对象
+     * @param key  key
+     * @param value  value
+     * @param timeout  过期时间
+     * @param timeUnit  时间单位
+     */
     public static void set(String key, Object value, long timeout, TimeUnit timeUnit) {
         try {
             ValueOperations<String, Object> valueOperations = staticRedisTemplate.opsForValue();
@@ -54,6 +67,11 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 获取 Redis 中的 String 类型数据，key 为字符串
+     * @param key  key
+     * @return  value
+     */
     public static Object get(String key) {
         try {
             ValueOperations<String, Object> valueOperations = staticRedisTemplate.opsForValue();
@@ -64,7 +82,14 @@ public class RedisUtil {
         }
     }
 
-    // ====================== Hash类型静态方法 ======================
+    /* Hash类型静态方法 */
+
+    /**
+     * 设置 Redis 中的 Hash 类型数据，key 为字符串，hashKey 为字符串，value 为任意对象
+     * @param key  key
+     * @param hashKey  hashKey
+     * @param value  value
+     */
     public static void hSet(String key, String hashKey, Object value) {
         try {
             BoundHashOperations<String, String, Object> hashOperations = staticRedisTemplate.boundHashOps(key);
@@ -75,6 +100,12 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 获取 Redis 中的 Hash 类型数据的 value，key 为字符串，hashKey 为字符串
+     * @param key  key
+     * @param hashKey  hashKey
+     * @return  value
+     */
     public static Object hGet(String key, String hashKey) {
         try {
             BoundHashOperations<String, String, Object> hashOperations = staticRedisTemplate.boundHashOps(key);
@@ -85,6 +116,11 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 获取 Redis 中的 Hash 类型数据，key 为字符串
+     * @param key  key
+     * @return  value
+     */
     public static Map<String, Object> hGetAll(String key) {
         try {
             BoundHashOperations<String, String, Object> hashOperations = staticRedisTemplate.boundHashOps(key);
@@ -95,7 +131,12 @@ public class RedisUtil {
         }
     }
 
-    // ====================== 通用静态方法 ======================
+    /* 通用静态方法 */
+
+    /**
+     * 删除 Redis 中的一个或多个 key
+     * @param key  key
+     */
     public static void delete(String... key) {
         try {
             staticRedisTemplate.delete(List.of(key));
@@ -105,6 +146,10 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 批量删除 Redis 中的多个 key
+     * @param keys  key
+     */
     public static void delete(Collection<String> keys) {
         try {
             staticRedisTemplate.delete(keys);
@@ -114,6 +159,11 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 判断 Redis 中是否存在某个 key
+     * @param key  key
+     * @return  是否存在
+     */
     public static boolean exists(String key) {
         try {
             return Boolean.TRUE.equals(staticRedisTemplate.hasKey(key));
@@ -123,6 +173,13 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 设置 Redis 中某个 key 的过期时间
+     * @param key  key
+     * @param timeout  过期时间
+     * @param timeUnit  时间单位
+     * @return  是否成功
+     */
     public static boolean expire(String key, long timeout, TimeUnit timeUnit) {
         try {
             return Boolean.TRUE.equals(staticRedisTemplate.expire(key, timeout, timeUnit));

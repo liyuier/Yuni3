@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -44,27 +46,23 @@ public class PassivePluginMatcher {
      * @param event  消息事件
      */
     public void matchMessageEvent(YuniMessageEvent event, PluginContainer pluginContainer) {
+        List<PassivePluginInstance> matchedPluginInstances = new ArrayList<>();
+
         // 先匹配指令，如果匹配到了指令，那么不再继续匹配模式
-        boolean isCommand = false;
         for (PassivePluginInstance instance : pluginContainer.getCommandPlugins().values()) {
             // 权限检查与使能情况检查
             if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
                 CommandDetector detector = (CommandDetector) instance.getDetector();
                 if (detector.match(event)) {
-                    isCommand = true;
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
-                    savePluginCallEvent.saveEvent(event, instance);
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+                    matchedPluginInstances.add(instance);
                 }
             }
+
         }
-        if (isCommand) {
+        if (!matchedPluginInstances.isEmpty()) {
+            executeCommandPlugin(matchedPluginInstances, event);
+            // 匹配到指令后不再继续匹配其他插件
             return;
         }
         for (PassivePluginInstance instance : pluginContainer.getPatternPlugins().values()) {
@@ -73,16 +71,36 @@ public class PassivePluginMatcher {
                 PatternDetector detector = (PatternDetector) instance.getDetector();
                 if (detector.match(event)) {
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
-                    // 被动插件的调用暂时不记录到数据库
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+                    matchedPluginInstances.add(instance);
                 }
             }
+        }
+        executePatternPlugin(matchedPluginInstances, event);
+    }
+
+    private void executeCommandPlugin(List<PassivePluginInstance> pluginInstances, YuniMessageEvent event) {
+        for (PassivePluginInstance instance : pluginInstances) {
+            CompletableFuture.runAsync(() -> {
+                savePluginCallEvent.saveEvent(event, instance);
+                try {
+                    instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+    }
+
+    private void executePatternPlugin(List<PassivePluginInstance> pluginInstances, YuniMessageEvent event) {
+        for (PassivePluginInstance instance : pluginInstances) {
+            CompletableFuture.runAsync(() -> {
+                // 被动插件的调用暂时不记录到数据库
+                try {
+                    instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
