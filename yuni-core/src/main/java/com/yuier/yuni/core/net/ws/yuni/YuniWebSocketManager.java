@@ -31,6 +31,18 @@ public class YuniWebSocketManager {
     }
 
     /**
+     * 重启连接
+     * @param connectionId  连接 ID
+     */
+    public void restartConnection(String connectionId) {
+        YuniWebSocketConnector connector = webSocketConnectorMap.get(connectionId);
+        if (connector != null) {
+            WebSocket webSocket = connector.startConnection();
+            webSocketConnectorMap.put(connectionId, connector);
+        }
+    }
+
+    /**
      * 根据 ID 获取连接管理器
      * @param connectionId  连接 ID
      * @return  连接管理器

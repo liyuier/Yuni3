@@ -1,5 +1,6 @@
 package com.yuier.yuni.engine.event;
 
+import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.constants.OneBotPostType;
 import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.event.OneBotEvent;
@@ -9,6 +10,7 @@ import com.yuier.yuni.engine.manager.context.RequestContextManager;
 import com.yuier.yuni.event.context.ChatSession;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -21,11 +23,14 @@ import org.springframework.stereotype.Component;
  * @description: 桥接 OneBot 事件和 Spring 事件系统
  */
 
+@Slf4j
 @Component
 public class EventBridge {
 
     @Autowired
     ApplicationEventPublisher springPublisher;
+    @Autowired
+    OneBotAdapter adapter;
 
     public void publishRawEvent(OneBotEvent oneBotEvent) {
         // 将 OneBot 事件转为 Yuni 内部事件
@@ -40,8 +45,14 @@ public class EventBridge {
             case OneBotPostType.MESSAGE:
                 return buildYuniMessageEvent(event);
             default:
-                throw new RuntimeException("未知上报事件类型！");
+                log.info("不支持的 OneBot 事件类型：{}", event.getPostType());
         }
+        return new SpringYuniEvent() {
+            @Override
+            public String toLogString() {
+                return "";
+            }
+        };
     }
 
     private YuniMessageEvent buildYuniMessageEvent(OneBotEvent event) {
@@ -52,12 +63,12 @@ public class EventBridge {
         yuniMessageEvent.setSender(messageEvent.getSender());
         yuniMessageEvent.setMessageEvent(messageEvent);
         // 为消息事件添加 chatSession
-        ChatSession chatSession = RequestContextManager.getChatSession();
-        assert chatSession != null;
+        ChatSession chatSession = new ChatSession();
         chatSession.setSelfId(messageEvent.getSelfId());
         chatSession.setUserId(messageEvent.getUserId());
         chatSession.setGroupId(messageEvent.getGroupId());
         chatSession.setMessageType(messageEvent.getMessageType());
+        chatSession.setAdapter(adapter);
         yuniMessageEvent.setChatSession(chatSession);
         return yuniMessageEvent;
     }

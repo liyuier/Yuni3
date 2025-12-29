@@ -49,7 +49,7 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
      */
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        super.onClosed(webSocket, code, reason);
+        log.info("到 {} 的连接已经关闭。",  config.getWsUrl() + "/api");
     }
 
     /**
@@ -60,7 +60,7 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
      */
     @Override
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        super.onClosing(webSocket, code, reason);
+        log.info("到 {} 的连接即将关闭。",  config.getWsUrl() + "/api");
     }
 
     /**
@@ -71,7 +71,7 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
      */
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        log.info("到 {} 的连接建立失败。",  config.getWsUrl() + "/api");
+        log.info("到 {} 的连接发生错误。错误信息：{}, 响应信息：{}",  config.getWsUrl() + "/api", t.getMessage(), response);
     }
 
     /**
@@ -110,7 +110,7 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
      */
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
-        super.onMessage(webSocket, bytes);
+        log.info("收到 OneBot 发来二进制的消息: {}", bytes);
     }
 
     /**
