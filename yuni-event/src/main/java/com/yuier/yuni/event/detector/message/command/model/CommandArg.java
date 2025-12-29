@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.message.detector.command.model;
+package com.yuier.yuni.event.detector.message.command.model;
 
 import com.yuier.yuni.core.enums.CommandArgRequireType;
 import lombok.Data;

@@ -2,7 +2,7 @@ package pattern;
 
 import com.yuier.yuni.core.api.message.SendMessage;
 import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.passive.message.PatternPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 

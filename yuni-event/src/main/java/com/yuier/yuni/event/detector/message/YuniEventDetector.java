@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.message.detector;
+package com.yuier.yuni.event.detector.message;
 
 import com.yuier.yuni.event.context.SpringYuniEvent;
 

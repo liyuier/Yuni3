@@ -10,7 +10,7 @@ package com.yuier.yuni.plugin.init;
 
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.context.SpringYuniEvent;
-import com.yuier.yuni.event.message.detector.YuniEventDetector;
+import com.yuier.yuni.event.detector.message.YuniEventDetector;
 import com.yuier.yuni.plugin.model.*;
 import com.yuier.yuni.plugin.model.active.ActivePlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;

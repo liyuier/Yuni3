@@ -2,14 +2,15 @@ package com.yuier.yuni.engine.event;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.constants.OneBotPostType;
-import com.yuier.yuni.core.model.event.MessageEvent;
-import com.yuier.yuni.core.model.event.OneBotEvent;
+import com.yuier.yuni.core.model.event.*;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.BeanCopyUtils;
-import com.yuier.yuni.engine.manager.context.RequestContextManager;
 import com.yuier.yuni.event.context.ChatSession;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.meta.YuniMetaEvent;
+import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
+import com.yuier.yuni.event.context.request.YuniRequestEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,6 +45,12 @@ public class EventBridge {
         switch (event.getPostType()) {
             case OneBotPostType.MESSAGE:
                 return buildYuniMessageEvent(event);
+            case OneBotPostType.META_EVENT:
+                return buildYuniMetaEvent(event);
+            case OneBotPostType.NOTICE:
+                return buildYuniNoticeEvent(event);
+            case OneBotPostType.REQUEST:
+                return buildYuniRequestEvent(event);
             default:
                 log.info("不支持的 OneBot 事件类型：{}", event.getPostType());
         }
@@ -71,5 +78,26 @@ public class EventBridge {
         chatSession.setAdapter(adapter);
         yuniMessageEvent.setChatSession(chatSession);
         return yuniMessageEvent;
+    }
+
+    private YuniNoticeEvent buildYuniNoticeEvent(OneBotEvent event) {
+        NoticeEvent noticeEvent = (NoticeEvent) event;
+        YuniNoticeEvent yuniNoticeEvent = new YuniNoticeEvent();
+        yuniNoticeEvent.setRawNoticeEvent(noticeEvent);
+        return yuniNoticeEvent;
+    }
+
+    private YuniRequestEvent buildYuniRequestEvent(OneBotEvent event) {
+        RequestEvent requestEvent = (RequestEvent) event;
+        YuniRequestEvent yuniRequestEvent = new YuniRequestEvent();
+        yuniRequestEvent.setRawRequestEvent(requestEvent);
+        return yuniRequestEvent;
+    }
+
+    private YuniMetaEvent buildYuniMetaEvent(OneBotEvent event) {
+        MetaEvent metaEvent = (MetaEvent) event;
+        YuniMetaEvent yuniMetaEvent = new YuniMetaEvent();
+        yuniMetaEvent.setRawMetaEvent(metaEvent);
+        return yuniMetaEvent;
     }
 }

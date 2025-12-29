@@ -4,7 +4,7 @@ import com.yuier.yuni.core.model.event.MessageEvent;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;
 import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.event.message.detector.command.model.matched.CommandMatched;
+import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
 import com.yuier.yuni.event.util.EventLogUtil;
 import lombok.Data;
 

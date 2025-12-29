@@ -4,7 +4,7 @@ import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.event.context.ChatSession;
 import com.yuier.yuni.engine.manager.context.RequestContextContainer;
 import com.yuier.yuni.engine.manager.context.RequestContextManager;
-import com.yuier.yuni.event.message.detector.command.CommandMatcher;
+import com.yuier.yuni.event.detector.message.command.CommandMatcher;
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

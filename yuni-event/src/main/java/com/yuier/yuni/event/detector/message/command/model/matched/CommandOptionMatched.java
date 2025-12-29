@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.message.detector.command.model.matched;
+package com.yuier.yuni.event.detector.message.command.model.matched;
 
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.core.model.message.MessageSegment;

@@ -2,6 +2,9 @@ package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.meta.YuniMetaEvent;
+import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
+import com.yuier.yuni.event.context.request.YuniRequestEvent;
 import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
@@ -76,6 +79,21 @@ public class PluginManager {
      */
     public void handleMessageEvent(YuniMessageEvent event) {
         passivePluginMatcher.matchMessageEvent(event, pluginContainer);
+    }
+
+    // 处理 notice 事件
+    public void handleNoticeEvent(YuniNoticeEvent event) {
+        passivePluginMatcher.matchNoticeEvent(event, pluginContainer);
+    }
+
+    // 处理 request 事件
+    public void handleRequestEvent(YuniRequestEvent event) {
+        passivePluginMatcher.matchRequestEvent(event, pluginContainer);
+    }
+
+    // 处理 meta 事件
+    public void handleMetaEvent(YuniMetaEvent event) {
+        passivePluginMatcher.matchMetaEvent(event, pluginContainer);
     }
 
     /**

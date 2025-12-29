@@ -1,5 +1,6 @@
 package com.yuier.yuni.event.context.request;
 
+import com.yuier.yuni.core.model.event.RequestEvent;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public abstract class YuniRequestEvent extends SpringYuniEvent {
+public class YuniRequestEvent extends SpringYuniEvent {
+
+    private RequestEvent rawRequestEvent;
+    private YuniRequestEvent yuniRequestEvent;
+
 
     /**
      * 请求类型
@@ -31,4 +36,9 @@ public abstract class YuniRequestEvent extends SpringYuniEvent {
 
     // 请求 flag，在调用处理请求的 API 时需要
     private String flag;
+
+    @Override
+    public String toLogString() {
+        return "收到未定义请求事件。";
+    }
 }

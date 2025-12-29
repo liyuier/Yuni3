@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.message.detector.pattern;
+package com.yuier.yuni.event.detector.message.pattern;
 
 import com.yuier.yuni.core.model.message.MessageChain;
 

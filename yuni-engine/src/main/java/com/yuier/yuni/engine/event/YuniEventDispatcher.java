@@ -3,6 +3,9 @@ package com.yuier.yuni.engine.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.meta.YuniMetaEvent;
+import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
+import com.yuier.yuni.event.context.request.YuniRequestEvent;
 import com.yuier.yuni.event.persistence.YuniEventSaver;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import lombok.extern.slf4j.Slf4j;
@@ -36,5 +39,22 @@ public class YuniEventDispatcher {
         log.info(event.toLogString());
         eventSaver.saveEvent(event);
         pluginManager.handleMessageEvent(event);
+    }
+
+    @EventListener
+    public void noticeEventHandler(YuniNoticeEvent event) {
+        log.info(event.toLogString());
+        pluginManager.handleNoticeEvent(event);
+    }
+
+    @EventListener
+    public void requestEventHandler(YuniRequestEvent event) {
+        log.info(event.toLogString());
+        pluginManager.handleRequestEvent(event);
+    }
+
+    @EventListener
+    public void metaEventHandler(YuniMetaEvent event) {
+        pluginManager.handleMetaEvent(event);
     }
 }

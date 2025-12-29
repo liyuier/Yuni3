@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.message.detector.command;
+package com.yuier.yuni.event.detector.message.command;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.api.message.GetMessage;
@@ -11,13 +11,13 @@ import com.yuier.yuni.core.model.message.segment.ReplySegment;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.core.model.bot.BotApp;
-import com.yuier.yuni.event.message.detector.command.model.MessageChainForCommand;
-import com.yuier.yuni.event.message.detector.command.model.CommandArg;
-import com.yuier.yuni.event.message.detector.command.model.CommandModel;
-import com.yuier.yuni.event.message.detector.command.model.CommandOption;
-import com.yuier.yuni.event.message.detector.command.model.matched.CommandArgMatched;
-import com.yuier.yuni.event.message.detector.command.model.matched.CommandMatched;
-import com.yuier.yuni.event.message.detector.command.model.matched.CommandOptionMatched;
+import com.yuier.yuni.event.detector.message.command.model.MessageChainForCommand;
+import com.yuier.yuni.event.detector.message.command.model.CommandArg;
+import com.yuier.yuni.event.detector.message.command.model.CommandModel;
+import com.yuier.yuni.event.detector.message.command.model.CommandOption;
+import com.yuier.yuni.event.detector.message.command.model.matched.CommandArgMatched;
+import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
+import com.yuier.yuni.event.detector.message.command.model.matched.CommandOptionMatched;
 import lombok.NoArgsConstructor;
 
 import java.net.MalformedURLException;

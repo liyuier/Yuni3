@@ -2,8 +2,11 @@ package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.event.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.event.context.meta.YuniMetaEvent;
+import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
+import com.yuier.yuni.event.context.request.YuniRequestEvent;
+import com.yuier.yuni.event.detector.message.command.CommandDetector;
+import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -101,5 +104,17 @@ public class PassivePluginMatcher {
     // 检查插件是否使能
     public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
         return pluginEnableProcessor.isPluginEnabled(event, instance);
+    }
+
+    public void matchNoticeEvent(YuniNoticeEvent event, PluginContainer pluginContainer) {
+
+    }
+
+    public void matchRequestEvent(YuniRequestEvent event, PluginContainer pluginContainer) {
+
+    }
+
+    public void matchMetaEvent(YuniMetaEvent event, PluginContainer pluginContainer) {
+
     }
 }

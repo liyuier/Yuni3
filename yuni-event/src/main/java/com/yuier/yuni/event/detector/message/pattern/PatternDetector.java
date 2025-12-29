@@ -1,7 +1,7 @@
-package com.yuier.yuni.event.message.detector.pattern;
+package com.yuier.yuni.event.detector.message.pattern;
 
 import com.yuier.yuni.core.enums.MessageType;
-import com.yuier.yuni.event.message.detector.MessageDetector;
+import com.yuier.yuni.event.detector.message.MessageDetector;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;

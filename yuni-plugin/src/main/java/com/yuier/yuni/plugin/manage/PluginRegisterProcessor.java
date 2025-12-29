@@ -2,9 +2,9 @@ package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.task.DynamicTaskManager;
 import com.yuier.yuni.core.util.LogStringUtil;
-import com.yuier.yuni.event.message.detector.YuniEventDetector;
-import com.yuier.yuni.event.message.detector.command.CommandDetector;
-import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.event.detector.message.YuniEventDetector;
+import com.yuier.yuni.event.detector.message.command.CommandDetector;
+import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;

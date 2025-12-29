@@ -3,6 +3,7 @@ package com.yuier.yuni.event.context.meta;
 import com.yuier.yuni.core.model.event.MetaEvent;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Title: YuniMetaEvent
@@ -13,12 +14,18 @@ import lombok.Data;
  */
 
 @Data
-public abstract class YuniMetaEvent extends SpringYuniEvent {
+@NoArgsConstructor
+public class YuniMetaEvent extends SpringYuniEvent {
 
     private MetaEvent rawMetaEvent;
+    private YuniMetaEvent yuniMetaEvent;
 
     private String metaEventType;
 
     private String subType;
 
+    @Override
+    public String toLogString() {
+        return "收到未定义元事件。";
+    }
 }

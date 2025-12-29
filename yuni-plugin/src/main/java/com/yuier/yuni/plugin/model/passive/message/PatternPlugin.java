@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.model.passive.message;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.event.message.detector.pattern.PatternDetector;
+import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 
 /**
  * @Title: PatternPlugin

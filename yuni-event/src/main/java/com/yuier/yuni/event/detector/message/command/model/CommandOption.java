@@ -1,4 +1,4 @@
-package com.yuier.yuni.event.message.detector.command.model;
+package com.yuier.yuni.event.detector.message.command.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

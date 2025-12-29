@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.model.passive.message;
 
 import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.event.message.detector.MessageDetector;
+import com.yuier.yuni.event.detector.message.MessageDetector;
 import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.passive.PassivePlugin;
