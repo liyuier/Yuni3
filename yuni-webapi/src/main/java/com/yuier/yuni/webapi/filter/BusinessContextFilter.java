@@ -29,7 +29,6 @@ public class BusinessContextFilter implements Filter {
     @Autowired
     OneBotAdapter adapter;
 
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {

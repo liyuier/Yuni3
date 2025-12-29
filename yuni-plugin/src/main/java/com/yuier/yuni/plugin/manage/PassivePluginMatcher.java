@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CompletableFuture;
+
 /**
  * @Title: PassivePluginMatcher
  * @Author yuier
@@ -47,12 +50,14 @@ public class PassivePluginMatcher {
                 if (detector.match(event)) {
                     isCommand = true;
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
-                    try {
-                        savePluginCallEvent.saveEvent(event, instance);
-                        instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
-                    } catch (Exception e) {
-                        log.error("执行被动插件失败: {}", instance.getPluginMetadata().getId(), e);
-                    }
+                    savePluginCallEvent.saveEvent(event, instance);
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 }
             }
         }
@@ -65,11 +70,14 @@ public class PassivePluginMatcher {
                 PatternDetector detector = (PatternDetector) instance.getDetector();
                 if (detector.match(event)) {
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
-                    try {
-                        instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
-                    } catch (Exception e) {
-                        log.error("执行被动插件失败: {}", instance.getPluginMetadata().getId(), e);
-                    }
+                    // 被动插件的调用暂时不记录到数据库
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 }
             }
         }

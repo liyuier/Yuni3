@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Title: PluginRegisterProcessor
@@ -53,7 +54,7 @@ public class PluginRegisterProcessor {
         // 根据插件类型注册
         for (PluginInstance instance : instances) {
             if (instance instanceof ActivePluginInstance) {
-                // 注册定时插件
+                // 注册主动插件
                 registerActivePlugin((ActivePluginInstance) instance, pluginContainer);
             } else if (instance instanceof PassivePluginInstance) {
                 // 注册被动插件
@@ -97,8 +98,10 @@ public class PluginRegisterProcessor {
 
     // 注册即时任务
     private void registerImmediatePlugin(ImmediatePluginInstance instance, PluginContainer pluginContainer) {
-        instance.getAction().execute();
-        log.info("即时插件 {} 执行完毕", LogStringUtil.buildBrightBlueLog(instance.getPluginMetadata().getName()));
+        CompletableFuture.runAsync(() -> {
+            instance.getAction().execute();
+            log.info("即时插件 {} 执行完毕", LogStringUtil.buildBrightBlueLog(instance.getPluginMetadata().getName()));
+        });
     }
 
     /**

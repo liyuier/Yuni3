@@ -8,6 +8,7 @@ import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
@@ -49,7 +50,10 @@ public class DynamicTaskManager {
         // 注册任务，并保存返回的 future
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             try {
-                task.run();
+                CompletableFuture.runAsync(() -> {
+                    log.info("定时任务 [" + taskId + "] 正在执行...");
+                    task.run();
+                });
             } catch (Exception e) {
                 // 记录异常，避免静默失败
                 log.info("任务 [" + taskId + "] 执行出错: " + e.getMessage());

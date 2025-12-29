@@ -84,5 +84,20 @@
       "name": "log.pattern.console",
       "type": "java.lang.String",
       "description": "Description for log.pattern.console."
+    },
+    {
+      "name": "onebot.communication.ws.url",
+      "type": "java.lang.String",
+      "description": "Description for onebot.communication.ws.url."
+    },
+    {
+      "name": "onebot.communication.ws.heartbeat-interval",
+      "type": "java.lang.String",
+      "description": "Description for onebot.communication.ws.heartbeat-interval."
+    },
+    {
+      "name": "onebot.communication.ws.timeout",
+      "type": "java.lang.String",
+      "description": "Description for onebot.communication.ws.timeout."
     }
   ] }

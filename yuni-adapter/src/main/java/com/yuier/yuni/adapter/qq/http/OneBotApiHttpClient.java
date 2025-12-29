@@ -35,7 +35,7 @@ public class OneBotApiHttpClient {
 
     private final ObjectMapper objectMapper;
 
-    public OneBotApiHttpClient(@Value("${onebot.api.url:http://localhost:3000}") String baseUrl, ObjectMapper objectMapper) {
+    public OneBotApiHttpClient(@Value("${onebot.communication.http.url:http://localhost:3000}") String baseUrl, ObjectMapper objectMapper) {
         this.baseUrl = baseUrl;
         this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();

@@ -38,5 +38,7 @@ public class SystemInitializeRunner implements ApplicationRunner {
         pluginManager.initializePlugins();
         log.info("初始化权限系统");
         userPermissionManager.initUserPermission();
+        log.info("开始对接 OneBot 事件推送");
+        systemInitializeProcessor.startOneBotEventSession();
     }
 }

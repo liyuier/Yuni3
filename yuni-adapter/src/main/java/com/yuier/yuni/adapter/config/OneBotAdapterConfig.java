@@ -1,14 +1,20 @@
 package com.yuier.yuni.adapter.config;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.adapter.qq.http.OneBotApiClient;
+import com.yuier.yuni.adapter.qq.http.OneBotApiHttpClient;
 import com.yuier.yuni.adapter.qq.http.OneBotHttpAdapter;
+import com.yuier.yuni.adapter.qq.websocket.OneBotApiWsClient;
+import com.yuier.yuni.adapter.qq.websocket.OneBotWsAdapter;
+import com.yuier.yuni.adapter.qq.websocket.OneBotWsSessionStarter;
+import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+
+import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_API_SOCKET_ID;
 
 /**
  * @Title: OneBotAdapterConfig
@@ -25,13 +31,27 @@ public class OneBotAdapterConfig {
     OneBotDeserializer oneBotDeserializer;
 
     @Autowired
-    OneBotApiClient oneBotApiClient;
+    OneBotApiHttpClient oneBotApiHttpClient;
     @Autowired
     OneBotSerialization oneBotSerialization;
+    @Autowired
+    OneBotWsSessionStarter oneBotWsSessionStarter;
+    @Autowired
+    YuniWebSocketManager yuniWebSocketManager;
 
     @Bean
     @ConditionalOnProperty(name = "onebot.communication.mode", havingValue = "http", matchIfMissing = true)
     public OneBotAdapter oneBotHttpAdapter() {
-        return new OneBotHttpAdapter(oneBotDeserializer, oneBotSerialization, oneBotApiClient);
+        return new OneBotHttpAdapter(oneBotDeserializer, oneBotSerialization, oneBotApiHttpClient);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "onebot.communication.mode", havingValue = "ws")
+    public OneBotAdapter oneBotWsAdapter() {
+        OneBotWsAdapter oneBotWsAdapter = new OneBotWsAdapter(oneBotDeserializer, oneBotWsSessionStarter, yuniWebSocketManager);
+        oneBotWsSessionStarter.startOneBotSession();
+        OneBotApiWsClient apiClient = new OneBotApiWsClient(yuniWebSocketManager.getWebSocket(ONEBOT_API_SOCKET_ID), oneBotDeserializer, oneBotSerialization);
+        oneBotWsAdapter.setApiClient(apiClient);
+        return oneBotWsAdapter;
     }
 }
