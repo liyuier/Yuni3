@@ -31,13 +31,11 @@ public class PluginManage extends CommandPlugin {
             }
         }
         if (commandMatched.hasOption(PLUGIN_MANAGE_ENABLE)) {
-            // TODO: 2025/12/28 插件开启
             if (commandMatched.optionHasRequiredArg(PLUGIN_MANAGE_ENABLE)) {
                 pluginEnable.enablePlugin(eventContext, commandMatched);
             }
         }
         if (commandMatched.hasOption(PLUGIN_MANAGE_DISABLE)) {
-            // TODO: 2025/12/28 插件关闭
             if (commandMatched.optionHasRequiredArg(PLUGIN_MANAGE_DISABLE)) {
                 pluginEnable.disablePlugin(eventContext, commandMatched, this);
             }

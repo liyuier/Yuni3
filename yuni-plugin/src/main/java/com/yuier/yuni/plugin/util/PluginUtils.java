@@ -221,4 +221,9 @@ public class PluginUtils {
     public static PluginManager getPluginManager() {
         return SpringContextUtil.getBean(PluginManager.class);
     }
+
+    public static String getPluginId(YuniPlugin plugin) {
+        PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
+        return pluginRegisterProcessor.mapToPluginId(plugin);
+    }
 }
