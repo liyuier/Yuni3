@@ -71,7 +71,7 @@ public class DynamicTaskManager {
         ScheduledFuture<?> future = tasks.remove(taskId);
         if (future != null) {
             future.cancel(true); // true = 中断正在执行的任务
-            System.out.println("❌ 已取消任务: " + taskId);
+            log.info("❌ 已取消任务: " + taskId);
         }
     }
 }

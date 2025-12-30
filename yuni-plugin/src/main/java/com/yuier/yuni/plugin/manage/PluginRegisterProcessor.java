@@ -113,6 +113,7 @@ public class PluginRegisterProcessor {
             instance.getAction().execute();
             log.info("即时插件 {} 执行完毕", LogStringUtil.buildBrightBlueLog(instance.getPluginMetadata().getName()));
         });
+        pluginContainer.getActivePlugins().put(instance.getPluginMetadata().getId(), instance);
     }
 
     /**
@@ -132,6 +133,7 @@ public class PluginRegisterProcessor {
 
         // 注册到定时任务系统
         dynamicTaskManager.addCronTask(pluginId, instance.getCronExpression(), task);
+        pluginContainer.getActivePlugins().put(instance.getPluginMetadata().getId(), instance);
     }
 
     /**
