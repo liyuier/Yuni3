@@ -21,5 +21,9 @@ public abstract class PluginInstance {
 
     public abstract void initialize() throws Exception;
     public abstract void destroy() throws Exception;
+
+    public Boolean isBuiltIn() {
+        return pluginMetadata != null && pluginMetadata.getBuildIn();
+    }
 }
 

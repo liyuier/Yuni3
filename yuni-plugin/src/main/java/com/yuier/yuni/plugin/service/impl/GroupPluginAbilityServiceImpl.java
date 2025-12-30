@@ -25,5 +25,45 @@ public class GroupPluginAbilityServiceImpl extends ServiceImpl<GroupPluginAbilit
         GroupPluginAbilityEntity entity = getOne(queryWrapper);
         return entity != null ? entity.getAbility() : null;
     }
+
+    @Override
+    public void enablePlugin(Long groupId, String pluginId) {
+        LambdaQueryWrapper<GroupPluginAbilityEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupPluginAbilityEntity::getGroupId, groupId)
+                .eq(GroupPluginAbilityEntity::getPluginId, pluginId);
+        synchronized (this) {
+            GroupPluginAbilityEntity entity = getOne(queryWrapper);
+            if (entity == null) {
+                entity = new GroupPluginAbilityEntity();
+                entity.setGroupId(groupId);
+                entity.setPluginId(pluginId);
+                entity.setAbility(true);
+                save(entity);
+                return;
+            }
+            entity.setAbility(true);
+            save(entity);
+        }
+    }
+
+    @Override
+    public void disablePlugin(Long groupId, String pluginId) {
+        LambdaQueryWrapper<GroupPluginAbilityEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GroupPluginAbilityEntity::getGroupId, groupId)
+                .eq(GroupPluginAbilityEntity::getPluginId, pluginId);
+        synchronized ( this) {
+            GroupPluginAbilityEntity entity = getOne(queryWrapper);
+            if (entity == null) {
+                entity = new GroupPluginAbilityEntity();
+                entity.setGroupId(groupId);
+                entity.setPluginId(pluginId);
+                entity.setAbility(false);
+                save(entity);
+                return;
+            }
+            entity.setAbility(false);
+            save(entity);
+        }
+    }
 }
 

@@ -20,6 +20,8 @@ import util.PluginManageUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static util.PluginManagerConstants.PLUGIN_MANAGE_VIEW;
+
 /**
  * @Title: PluginShow
  * @Author yuier
@@ -31,8 +33,6 @@ import java.util.List;
 @Slf4j
 @NoArgsConstructor
 public class PluginShow {
-
-    private static final String PLUGIN_LIST_CACHE_IMAGE_NAME = "plugin-list-image-cache";
 
     /**
      * 显示插件列表
@@ -75,10 +75,6 @@ public class PluginShow {
 
     private static String buildImageDataFileNameForCache(String fileName) {
         return "base64://" + fileName;
-    }
-
-    private static String buildPluginListCacheImageName(YuniMessageEvent eventContext) {
-        return PLUGIN_LIST_CACHE_IMAGE_NAME + "-" + eventContext.getPosition() + ".png";
     }
 
     /**
@@ -132,7 +128,7 @@ public class PluginShow {
      * @param pluginManage  插件管理器
      */
     public void showPluginDetail(YuniMessageEvent eventContext, CommandMatched commandMatched, PluginManage pluginManage) {
-        TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue("查看");
+        TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue(PLUGIN_MANAGE_VIEW);
         Integer pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         String pluginId = container.getPluginIndexToIdMap().get(pluginSeq);

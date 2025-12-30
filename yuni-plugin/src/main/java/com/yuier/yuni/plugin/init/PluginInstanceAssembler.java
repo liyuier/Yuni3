@@ -157,6 +157,8 @@ public class PluginInstanceAssembler {
         String pluginClassName = pluginClass.getName();
         for (PluginMetadata pluginMetadata : pluginModuleMetadata.getPlugins()) {
             if (pluginClassName.equals(pluginMetadata.getId())) {
+                // 重置一下插件 ID ，使其更不易冲突
+                pluginMetadata.setId(pluginModuleMetadata.getModuleId() + "-" + pluginMetadata.getId());
                 pluginMetadata.setModuleId(pluginModuleMetadata.getModuleId());
                 pluginMetadata.setModuleName(pluginMetadata.getModuleName());
                 if (pluginMetadata.getTips().isEmpty()) {

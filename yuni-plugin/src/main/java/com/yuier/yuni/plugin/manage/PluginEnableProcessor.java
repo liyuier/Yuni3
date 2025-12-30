@@ -61,4 +61,24 @@ public class PluginEnableProcessor {
     public String assemblePluginEnableKey(Long groupId, String pluginId) {
         return groupId + "@" + pluginId;
     }
+
+    public void enablePlugin(YuniMessageEvent eventContext, String pluginId) {
+        enablePlugin(eventContext.getGroupId(), pluginId);
+    }
+
+    public void enablePlugin(Long groupId, String pluginId) {
+        groupPluginAbilityService.enablePlugin(groupId, pluginId);
+        // 刷新缓存
+        pluginEnableMap.put(assemblePluginEnableKey(groupId, pluginId), true);
+    }
+
+    public void disablePlugin(YuniMessageEvent eventContext, String pluginId) {
+        disablePlugin(eventContext.getGroupId(), pluginId);
+    }
+
+    private void disablePlugin(Long groupId, String pluginId) {
+        groupPluginAbilityService.disablePlugin(groupId, pluginId);
+        // 刷新缓存
+        pluginEnableMap.put(assemblePluginEnableKey(groupId, pluginId), false);
+    }
 }

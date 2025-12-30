@@ -59,4 +59,13 @@ public class PluginContainer {
     public PluginModuleInstance getPluginModuleById(String moduleId) {
         return pluginModules.get(moduleId);
     }
+
+    public String getPluginIdByIndex(int index) {
+        return pluginIndexToIdMap.get(index);
+    }
+
+    public PluginInstance getPluginInstanceByIndex(int index) {
+        String pluginId = getPluginIdByIndex(index);
+        return getPluginInstanceById(pluginId);
+    }
 }

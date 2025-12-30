@@ -41,6 +41,8 @@ public class PluginManager {
     PluginContainer pluginContainer;
     @Autowired
     PassivePluginMatcher passivePluginMatcher;
+    @Autowired
+    PluginEnableProcessor pluginEnableProcessor;
 
     /**
      * 初始化插件系统
@@ -98,12 +100,12 @@ public class PluginManager {
     /**
      * 插件开关控制
      */
-    public void enablePlugin(String pluginId) {
-        // 实现插件启用逻辑
+    public void enablePlugin(YuniMessageEvent eventContext, String pluginId) {
+        pluginEnableProcessor.enablePlugin(eventContext, pluginId);
     }
 
-    public void disablePlugin(String pluginId) {
-        // 实现插件禁用逻辑
+    public void disablePlugin(YuniMessageEvent eventContext, String pluginId) {
+        pluginEnableProcessor.disablePlugin(eventContext, pluginId);
     }
 
     /**

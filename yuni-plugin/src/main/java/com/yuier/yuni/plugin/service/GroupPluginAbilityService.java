@@ -13,5 +13,9 @@ import com.yuier.yuni.plugin.domain.entity.GroupPluginAbilityEntity;
 public interface GroupPluginAbilityService extends IService<GroupPluginAbilityEntity> {
 
     Boolean getPluginAbility(Long groupId, String pluginId);
+
+    void enablePlugin(Long groupId, String pluginId);
+
+    void disablePlugin(Long groupId, String pluginId);
 }
 
