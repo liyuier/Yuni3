@@ -6,7 +6,8 @@
       "id": "MaiMaiAdapterBooter",
       "name": "麦麦适配器-连接器",
       "version": "0.0.1",
-      "description": "启动后向 MaiBot-Napcat-Adapter 发起 ws 连接，该连接将会转发 MaiBot-Napcat-Adapter 的消息到 OneBot 实例",
+      "description": "对接 MaiBot-Napcat-Adapter ，转发它的消息给 OneBot 客户端",
+      "tips": [],
       "author": "Yuier me@yuier.com",
       "dependencies": [],
       "default_enable": true
@@ -15,7 +16,8 @@
       "id": "OneBotMessageForward",
       "name": "麦麦适配器-转发器",
       "version": "0.0.1",
-      "description": "将会把 OneBot 发来的所有消息转发给 MaiBot-Napcat-Adapter",
+      "description": "转发 OneBot 客户端的消息给 MaiBot-Napcat-Adapter",
+      "tips": [],
       "author": "Yuier me@yuier.com",
       "dependencies": [],
       "default_enable": true

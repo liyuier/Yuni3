@@ -159,6 +159,9 @@ public class PluginInstanceAssembler {
             if (pluginClassName.equals(pluginMetadata.getId())) {
                 pluginMetadata.setModuleId(pluginModuleMetadata.getModuleId());
                 pluginMetadata.setModuleName(pluginMetadata.getModuleName());
+                if (pluginMetadata.getTips().isEmpty()) {
+                    pluginMetadata.getTips().add(pluginMetadata.getDescription());
+                }
                 // 真正创建实例的地方
                 return createSinglePluginInstance(pluginClass, pluginMetadata);
             }

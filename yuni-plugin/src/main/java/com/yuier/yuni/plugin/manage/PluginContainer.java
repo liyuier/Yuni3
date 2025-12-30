@@ -7,6 +7,8 @@ import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Component
 public class PluginContainer {
+
+    private final List<String> pluginModuleIds = new ArrayList<>();
+
+    private final Map<Integer, String> pluginIndexToIdMap = new ConcurrentHashMap<>();
 
     private final Map<String, PluginModuleInstance> pluginModules = new ConcurrentHashMap<>();
 

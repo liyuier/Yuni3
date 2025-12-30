@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @Title: PluginManager
@@ -56,7 +55,7 @@ public class PluginManager {
                 // 加载插件
                 PluginModuleInstance pluginModuleInstance = pluginInstanceAssembler.assemblePluginModuleFromJar(jarFile);
                 // 注册插件
-                pluginRegisterProcessor.registerPluginModuleInstance(pluginModuleInstance, pluginContainer);
+                pluginRegisterProcessor.registerNewPluginModuleInstance(pluginModuleInstance, pluginContainer);
             } catch (Exception e) {
                 log.error("加载 jar 包失败: {}", jarFile.getName(), e);
             }

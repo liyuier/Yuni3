@@ -40,7 +40,18 @@ public class PluginRegisterProcessor {
 
     private Map<YuniPlugin, String> pluginBeanToIdMap = new HashMap<>();
 
-    public void registerPluginModuleInstance(PluginModuleInstance instance, PluginContainer pluginContainer) {
+    public void registerNewPluginModuleInstance(PluginModuleInstance instance, PluginContainer pluginContainer) {
+        // 维护 序号-插件ID 的映射
+        Map<Integer, String> pluginIndexToIdMap = pluginContainer.getPluginIndexToIdMap();
+        int startIndex = pluginIndexToIdMap.size() + 1;
+        for (int i = 0; i < instance.getPluginInstances().size(); i++) {
+            PluginInstance pluginInstance = instance.getPluginInstances().get(i);
+            int pluginInstanceIndex = startIndex + i;
+            pluginInstance.setIndex(pluginInstanceIndex);
+            pluginIndexToIdMap.put(pluginInstanceIndex, pluginInstance.getPluginMetadata().getId());
+        }
+        pluginContainer.getPluginModuleIds().add(instance.getPluginModuleMetadata().getModuleId());
+        // 原逻辑
         pluginContainer.getPluginModules().put(instance.getPluginModuleMetadata().getModuleId(), instance);
         registerPluginInstances(instance.getPluginInstances(), pluginContainer);
     }

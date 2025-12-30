@@ -6,7 +6,11 @@
       "id": "PluginManage",
       "name": "插件管理入口",
       "version": "0.0.1",
-      "description": "用于管理插件",
+      "description": "插件管理命令的入口",
+      "tips": [
+        "向群聊发送 “/插件 查看” 可以查看当前群聊下插件列表",
+        "向群聊发送 “/插件 查看 {插件序号}” 可以查看对应插件详情"
+      ],
       "author": "Yuier me@yuier.com",
       "dependencies": [],
       "default_enable": true,

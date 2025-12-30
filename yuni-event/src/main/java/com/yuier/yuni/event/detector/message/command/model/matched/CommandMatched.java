@@ -72,8 +72,8 @@ public class CommandMatched {
     }
 
     // 判断某选项是否存在可选参数
-    public Boolean optionHasOptionalArg(String flag) {
-        return hasOption(flag) && getOption(flag).hasOptionalArg();
+    public Boolean optionHasOptionalArg(String optionFlag) {
+        return hasOption(optionFlag) && getOption(optionFlag).hasOptionalArg();
     }
 
     // 获取某选项的可选参数

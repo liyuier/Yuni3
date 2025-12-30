@@ -147,6 +147,8 @@ public class CommandMatcher {
             }
             // 匹配成功，构建选项匹配结果
             CommandOptionMatched commandOptionMatched = new CommandOptionMatched(text);
+            // 指针向右移动一格
+            chainForCommand.curSegIndexStepForwardBy(1);
             CommandOption optionModel = model.getOption(text);
             // 如果选项参数不为空，那么需要继续匹配参数
             CommandArg optionRequiredArg = optionModel.getRequiredArg();
@@ -170,6 +172,8 @@ public class CommandMatcher {
                         // 当前选项匹配完毕，继续匹配下一个选项
                         // 保存选项匹配结果
                         optionsMatched.put(text, commandOptionMatched);
+                        // 指针向右移动一格
+                        chainForCommand.curSegIndexStepForwardBy(1);
                         continue;
                     } else {
                         // 参数不为空，但找不到需求的消息段，参数匹配失败，返回
@@ -177,8 +181,6 @@ public class CommandMatcher {
                     }
                 }
 
-                // 指针向右移动一格
-                chainForCommand.curSegIndexStepForwardBy(1);
                 MessageSegment nextMessageSeg = chainForCommand.getCurMessageSeg();
                 if (messageSegmentMatcherArg(nextMessageSeg, optionRequiredArg)) {
                     // 下一个消息段恰好匹配参数，则将参数值放入选项匹配结果中
@@ -188,22 +190,61 @@ public class CommandMatcher {
                             optionRequiredArg.getRequiredType(),
                             nextMessageSeg
                     ));
+                    // 指针向右移动一格
+                    chainForCommand.curSegIndexStepForwardBy(1);
                 } else {
                     // 参数不为空，但找不到需求的消息段，参数匹配失败，返回
                     return;
                 }
             }
-            // 对于可选参数，直接复用 matchOptionalArgs
-            CommandArg optionOptionalArg = optionModel.getOptionalArg();
-            if (optionOptionalArg != null) {
-                Map<String, CommandArgMatched> optionOptionalArgsMatched = new HashMap<>();
-                matchOptionalArgs(chainForCommand, model, optionOptionalArgsMatched);
-                if (optionOptionalArgsMatched.containsKey(optionOptionalArg.getName())) {
-                    commandOptionMatched.setOptionalArg(optionOptionalArgsMatched.get(optionOptionalArg.getName()));
-                }
-            }
             // 保存选项匹配结果
             optionsMatched.put(text, commandOptionMatched);
+            CommandArg optionOptionalArg = optionModel.getOptionalArg();
+            if (optionOptionalArg != null) {
+                if (chainForCommand.messageSegsMatchedEnd()) {
+                    return;
+                }
+
+                // 如果参数需求回复消息，需要特殊处理
+                if (optionOptionalArg.wantsSegmentType(CommandArgRequireType.REPLY)) {
+                    if (chainForCommand.storesReplyData()) {
+                        // 获取回复消息
+                        MessageSegment replySegment = chainForCommand.getReplySegment();
+                        // 构建参数匹配结果
+                        commandOptionMatched.setOptionalArg(new CommandArgMatched(
+                                optionOptionalArg.getName(),
+                                optionOptionalArg.getDescription(),
+                                optionOptionalArg.getRequiredType(),
+                                replySegment
+                        ));
+                        // 当前选项匹配完毕，继续匹配下一个选项
+                        // 保存选项匹配结果
+                        optionsMatched.put(text, commandOptionMatched);
+                        // 指针向右移动一格
+                        chainForCommand.curSegIndexStepForwardBy(1);
+                        continue;
+                    } else {
+                        // 参数不为空，但找不到需求的消息段，继续匹配下一个选项
+                        continue;
+                    }
+                }
+
+                MessageSegment nextMessageSeg = chainForCommand.getCurMessageSeg();
+                if (messageSegmentMatcherArg(nextMessageSeg, optionOptionalArg)) {
+                    // 下一个消息段恰好匹配参数，则将参数值放入选项匹配结果中
+                    commandOptionMatched.setOptionalArg(new CommandArgMatched(
+                            optionOptionalArg.getName(),
+                            optionOptionalArg.getDescription(),
+                            optionOptionalArg.getRequiredType(),
+                            nextMessageSeg
+                    ));
+                    // 指针向右移动一格
+                    chainForCommand.curSegIndexStepForwardBy(1);
+                } else {
+                    // 参数不为空，但找不到需求的消息段，参数匹配失败，返回
+                    continue;
+                }
+            }
 
             // 指针向右移动一格
             chainForCommand.curSegIndexStepForwardBy(1);

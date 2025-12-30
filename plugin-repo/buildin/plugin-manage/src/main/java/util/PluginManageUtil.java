@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.PublicKey;
 import java.util.*;
 
 import static com.microsoft.playwright.options.WaitForSelectorState.VISIBLE;
@@ -35,6 +36,9 @@ public class PluginManageUtil {
 
     public static final String PLUGIN_LIST_HASHCODE_CACHE_KEY = "plugin:list:hashcode:key";
     public static final String PLUGIN_LIST_IMAGE_CACHE_KEY = "plugin:list:image:key";
+
+    public static final String PLUGIN_DETAIL_HASHCODE_CACHE_KEY = "plugin:detail:hashcode:key";
+    public static final String PLUGIN_DETAIL_IMAGE_CACHE_KEY = "plugin:detail:image:key";
 
     public static Integer getPluginModulesHashCodeCache(YuniMessageEvent eventContext) {
         Map<String, Object> stringObjectMap = RedisUtil.hGetAll(PLUGIN_LIST_HASHCODE_CACHE_KEY);
@@ -59,6 +63,43 @@ public class PluginManageUtil {
     public static void savePluginListImageCache(YuniMessageEvent eventContext, String image) {
         RedisUtil.hSet(PLUGIN_LIST_IMAGE_CACHE_KEY, eventContext.getPosition(), image);
     }
+
+    public static Integer getPluginDetailHashCodeCache(String pluginId) {
+        Map<String, Object> stringObjectMap = RedisUtil.hGetAll(PLUGIN_DETAIL_HASHCODE_CACHE_KEY);
+        if (stringObjectMap != null) {
+            return (Integer) stringObjectMap.get(pluginId);
+        }
+        return null;
+    }
+
+    public static void savePluginDetailHashCodeCache(String pluginId, int hashCode) {
+        RedisUtil.hSet(PLUGIN_DETAIL_HASHCODE_CACHE_KEY, pluginId, hashCode);
+    }
+
+    public static String getPluginDetailImageCache(String pluginId) {
+        Map<String, Object> stringObjectMap = RedisUtil.hGetAll(PLUGIN_DETAIL_IMAGE_CACHE_KEY);
+        if (stringObjectMap != null) {
+            return (String) stringObjectMap.get(pluginId);
+        }
+        return null;
+    }
+
+    public static void savePluginDetailImageCache(String pluginId, String image) {
+        RedisUtil.hSet(PLUGIN_DETAIL_IMAGE_CACHE_KEY, pluginId, image);
+    }
+
+    public static Integer calculateHashCodeForShowingPluginDetail(String pluginId) {
+        PluginContainer container = PluginUtils.getBean(PluginContainer.class);
+        PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
+        return Objects.hash(
+                pluginInstance.getPluginMetadata().getName(),  // 插件名称
+                pluginInstance.getPluginMetadata().getDescription(),  // 插件描述
+                pluginInstance.getPluginMetadata().getTips(),  // 插件提示
+                pluginInstance.getPluginMetadata().getAuthor(),  // 插件作者
+                pluginInstance.getPluginMetadata().getVersion()  // 插件版本
+        );
+    }
+
 
     /**
      * 获取消息发送位置下的插件列表的 hashCode

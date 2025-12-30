@@ -37,6 +37,13 @@ public class PluginMetadata {
      */
     @JsonProperty("description")
     private String description;
+
+    /**
+     * 插件使用提示
+     */
+    @JsonProperty("tips")
+    private List<String> tips;
+
     /**
      * 插件作者。尊重知识版权说是
      */

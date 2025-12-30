@@ -17,6 +17,8 @@ public abstract class PluginInstance {
     private PluginMetadata pluginMetadata;
     private String jarFileName;
 
+    private int index;
+
     public abstract void initialize() throws Exception;
     public abstract void destroy() throws Exception;
 }
