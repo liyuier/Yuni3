@@ -42,3 +42,4 @@ application.yml
 *.db
 
 logs/
+tmp/

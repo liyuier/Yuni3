@@ -23,5 +23,12 @@ public class PluginModuleInstance {
 
     private List<PluginInstance> pluginInstances;
 
+    public String getModuleId() {
+        return pluginModuleMetadata.getModuleId();
+    }
+
+    public String getModuleName() {
+        return pluginModuleMetadata.getModuleName();
+    }
 
 }

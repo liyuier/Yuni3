@@ -203,48 +203,50 @@
     </style>
 </head>
 <body>
-<div class="long-img-container">
-    <div class="title-section">
-        <h1>Yuni - 插件列表</h1>
-    </div>
+<div  id="result-container">
+    <div class="long-img-container">
+        <div class="title-section">
+            <h1>Yuni - 插件列表</h1>
+        </div>
 
-    <div class="plugin-list">
-        <th:block th:each="item : ${pluginList}">
-            <!-- 单插件项：渲染后端编号 ${item.singlePlugin.index} -->
-            <div th:if="${!item.module}" class="plugin-item single-plugin-item">
-                <div class="plugin-index" th:text="${item.singlePlugin.index}">1</div>
-                <div class="plugin-info">
-                    <div class="plugin-name" th:text="${item.singlePlugin.name}">示例插件</div>
-                    <div class="plugin-desc" th:text="${item.singlePlugin.desc}">示例插件描述</div>
+        <div class="plugin-list">
+            <th:block th:each="item : ${pluginList}">
+                <!-- 单插件项：渲染后端编号 ${item.singlePlugin.index} -->
+                <div th:if="${!item.hasModule}" class="plugin-item single-plugin-item">
+                    <div class="plugin-index" th:text="${item.singlePlugin.index}">1</div>
+                    <div class="plugin-info">
+                        <div class="plugin-name" th:text="${item.singlePlugin.name}">示例插件</div>
+                        <div class="plugin-desc" th:text="${item.singlePlugin.desc}">示例插件描述</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" th:checked="${item.singlePlugin.enabled}">
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" th:checked="${item.singlePlugin.enabled}">
-                    <span class="slider"></span>
-                </label>
-            </div>
 
-            <!-- 多插件模块：渲染后端编号 ${subPlugin.index} -->
-            <div th:if="${item.module}" class="multi-plugin-module">
-                <div class="module-title">
-                    <div class="module-tag"></div>
-                    <div class="module-name" th:text="${item.modulePlugin.moduleName}">示例模块</div>
-                </div>
-                <div class="module-plugins">
-                    <div th:each="subPlugin : ${item.modulePlugin.subPlugins}" class="plugin-item multi-plugin-item">
-                        <!-- 直接用后端分配的编号，不再依赖stat.count -->
-                        <div class="plugin-index" th:text="${subPlugin.index}">2</div>
-                        <div class="plugin-info">
-                            <div class="plugin-name" th:text="${subPlugin.name}">示例模块下插件</div>
-                            <div class="plugin-desc" th:text="${subPlugin.desc}">示例模块下插件描述</div>
+                <!-- 多插件模块：渲染后端编号 ${subPlugin.index} -->
+                <div th:if="${item.hasModule}" class="multi-plugin-module">
+                    <div class="module-title">
+                        <div class="module-tag"></div>
+                        <div class="module-name" th:text="${item.modulePlugin.moduleName}">示例模块</div>
+                    </div>
+                    <div class="module-plugins">
+                        <div th:each="subPlugin : ${item.modulePlugin.subPlugins}" class="plugin-item multi-plugin-item">
+                            <!-- 直接用后端分配的编号，不再依赖stat.count -->
+                            <div class="plugin-index" th:text="${subPlugin.index}">2</div>
+                            <div class="plugin-info">
+                                <div class="plugin-name" th:text="${subPlugin.name}">示例模块下插件</div>
+                                <div class="plugin-desc" th:text="${subPlugin.desc}">示例模块下插件描述</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" th:checked="${subPlugin.enabled}">
+                                <span class="slider"></span>
+                            </label>
                         </div>
-                        <label class="switch">
-                            <input type="checkbox" th:checked="${subPlugin.enabled}">
-                            <span class="slider"></span>
-                        </label>
                     </div>
                 </div>
-            </div>
-        </th:block>
+            </th:block>
+        </div>
     </div>
 </div>
 </body>

@@ -26,10 +26,10 @@ public class PluginManage extends CommandPlugin {
     public void execute(YuniMessageEvent eventContext) {
         CommandMatched commandMatched = eventContext.getCommandMatched();
         if (commandMatched.hasOption(VIEW)) {
-            if (commandMatched.optionHasOptionalArg(VIEW)) {
-                pluginShow.showPluginDetail(eventContext, commandMatched.getOptionOptionalArgValue(VIEW));
+            if (commandMatched.optionHasOptionalArg(VIEW_SEQ)) {
+                pluginShow.showPluginDetail(eventContext, commandMatched.getOptionOptionalArgValue(VIEW), this);
             } else {
-                pluginShow.showPluginList(eventContext);
+                pluginShow.showPluginList(eventContext, this);
             }
         }
     }

@@ -18,7 +18,7 @@
         <sqlite-jdbc.version>3.49.1.0</sqlite-jdbc.version>
         <mybatis-plus-spring-boot3-starter.version>3.5.5</mybatis-plus-spring-boot3-starter.version>
         <hutol-core.version>5.8.27</hutol-core.version>
-        <spring-boot-starter-thymeleaf.version>3.5.6</spring-boot-starter-thymeleaf.version>
+        <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
         <playwright.version>1.49.0</playwright.version>
         <spring-websocket.version>6.1.13</spring-websocket.version>
         <jackson.version>2.17.2</jackson.version>
@@ -64,11 +64,11 @@
                 <artifactId>hutool-core</artifactId>
                 <version>${hutol-core.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
+            <!-- Thymeleaf核心依赖 -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-thymeleaf</artifactId>
-                <version>${spring-boot-starter-thymeleaf.version}</version>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf</artifactId>
+                <version>${thymeleaf.version}</version>
             </dependency>
             <!-- Playwright for Java -->
             <dependency>

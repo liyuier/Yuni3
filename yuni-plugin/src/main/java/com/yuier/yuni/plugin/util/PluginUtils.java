@@ -1,5 +1,9 @@
 package com.yuier.yuni.plugin.util;
 
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.bot.BotModel;
@@ -8,11 +12,16 @@ import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.manage.PluginRegisterProcessor;
 import com.yuier.yuni.plugin.model.YuniPlugin;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
 
+import java.nio.file.Paths;
 import java.util.jar.JarFile;
 
 /**
@@ -23,6 +32,7 @@ import java.util.jar.JarFile;
  * @description: 插件编写相关工具类
  */
 
+@Slf4j
 public class PluginUtils {
 
     /**
@@ -197,7 +207,8 @@ public class PluginUtils {
         try (JarFile jarFile = new JarFile(getPluginJarAppPath(plugin))) {
             text = readFileTextFromJar(jarFile, resourcePath);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("从插件 jar 包中加载文本文件内容字符串失败！请检查 jar 包内文件路径是否正确！");
+            e.printStackTrace();
         }
         return text;
     }

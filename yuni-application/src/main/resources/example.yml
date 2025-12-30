@@ -4,14 +4,16 @@ server:
 spring:
   application:
     name: yuni-application
-  datasource:  # 数据库配置，如果非专业开发者，不建议修改
+  datasource:  # 数据库配置
     url: jdbc:sqlite:./${bot.app.sqlite-db-file}  # 数据库使用 sqlite, 数据库文件默认在跟目录下。文件名由下方的 sqlite-db-file 属性指定
     driver-class-name: org.sqlite.JDBC  # 数据库驱动
     username:
     password:
+    # Redis配置
   data:
     redis:
       # 服务器地址
+      host: localhost
       # 端口号
       port: 6379
       # 密码（无密码则注释或留空）
@@ -46,8 +48,12 @@ onebot:
   communication:
     mode: http  # 与 OneBot 的通信方式，目前只实现了 http
     token:
-  api:
-    url: http://127.0.0.1:3000/  # OneBot 客户端 API 的 base url
+    ws:
+      url: ws://localhost:3001  #  WebSocket 的连接地址
+      heartbeat-interval: 30000  # 单位毫秒
+      timeout: 3000  # 单位毫秒
+    http:
+      url: http://localhost:3000 #  HTTP 请求的连接地址
 
 bot:
   qq: 123456789  # 机器人的 QQ 号

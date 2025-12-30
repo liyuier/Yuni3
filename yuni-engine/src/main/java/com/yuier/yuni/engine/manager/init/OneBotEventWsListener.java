@@ -63,7 +63,10 @@ public class OneBotEventWsListener extends YuniWebSocketListener {
         try {
             handleTextMessage(text);
         } catch (Exception e) {
-            log.error("处理 OneBot 消息时发生错误。错误信息：{}", e.getMessage());
+            log.error("处理 OneBot 消息时发生错误，即将重启。");
+            e.printStackTrace();
+            manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
+            log.info("已重启到 {} 的连接。",  config.getWsUrl() + "/event");
         } finally {
             clearSystemAfterHandleMessage();
         }

@@ -59,7 +59,10 @@
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
-            <scope>provided</scope> <!-- 由机器人主项目提供 -->
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
         </dependency>
 
     </dependencies>

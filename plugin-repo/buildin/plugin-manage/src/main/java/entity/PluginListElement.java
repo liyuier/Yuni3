@@ -14,8 +14,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PluginListElement {
-    private int pluginSeq;
-    private String pluginName;
-    private String pluginDescription;
-    private boolean enable;
+    private Boolean hasModule;
+    private PluginListSinglePlugin singlePlugin;
+    private PluginListModule modulePlugin;
+
+    public PluginListElement(PluginListSinglePlugin singlePlugin) {
+        this.hasModule = false;
+        this.singlePlugin = singlePlugin;
+    }
+
+    public PluginListElement(PluginListModule modulePlugin) {
+        this.hasModule = true;
+        this.modulePlugin = modulePlugin;
+    }
 }

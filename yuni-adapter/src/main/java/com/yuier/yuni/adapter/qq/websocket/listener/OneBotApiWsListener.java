@@ -4,6 +4,7 @@ import com.yuier.yuni.adapter.config.OneBotCommunicate;
 import com.yuier.yuni.adapter.qq.websocket.module.WsResponse;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketListener;
+import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
 import lombok.Data;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+
+import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_EVENT_SOCKET_ID;
 
 /**
  * @Title: OneBotApiWsListener
@@ -37,6 +40,8 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
     OneBotDeserializer deserializer;
     @Autowired
     OneBotSerialization serialization;
+    @Autowired
+    YuniWebSocketManager manager;
 
     // 持有一下自己所在的 connector
     private YuniWebSocketConnector connector;
@@ -71,7 +76,10 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
      */
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        log.info("到 {} 的连接发生错误。错误信息：{}, 响应信息：{}",  config.getWsUrl() + "/api", t.getMessage(), response);
+        log.info("到 {} 的连接发生错误。错误信息：{}, 响应信息：{} 。 即将重启连接。",  config.getWsUrl() + "/api", t.getMessage(), response);
+        t.printStackTrace();
+        manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
+        log.info("已重启到 {} 的连接。",  config.getWsUrl() + "/api");
     }
 
     /**

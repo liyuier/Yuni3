@@ -117,7 +117,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取 Redis 中的 Hash 类型数据，key 为字符串
+     * 获取 Redis 中的 Hash 类型数据所有的 key 和 value，key 为字符串
      * @param key  key
      * @return  value
      */

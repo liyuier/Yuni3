@@ -85,7 +85,7 @@ public class PassivePluginMatcher {
                 try {
                     instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             });
         }
@@ -98,7 +98,7 @@ public class PassivePluginMatcher {
                 try {
                     instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             });
         }
