@@ -128,7 +128,6 @@ public class PluginShow {
      * @param pluginManage  插件管理器
      */
     public void showPluginDetail(YuniMessageEvent eventContext, CommandMatched commandMatched, PluginManage pluginManage) {
-        // TODO 插件详情需要显示插件序号与插件是否开启
         TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue(PLUGIN_MANAGE_VIEW);
         Integer pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
@@ -138,9 +137,9 @@ public class PluginShow {
             return;
         }
         PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
-        Integer pluginDetailHashCodeCache = PluginManageUtil.getPluginDetailHashCodeCache(pluginId);
-        String pluginDetailImageCache = PluginManageUtil.getPluginDetailImageCache(pluginId);
-        Integer currentPluginHash = PluginManageUtil.calculateHashCodeForShowingPluginDetail(pluginId);
+        Integer pluginDetailHashCodeCache = PluginManageUtil.getPluginDetailHashCodeCache(eventContext, pluginId);
+        String pluginDetailImageCache = PluginManageUtil.getPluginDetailImageCache(eventContext, pluginId);
+        Integer currentPluginHash = PluginManageUtil.calculateHashCodeForShowingPluginDetail(eventContext,  pluginId);
         if (pluginDetailHashCodeCache != null && pluginDetailHashCodeCache.equals(currentPluginHash)) {
             // 哈希没变，直接返回缓存图片
             if (pluginDetailImageCache != null) {
@@ -150,18 +149,21 @@ public class PluginShow {
                 return;
             }
         }
-        PluginManageUtil.savePluginDetailHashCodeCache(pluginId, currentPluginHash);
+        PluginManageUtil.savePluginDetailHashCodeCache(eventContext, pluginId, currentPluginHash);
         // 获取模板
         String templateFilePath = "templates/plugin-detail.html";
         String templateStr = PluginUtils.loadTextFromPluginJar(pluginManage, templateFilePath);
         Context context = new Context();
+        PluginEnableProcessor enableProcessor = PluginUtils.getBean(PluginEnableProcessor.class);
         // 组装数据
         PluginDetail pluginDetail = new PluginDetail();
+        pluginDetail.setIndex(pluginInstance.getIndex());
         pluginDetail.setName(pluginInstance.getPluginMetadata().getName());
         pluginDetail.setDescription(pluginInstance.getPluginMetadata().getDescription());
         pluginDetail.setAuthor(pluginInstance.getPluginMetadata().getAuthor());
         pluginDetail.setVersion(pluginInstance.getPluginMetadata().getVersion());
         pluginDetail.setTips(pluginInstance.getPluginMetadata().getTips());
+        pluginDetail.setEnabled(enableProcessor.isPluginEnabled(eventContext, pluginInstance));
         context.setVariable("plugin", pluginDetail);
         // 渲染 HTML
         String htmlStr = PluginManageUtil.renderToHtml(templateStr, context);
@@ -169,7 +171,7 @@ public class PluginShow {
         eventContext.getChatSession().response(new MessageChain(
                 new ImageSegment().setFile(buildImageDataFileNameForCache(imgBase64))
         ));
-        PluginManageUtil.savePluginDetailImageCache(pluginId, buildImageDataFileNameForCache(imgBase64));
+        PluginManageUtil.savePluginDetailImageCache(eventContext, pluginId, buildImageDataFileNameForCache(imgBase64));
     }
 
 

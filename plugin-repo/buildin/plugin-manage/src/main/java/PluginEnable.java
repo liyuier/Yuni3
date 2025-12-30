@@ -1,6 +1,7 @@
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
+import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
@@ -8,6 +9,7 @@ import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
+import com.yuier.yuni.plugin.manage.PluginRegisterProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
@@ -30,7 +32,6 @@ import static util.PluginManagerConstants.PLUGIN_MANAGE_ENABLE;
 @NoArgsConstructor
 public class PluginEnable {
     public void enablePlugin(YuniMessageEvent eventContext, CommandMatched commandMatched) {
-        // 检查权限
         UserPermissionManager permissionManager = PluginUtils.getBean(UserPermissionManager.class);
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(PLUGIN_MANAGE_ENABLE);
@@ -44,7 +45,7 @@ public class PluginEnable {
         }
         PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
         UserPermission userPermission = permissionManager.getUserPermission(eventContext, pluginId);
-        // 再检查是否内置插件
+        // 检查是否内置插件
         if (pluginInstance.isBuiltIn() &&  userPermission.getPriority() < UserPermission.MASTER.getPriority()) {
             eventContext.getChatSession().response(pluginSeq + " 号插件为内置插件，只有 bot 拥有者有权开启或关闭");
              return;
@@ -63,8 +64,7 @@ public class PluginEnable {
         eventContext.getChatSession().response("已开启 " + pluginSeq + " 号插件 " + pluginInstance.getPluginMetadata().getName());
     }
 
-    public void disablePlugin(YuniMessageEvent eventContext, CommandMatched commandMatched) {
-        // 检查权限
+    public void disablePlugin(YuniMessageEvent eventContext, CommandMatched commandMatched, PluginManage pluginManage) {
         UserPermissionManager permissionManager = PluginUtils.getBean(UserPermissionManager.class);
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(PLUGIN_MANAGE_DISABLE);
@@ -78,7 +78,13 @@ public class PluginEnable {
         }
         PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
         UserPermission userPermission = permissionManager.getUserPermission(eventContext, pluginId);
-        // 再检查是否内置插件
+        PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
+        String pluginManageId = pluginRegisterProcessor.mapToPluginId(pluginManage);
+         if (pluginId.equals(pluginManageId)) {
+            eventContext.getChatSession().response("插件管理入口无法关闭");
+            return;
+        }
+        // 检查是否内置插件
         if (pluginInstance.isBuiltIn() &&  userPermission.getPriority() < UserPermission.MASTER.getPriority()) {
             eventContext.getChatSession().response(pluginSeq + " 号插件为内置插件，只有 bot 拥有者有权开启或关闭");
             return;

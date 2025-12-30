@@ -17,9 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class PluginDetail {
 
+    private Integer index;
     private String name;
     private String description;
     private List<String> tips;
     private String author;
     private String version;
+    private Boolean enabled;
 }

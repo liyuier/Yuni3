@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.PublicKey;
 import java.util.*;
 
 import static com.microsoft.playwright.options.WaitForSelectorState.VISIBLE;
@@ -64,39 +63,46 @@ public class PluginManageUtil {
         RedisUtil.hSet(PLUGIN_LIST_IMAGE_CACHE_KEY, eventContext.getPosition(), image);
     }
 
-    public static Integer getPluginDetailHashCodeCache(String pluginId) {
+    public static Integer getPluginDetailHashCodeCache(YuniMessageEvent eventContext, String pluginId) {
         Map<String, Object> stringObjectMap = RedisUtil.hGetAll(PLUGIN_DETAIL_HASHCODE_CACHE_KEY);
         if (stringObjectMap != null) {
-            return (Integer) stringObjectMap.get(pluginId);
+            return (Integer) stringObjectMap.get(buildPluginDetailCacheKey(eventContext, pluginId));
         }
         return null;
     }
 
-    public static void savePluginDetailHashCodeCache(String pluginId, int hashCode) {
-        RedisUtil.hSet(PLUGIN_DETAIL_HASHCODE_CACHE_KEY, pluginId, hashCode);
+    public static void savePluginDetailHashCodeCache(YuniMessageEvent eventContext, String pluginId, int hashCode) {
+        RedisUtil.hSet(PLUGIN_DETAIL_HASHCODE_CACHE_KEY, buildPluginDetailCacheKey(eventContext, pluginId), hashCode);
     }
 
-    public static String getPluginDetailImageCache(String pluginId) {
+    public static String getPluginDetailImageCache(YuniMessageEvent eventContext, String pluginId) {
         Map<String, Object> stringObjectMap = RedisUtil.hGetAll(PLUGIN_DETAIL_IMAGE_CACHE_KEY);
         if (stringObjectMap != null) {
-            return (String) stringObjectMap.get(pluginId);
+            return (String) stringObjectMap.get(buildPluginDetailCacheKey(eventContext, pluginId));
         }
         return null;
     }
 
-    public static void savePluginDetailImageCache(String pluginId, String image) {
-        RedisUtil.hSet(PLUGIN_DETAIL_IMAGE_CACHE_KEY, pluginId, image);
+    public static void savePluginDetailImageCache(YuniMessageEvent eventContext, String pluginId, String image) {
+        RedisUtil.hSet(PLUGIN_DETAIL_IMAGE_CACHE_KEY, buildPluginDetailCacheKey(eventContext, pluginId), image);
+    }
+    
+    private static String buildPluginDetailCacheKey(YuniMessageEvent eventContext, String pluginId) {
+        return eventContext.getPosition() + ":" + pluginId;
     }
 
-    public static Integer calculateHashCodeForShowingPluginDetail(String pluginId) {
+    public static Integer calculateHashCodeForShowingPluginDetail(YuniMessageEvent eventContext, String pluginId) {
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
+        PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
         PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
         return Objects.hash(
+                pluginInstance.getIndex(),  // 插件序号
                 pluginInstance.getPluginMetadata().getName(),  // 插件名称
                 pluginInstance.getPluginMetadata().getDescription(),  // 插件描述
                 pluginInstance.getPluginMetadata().getTips(),  // 插件提示
                 pluginInstance.getPluginMetadata().getAuthor(),  // 插件作者
-                pluginInstance.getPluginMetadata().getVersion()  // 插件版本
+                pluginInstance.getPluginMetadata().getVersion(),  // 插件版本
+                processor.isPluginEnabled(eventContext, pluginInstance)  // 插件使能情况
         );
     }
 

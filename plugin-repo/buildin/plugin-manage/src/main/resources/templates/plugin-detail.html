@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuni - 插件详情</title>
     <style>
-        /* 全局样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -22,16 +21,13 @@
             min-height: 100vh;
         }
 
-        /* 长图容器：极致简约 */
         .long-img-container {
             width: 720px;
             background-color: #FFFFFF;
-            /*border-radius: 16px;*/
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
 
-        /* 标题区域：简约粉色系 */
         .title-section {
             background-color: #FF85A2;
             color: #FFFFFF;
@@ -44,21 +40,84 @@
             font-weight: 600;
         }
 
-        /* 插件详情容器 */
         .plugin-detail {
             padding: 32px 24px;
         }
 
-        /* 插件名称：大号字体 */
+        .plugin-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 24px;
+            gap: 24px;
+            padding: 0 40px;
+        }
+
+        .plugin-index {
+            font-size: 64px;
+            font-weight: 800;
+            color: #FF85A2;
+            font-style: italic;
+            flex-shrink: 0;
+            line-height: 1;
+            text-align: left;
+        }
+
         .plugin-name {
             font-size: 32px;
             font-weight: 700;
             color: #333333;
-            margin-bottom: 16px;
+            flex: 1;
             text-align: center;
+            line-height: 1.2;
         }
 
-        /* 插件描述 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E9E9EB;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #FF85A2;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
         .plugin-description {
             font-size: 18px;
             color: #666666;
@@ -68,7 +127,6 @@
             padding: 0 20px;
         }
 
-        /* 使用指南标题 */
         .tips-title {
             font-size: 20px;
             font-weight: 600;
@@ -78,7 +136,6 @@
             border-bottom: 1px solid #FF85A2;
         }
 
-        /* 使用指南列表 */
         .tips-list {
             background-color: #FFF5F7;
             border-radius: 12px;
@@ -107,7 +164,6 @@
             margin-bottom: 0;
         }
 
-        /* 版本与作者信息区域 */
         .detail-info {
             background-color: #FAFAFA;
             border-radius: 12px;
@@ -140,7 +196,6 @@
             color: #666666;
         }
 
-        /* 移动端适配 */
         @media (max-width: 750px) {
             .long-img-container {
                 width: 95%;
@@ -154,6 +209,18 @@
                 font-size: 16px;
                 padding: 0 10px;
             }
+
+            .plugin-header {
+                flex-direction: column;
+                gap: 12px;
+                padding: 0 20px;
+            }
+
+            .plugin-index {
+                width: auto;
+                font-size: 56px;
+                margin-bottom: 8px;
+            }
         }
     </style>
 </head>
@@ -165,7 +232,15 @@
         </div>
 
         <div class="plugin-detail">
-            <div class="plugin-name" th:text="${plugin.name}"></div>
+            <div class="plugin-header">
+                <div class="plugin-index" th:text="${plugin.index}"></div>
+                <div class="plugin-name" th:text="${plugin.name}"></div>
+                <label class="switch">
+                    <input type="checkbox" th:checked="${plugin.enabled}">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
             <div class="plugin-description" th:text="${plugin.description}"></div>
 
             <div class="tips-title">使用指南</div>
