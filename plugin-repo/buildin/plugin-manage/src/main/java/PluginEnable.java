@@ -11,6 +11,7 @@ import com.yuier.yuni.plugin.util.PluginUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static util.PluginManagerConstants.PLUGIN_MANAGE_DISABLE;
 import static util.PluginManagerConstants.PLUGIN_MANAGE_ENABLE;
 
 /**
@@ -28,7 +29,7 @@ public class PluginEnable {
         // 检查权限
         UserPermissionManager permissionManager = PluginUtils.getBean(UserPermissionManager.class);
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
-        TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue(PLUGIN_MANAGE_ENABLE);
+        TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(PLUGIN_MANAGE_ENABLE);
         int pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
         String pluginId = container.getPluginIdByIndex(pluginSeq);
         if (pluginId == null) {
@@ -48,13 +49,16 @@ public class PluginEnable {
         }
         PluginManager pluginManager = PluginUtils.getBean(PluginManager.class);
         pluginManager.enablePlugin(eventContext, pluginId);
+         eventContext.getChatSession().response(new MessageChain(
+                new TextSegment("已开启 " + pluginSeq + " 号插件")
+        ));
     }
 
     public void disablePlugin(YuniMessageEvent eventContext, CommandMatched commandMatched) {
         // 检查权限
         UserPermissionManager permissionManager = PluginUtils.getBean(UserPermissionManager.class);
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
-        TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue(PLUGIN_MANAGE_ENABLE);
+        TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(PLUGIN_MANAGE_DISABLE);
         int pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
         String pluginId = container.getPluginIdByIndex(pluginSeq);
         if (pluginId == null) {
@@ -74,6 +78,9 @@ public class PluginEnable {
         }
         PluginManager pluginManager = PluginUtils.getBean(PluginManager.class);
         pluginManager.disablePlugin(eventContext, pluginId);
+         eventContext.getChatSession().response(new MessageChain(
+                new TextSegment("已关闭 " + pluginSeq + " 号插件")
+        ));
     }
 
 }

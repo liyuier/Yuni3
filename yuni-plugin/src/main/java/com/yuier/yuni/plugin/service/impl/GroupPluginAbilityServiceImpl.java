@@ -42,7 +42,7 @@ public class GroupPluginAbilityServiceImpl extends ServiceImpl<GroupPluginAbilit
                 return;
             }
             entity.setAbility(true);
-            save(entity);
+            update(entity, queryWrapper);
         }
     }
 
@@ -62,7 +62,7 @@ public class GroupPluginAbilityServiceImpl extends ServiceImpl<GroupPluginAbilit
                 return;
             }
             entity.setAbility(false);
-            save(entity);
+            update(entity, queryWrapper);
         }
     }
 }

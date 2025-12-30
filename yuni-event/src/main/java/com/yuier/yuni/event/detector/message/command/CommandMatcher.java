@@ -140,10 +140,10 @@ public class CommandMatcher {
             if (!curMessageSeg.typeOf(MessageSegmentTypes.TEXT)) {
                 return;
             }
-            // 如果不能匹配上任意一个选项，则返回
+            // 如果不能匹配上当前选项，则继续
             String text = ((TextSegment) curMessageSeg).getText();
-            if (!model.hasOption(text)) {
-                return;
+            if (!text.equals(option.getFlag())) {
+                continue;
             }
             // 匹配成功，构建选项匹配结果
             CommandOptionMatched commandOptionMatched = new CommandOptionMatched(text);
