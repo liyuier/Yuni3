@@ -1,5 +1,6 @@
 package com.yuier.yuni.plugin.event;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
 public class PluginDisableEvent {
 
     private Long groupId;

@@ -1,5 +1,8 @@
 package com.yuier.yuni.plugin.event;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * @Title: PluginEnableEvent
  * @Author yuier
@@ -8,7 +11,9 @@ package com.yuier.yuni.plugin.event;
  * @description:
  */
 
-public abstract class PluginEnableEvent {
+@Data
+@AllArgsConstructor
+public class PluginEnableEvent {
 
     private Long groupId;
 

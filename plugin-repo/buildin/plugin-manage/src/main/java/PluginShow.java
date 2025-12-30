@@ -128,14 +128,13 @@ public class PluginShow {
      * @param pluginManage  插件管理器
      */
     public void showPluginDetail(YuniMessageEvent eventContext, CommandMatched commandMatched, PluginManage pluginManage) {
+        // TODO 插件详情需要显示插件序号与插件是否开启
         TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue(PLUGIN_MANAGE_VIEW);
         Integer pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         String pluginId = container.getPluginIndexToIdMap().get(pluginSeq);
         if (pluginId == null) {
-            eventContext.getChatSession().response(new MessageChain(
-                    new TextSegment("没有序号为" + pluginSeq + "的插件。")
-            ));
+            eventContext.getChatSession().response("没有序号为" + pluginSeq + "的插件。");
             return;
         }
         PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);

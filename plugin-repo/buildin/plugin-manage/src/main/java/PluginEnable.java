@@ -1,15 +1,16 @@
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
-import com.yuier.yuni.core.task.DynamicTaskManager;
-import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
+import com.yuier.yuni.plugin.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
+import com.yuier.yuni.plugin.model.YuniPlugin;
+import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,33 +46,21 @@ public class PluginEnable {
         UserPermission userPermission = permissionManager.getUserPermission(eventContext, pluginId);
         // 再检查是否内置插件
         if (pluginInstance.isBuiltIn() &&  userPermission.getPriority() < UserPermission.MASTER.getPriority()) {
-             eventContext.getChatSession().response(new MessageChain(
-                     new TextSegment(pluginSeq + " 号插件为内置插件，只有 bot 拥有者有权开启或关闭")
-            ));
+            eventContext.getChatSession().response(pluginSeq + " 号插件为内置插件，只有 bot 拥有者有权开启或关闭");
              return;
         }
+
+        // TODO 主动插件需要调用插件本身的 enable() 方法
+        if (pluginInstance instanceof ActivePluginInstance) {
+            YuniPlugin plugin = pluginInstance.getPlugin();
+            plugin.enable(new PluginEnableEvent(eventContext.getGroupId(), eventContext.getUserId()));
+            eventContext.getChatSession().response("主动类插件暂不完全支持配置开启 / 关闭，正在加紧适配中。。。");
+        }
+
         PluginManager pluginManager = PluginUtils.getBean(PluginManager.class);
         pluginManager.enablePlugin(eventContext, pluginId);
 
-        // 如果是定时任务，需要重新添加任务
-         if (pluginInstance instanceof ScheduledPluginInstance scheduledPluginInstance) {
-            DynamicTaskManager dynamicTaskManager = PluginUtils.getBean(DynamicTaskManager.class);
-             // 创建定时任务
-             Runnable task = () -> {
-                 try {
-                     scheduledPluginInstance.getAction().execute();
-                 } catch (Exception e) {
-                     log.error("执行主动插件失败: {}", LogStringUtil.buildBrightBlueLog(pluginId), e);
-                 }
-             };
-
-             // 注册到定时任务系统
-             dynamicTaskManager.addCronTask(pluginId, scheduledPluginInstance.getCronExpression(), task);
-        }
-
-        eventContext.getChatSession().response(new MessageChain(
-                new TextSegment("已开启 " + pluginSeq + " 号插件")
-        ));
+        eventContext.getChatSession().response("已开启 " + pluginSeq + " 号插件 " + pluginInstance.getPluginMetadata().getName());
     }
 
     public void disablePlugin(YuniMessageEvent eventContext, CommandMatched commandMatched) {
@@ -91,23 +80,19 @@ public class PluginEnable {
         UserPermission userPermission = permissionManager.getUserPermission(eventContext, pluginId);
         // 再检查是否内置插件
         if (pluginInstance.isBuiltIn() &&  userPermission.getPriority() < UserPermission.MASTER.getPriority()) {
-            eventContext.getChatSession().response(new MessageChain(
-                    new TextSegment(pluginSeq + " 号插件为内置插件，只有 bot 拥有者有权开启或关闭")
-            ));
+            eventContext.getChatSession().response(pluginSeq + " 号插件为内置插件，只有 bot 拥有者有权开启或关闭");
             return;
+        }
+        // TODO 主动插件需要调用插件本身的 disable() 方法
+        if (pluginInstance instanceof ActivePluginInstance) {
+            YuniPlugin plugin = pluginInstance.getPlugin();
+            plugin.disable(new PluginDisableEvent(eventContext.getGroupId(), eventContext.getUserId()));
+            eventContext.getChatSession().response("主动类插件暂不完全支持配置开启 / 关闭，正在加紧适配中。。。");
         }
         PluginManager pluginManager = PluginUtils.getBean(PluginManager.class);
         pluginManager.disablePlugin(eventContext, pluginId);
 
-        // 如果是定时插件，需要取消一下定时任务
-        if (pluginInstance instanceof ScheduledPluginInstance) {
-            DynamicTaskManager dynamicTaskManager = PluginUtils.getBean(DynamicTaskManager.class);
-            dynamicTaskManager.cancelTask(pluginId);
-        }
-
-        eventContext.getChatSession().response(new MessageChain(
-                new TextSegment("已关闭 " + pluginSeq + " 号插件")
-        ));
+        eventContext.getChatSession().response("已关闭 " + pluginSeq + " 号插件 " + pluginInstance.getPluginMetadata().getName());
     }
 
 }

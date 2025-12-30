@@ -28,7 +28,7 @@ public interface YuniPlugin {
      * 插件启用
      * @param event 插件启用事件
      */
-    void enable(PluginEnableEvent  event);
+    void enable(PluginEnableEvent event);
 
     /**
      * 插件禁用
