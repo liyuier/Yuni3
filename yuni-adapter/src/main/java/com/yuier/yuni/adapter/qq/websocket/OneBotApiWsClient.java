@@ -69,7 +69,7 @@ public class OneBotApiWsClient {
     }
 
     public LoginInfo getLoginInfo() {
-        String action = "send_private_msg";
+        String action = "get_login_info";
         WsRequest request = new WsRequest(action);
         return quickSendOneBotApiRequest(request, LoginInfo.class);
     }

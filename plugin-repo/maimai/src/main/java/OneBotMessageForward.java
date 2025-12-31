@@ -1,5 +1,3 @@
-import com.yuier.yuni.core.net.ws.CommonWebSocketHandler;
-import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotSerialization;
@@ -7,8 +5,6 @@ import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.passive.message.PatternPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
-import config.MaiMaiAdapterConfig;
-import org.springframework.web.socket.TextMessage;
 
 import static constants.MaiMaiConstants.WS_CONNECT_TO_MAIMAI_ADAPTER;
 

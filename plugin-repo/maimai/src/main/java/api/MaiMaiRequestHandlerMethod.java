@@ -1,4 +1,4 @@
-package api.yuni;
+package api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

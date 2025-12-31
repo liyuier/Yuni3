@@ -1,4 +1,4 @@
-package api.yuni;
+package api;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.adapter.qq.http.OneBotResponse;
@@ -50,43 +50,43 @@ public class MaiMaiRequestController {
         quickSendOneBotResponse(groupInfo, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "get_group_member_info")
+    @MaiMaiRequestHandler(value = "get_group_member_info")
     public void getGroupMemberInfo(OneBotPostModel model) {
         GroupMemberInfo groupMemberInfo = oneBotAdapter.getGroupMemberInfo(parseGroupIdFromModel(model.getParams()), parseUserIdFromModel(model.getParams()),true);
         quickSendOneBotResponse(groupMemberInfo, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "get_login_info")
+    @MaiMaiRequestHandler(value = "get_login_info")
     public void getLoginInfo(OneBotPostModel model) {
         LoginInfo loginInfo = oneBotAdapter.getLoginInfo();
         quickSendOneBotResponse(loginInfo, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "get_stranger_info")
+    @MaiMaiRequestHandler(value = "get_stranger_info")
     public void getStrangerInfo(OneBotPostModel model) {
         GetStrangerInfo getStrangerInfo = oneBotAdapter.getStrangerInfo(parseUserIdFromModel(model.getParams()), true);
         quickSendOneBotResponse(getStrangerInfo, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "get_msg")
+    @MaiMaiRequestHandler(value = "get_msg")
     public void getMsg(OneBotPostModel model) {
         GetMessage getMessage = oneBotAdapter.getMsg(parseMessageIdFromModel(model.getParams()));
         quickSendOneBotResponse(getMessage, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "get_record")
+    @MaiMaiRequestHandler(value = "get_record")
     public void getRecord(OneBotPostModel model) {
         GetRecord getRecord = oneBotAdapter.getRecord(parseFileFromModel(model.getParams()), parseOutFormatFromModel(model.getParams()));
         quickSendOneBotResponse(getRecord, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "send_group_msg")
+    @MaiMaiRequestHandler(value = "send_group_msg")
     public void sendGroupMsg(OneBotPostModel model) {
         SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(parseGroupIdFromModel(model.getParams()), parseMessageSegmentToChain(model.getParams()));
         quickSendOneBotResponse(sendGroupMessage, model.getEcho());
     }
 
-    @MaiMaiRequestHandler2(value = "send_private_msg")
+    @MaiMaiRequestHandler(value = "send_private_msg")
     public void sendPrivateMsg(OneBotPostModel model) {
         SendPrivateMessage sendPrivateMessage = oneBotAdapter.sendPrivateMessage(parseUserIdFromModel(model.getParams()), parseMessageSegmentToChain(model.getParams()));
         quickSendOneBotResponse(sendPrivateMessage, model.getEcho());

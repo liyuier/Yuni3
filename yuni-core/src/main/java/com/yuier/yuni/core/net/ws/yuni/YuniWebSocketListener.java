@@ -35,7 +35,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        log.info("[YuniWebSocketListener.onClosed]连接已关闭，状态码: {}, 原因: {}", code, reason);
+        log.debug("[YuniWebSocketListener.onClosed]连接已关闭，状态码: {}, 原因: {}", code, reason);
         proxyListener.onClosed(webSocket, code, reason);
     }
 
@@ -47,7 +47,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        log.info("[YuniWebSocketListener.onClosing]连接即将关闭，状态码: {}, 原因: {}", code, reason);
+        log.debug("[YuniWebSocketListener.onClosing]连接即将关闭，状态码: {}, 原因: {}", code, reason);
         proxyListener.onClosing(webSocket, code, reason);
     }
 
@@ -59,7 +59,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        log.info("[YuniWebSocketListener.onFailure]连接发生错误，服务器响应: {}, 错误堆栈: ", response);
+        log.debug("[YuniWebSocketListener.onFailure]连接发生错误，服务器响应: {}, 错误堆栈: ", response);
         t.printStackTrace();
         proxyListener.onFailure(webSocket, t, response);
     }
@@ -71,7 +71,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-        log.info("[YuniWebSocketListener.onMessage]收到文本消息: {}", text);
+        log.debug("[YuniWebSocketListener.onMessage]收到文本消息: {}", text);
         proxyListener.onMessage(webSocket, text);
     }
 
@@ -82,7 +82,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
-        log.info("[YuniWebSocketListener.onMessage]收到二进制消息: {}", bytes);
+        log.debug("[YuniWebSocketListener.onMessage]收到二进制消息: {}", bytes);
         proxyListener.onMessage(webSocket, bytes);
     }
 
@@ -93,7 +93,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-        log.info("[YuniWebSocketListener.onOpen]连接成功，服务器响应: {}", response);
+        log.debug("[YuniWebSocketListener.onOpen]连接成功，服务器响应: {}", response);
         proxyListener.onOpen(webSocket, response);
     }
 }

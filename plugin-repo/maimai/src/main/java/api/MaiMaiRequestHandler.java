@@ -1,4 +1,4 @@
-package api.yuni;
+package api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

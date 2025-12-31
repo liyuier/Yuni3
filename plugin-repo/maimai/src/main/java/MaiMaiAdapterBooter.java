@@ -1,4 +1,4 @@
-import api.yuni.MaiMaiRequestController;
+import api.MaiMaiRequestController;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotSerialization;

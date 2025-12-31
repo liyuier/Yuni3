@@ -1,4 +1,4 @@
-package api.yuni;
+package api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;

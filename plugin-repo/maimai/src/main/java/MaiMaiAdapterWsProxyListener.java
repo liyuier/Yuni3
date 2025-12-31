@@ -1,5 +1,4 @@
-import api.OneBotRequestHandlerRegistry;
-import api.yuni.MaiMaiRequestHandlerRegistry;
+import api.MaiMaiRequestHandlerRegistry;
 import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.util.OneBotSerialization;
