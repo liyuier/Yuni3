@@ -1,5 +1,5 @@
 import api.OneBotRequestHandlerRegistry;
-import api.OneBotWsRequestController;
+import api.yuni.MaiMaiRequestHandlerRegistry;
 import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.util.OneBotSerialization;
@@ -35,12 +35,11 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
     private YuniWebSocketConnector connector;
 
     OneBotSerialization serialization;
-    OneBotRequestHandlerRegistry handlerRegistry;
+    MaiMaiRequestHandlerRegistry handlerRegistry;
 
     public MaiMaiAdapterWsProxyListener(OneBotSerialization serialization) {
         this.serialization = serialization;
-        this.handlerRegistry = new OneBotRequestHandlerRegistry();
-        this.handlerRegistry.registerHandlers(new OneBotWsRequestController());
+        this.handlerRegistry = new MaiMaiRequestHandlerRegistry();
     }
 
     @Override
@@ -65,6 +64,7 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
         log.info("[MaiMaiAdapterWsProxyListener.onMessage]到 MaiBot-Napcat-Adapter 的连接收到消息: {}", text);
+        handlerRegistry.handleMessage(text);
     }
 
     @Override

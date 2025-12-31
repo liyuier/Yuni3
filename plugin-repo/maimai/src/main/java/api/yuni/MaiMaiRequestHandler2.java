@@ -1,4 +1,4 @@
-package com.yuier.yuni.core.anno;
+package api.yuni;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @Title: WsRequestHandlerMethod
+ * @Title: MaiMaiRequestHandler2
  * @Author yuier
  * @Package com.yuier.yuni.core.anno
  * @Date 2025/12/25 19:22
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface WsRequestHandlerMethod {
+public @interface MaiMaiRequestHandler2 {
     /**
      * 消息类型
      */

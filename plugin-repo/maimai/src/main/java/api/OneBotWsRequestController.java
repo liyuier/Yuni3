@@ -1,7 +1,7 @@
 package api;
 
+import api.yuni.MaiMaiRequestHandler2;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.anno.WsRequestHandlerMethod;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.message.GetMessage;
@@ -38,49 +38,49 @@ import java.util.Map;
 public class OneBotWsRequestController {
 
     // 获取群信息
-    @WsRequestHandlerMethod(value = "get_group_info")
+    @MaiMaiRequestHandler2(value = "get_group_info")
     public void getGroupInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         GroupInfo groupInfo = oneBotAdapter.getGroupInfo(parseGroupIdFromModel(model), true);
         quickSendOneBotResponse(groupInfo, GroupInfo.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "get_group_member_info")
+    @MaiMaiRequestHandler2(value = "get_group_member_info")
     public void getGroupMemberInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         GroupMemberInfo groupMemberInfo = oneBotAdapter.getGroupMemberInfo(parseGroupIdFromModel(model), parseUserIdFromModel(model),true);
         quickSendOneBotResponse(groupMemberInfo, GroupMemberInfo.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "get_login_info")
+    @MaiMaiRequestHandler2(value = "get_login_info")
     public void getLoginInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         LoginInfo loginInfo = oneBotAdapter.getLoginInfo();
         quickSendOneBotResponse(loginInfo, LoginInfo.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "get_stranger_info")
+    @MaiMaiRequestHandler2(value = "get_stranger_info")
     public void getStrangerInfo(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         GetStrangerInfo strangerInfo = oneBotAdapter.getStrangerInfo(parseUserIdFromModel(model), true);
         quickSendOneBotResponse(strangerInfo, GetStrangerInfo.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "get_msg")
+    @MaiMaiRequestHandler2(value = "get_msg")
     public void getMsg(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         GetMessage getMessage = oneBotAdapter.getMsg(parseMessageIdFromModel(model));
         quickSendOneBotResponse(getMessage, GetMessage.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "get_record")
+    @MaiMaiRequestHandler2(value = "get_record")
     public void getRecord(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         GetRecord getRecord = oneBotAdapter.getRecord((String) model.get("file"), (String) model.get("out_format"));
         quickSendOneBotResponse(getRecord, GetRecord.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "send_group_msg")
+    @MaiMaiRequestHandler2(value = "send_group_msg")
     public void sendGroupMsg(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         MessageChain messageChain = parseMessageSegmentToChain(model);
@@ -88,7 +88,7 @@ public class OneBotWsRequestController {
         quickSendOneBotResponse(sendGroupMessage, SendGroupMessage.class, connectionId, echoId);
     }
 
-    @WsRequestHandlerMethod(value = "send_private_msg")
+    @MaiMaiRequestHandler2(value = "send_private_msg")
     public void sendPrivateMsg(String connectionId, Map<String, Object> model, String echoId) {
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
         MessageChain messageChain = parseMessageSegmentToChain(model);

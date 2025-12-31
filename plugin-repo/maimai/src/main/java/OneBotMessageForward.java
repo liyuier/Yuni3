@@ -1,5 +1,7 @@
 import com.yuier.yuni.core.net.ws.CommonWebSocketHandler;
 import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
+import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
+import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
@@ -7,6 +9,8 @@ import com.yuier.yuni.plugin.model.passive.message.PatternPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import config.MaiMaiAdapterConfig;
 import org.springframework.web.socket.TextMessage;
+
+import static constants.MaiMaiConstants.WS_CONNECT_TO_MAIMAI_ADAPTER;
 
 /**
  * @Title: OneBotMessageForward
@@ -24,13 +28,13 @@ public class OneBotMessageForward extends PatternPlugin {
         if (eventContext.getMessageChain().containsForwardMessage()) {
             return;
         }
-        CommonWebSocketManager manager = PluginUtils.getBean(CommonWebSocketManager.class);
-        MaiMaiAdapterConfig config = PluginUtils.getBean(MaiMaiAdapterConfig.class);
+        YuniWebSocketManager yuniManager = PluginUtils.getBean(YuniWebSocketManager.class);
+        YuniWebSocketConnector maimaiAdapterConnector = yuniManager.getWebSocket(WS_CONNECT_TO_MAIMAI_ADAPTER);
         OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-        CommonWebSocketHandler webSocketHandler = (CommonWebSocketHandler) manager.getWebSocketHandlers().get(config.getConnectionId());
+        // 转发消息
         try {
             String messageEventJson = serialization.serialize(eventContext.getMessageEvent());
-            webSocketHandler.getSession().sendMessage(new TextMessage(messageEventJson));
+            maimaiAdapterConnector.send(messageEventJson);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -38,6 +42,6 @@ public class OneBotMessageForward extends PatternPlugin {
 
     @Override
     public PatternDetector getDetector() {
-        return new PatternDetector(chain -> false);
+        return new PatternDetector(chain -> true);
     }
 }

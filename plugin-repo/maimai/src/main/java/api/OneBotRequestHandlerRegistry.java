@@ -1,9 +1,10 @@
 package api;
 
+import api.yuni.MaiMaiRequestHandler2;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yuier.yuni.core.anno.WsRequestHandlerMethod;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import model.OneBotPostModel;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -31,9 +32,9 @@ public class OneBotRequestHandlerRegistry {
     public void registerHandlers(Object handlerObject) {
         Class<?> clazz = handlerObject.getClass();
 
-        // 遍历类中的所有方法，寻找有 @WsRequestHandlerMethod 注解的方法，并注册
+        // 遍历类中的所有方法，寻找有 @MaiMaiRequestHandler2 注解的方法，并注册
         for (Method method : clazz.getDeclaredMethods()) {
-            WsRequestHandlerMethod annotation = method.getAnnotation(WsRequestHandlerMethod.class);
+            MaiMaiRequestHandler2 annotation = method.getAnnotation(MaiMaiRequestHandler2.class);
             if (annotation != null) {
                 String messageType = annotation.value();
                 // 构建路由 {注解 value 值}:{注解 subType 值}

@@ -1,5 +1,4 @@
-import com.yuier.yuni.core.net.ws.CommonWebSocketHandler;
-import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
+import api.yuni.MaiMaiRequestController;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotSerialization;
@@ -10,8 +9,8 @@ import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import config.MaiMaiAdapterConfig;
 import okhttp3.Request;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.socket.client.WebSocketConnectionManager;
+
+import static constants.MaiMaiConstants.WS_CONNECT_TO_MAIMAI_ADAPTER;
 
 /**
  * @Title: MaiMaiAdapterBooter
@@ -22,8 +21,6 @@ import org.springframework.web.socket.client.WebSocketConnectionManager;
  */
 
 public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
-
-    private static final String WS_CONNECT_TO_MAIMAI_ADAPTER = "ws_connect_to_maimai_adapter";
 
     @Override
     public Action getAction() {
@@ -40,6 +37,8 @@ public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
             // 创建连接器
             YuniWebSocketConnector maimaiAdapterConnector = new YuniWebSocketConnector(request, maiMaiAdapterWsProxyListener);
             maiMaiAdapterWsProxyListener.setConnector(maimaiAdapterConnector);
+            // 注册处理器，过程中传递一下连接器
+            maiMaiAdapterWsProxyListener.getHandlerRegistry().registerHandlers(new MaiMaiRequestController(maimaiAdapterConnector));
             YuniWebSocketManager manager = PluginUtils.getBean(YuniWebSocketManager.class);
             // 启动连接器
             manager.startNewConnection(WS_CONNECT_TO_MAIMAI_ADAPTER, maimaiAdapterConnector);
