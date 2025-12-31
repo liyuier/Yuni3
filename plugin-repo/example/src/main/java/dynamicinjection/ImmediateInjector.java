@@ -20,7 +20,7 @@ public class ImmediateInjector extends ImmediateActionPlugin {
     @Override
     public Action getAction() {
         return () -> {
-            PluginUtils.registerBeanUtil(new ExampleClass());
+            PluginUtils.registerBeanToSpring(new ExampleClass());
             log.info("[ImmediateInjector] 动态注入成功！");
         };
     }

@@ -54,7 +54,7 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
      */
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        log.info("到 {} 的连接已经关闭。",  config.getWsUrl() + "/api");
+        log.info("[OneBotApiWsProxyListener.onClosed]到 {} 的连接已经关闭。",  config.getWsUrl() + "/api");
     }
 
     /**
@@ -65,7 +65,7 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
      */
     @Override
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        log.info("到 {} 的连接即将关闭。",  config.getWsUrl() + "/api");
+        log.info("[OneBotApiWsProxyListener.onClosing]到 {} 的连接即将关闭。",  config.getWsUrl() + "/api");
     }
 
     /**
@@ -76,10 +76,10 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
      */
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        log.info("到 {} 的连接发生错误。错误信息：{}, 响应信息：{} 。 即将重启连接。",  config.getWsUrl() + "/api", t.getMessage(), response);
+        log.info("[OneBotApiWsProxyListener.onFailure]到 {} 的连接发生错误。错误信息：{}, 响应信息：{} 。 即将重启连接。",  config.getWsUrl() + "/api", t.getMessage(), response);
         t.printStackTrace();
         manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
-        log.info("已重启到 {} 的连接。",  config.getWsUrl() + "/api");
+        log.info("[OneBotApiWsProxyListener.onFailure]已重启到 {} 的连接。",  config.getWsUrl() + "/api");
     }
 
     /**
@@ -104,10 +104,10 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
                     future.completeExceptionally(new RuntimeException("请求失败，状态码 " + response.getRetcode()));
                 }
             } else {
-                log.warn("接收到非请求消息: {}", text);
+                log.warn("[OneBotApiWsProxyListener.onMessage]接收到非请求消息: {}", text);
             }
         } catch (Exception e) {
-            log.warn("接收到非请求消息: {}", text);
+            log.warn("[OneBotApiWsProxyListener.onMessage]接收到非请求消息: {}", text);
         }
 
     }
@@ -119,7 +119,7 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
      */
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
-        log.info("收到 OneBot 发来二进制的消息: {}", bytes);
+        log.info("[OneBotApiWsProxyListener.onMessage]收到 OneBot 发来二进制的消息: {}", bytes);
     }
 
     /**
@@ -129,6 +129,6 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
      */
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-        log.info("到 {} 的连接建立成功。",  config.getWsUrl() + "/api");
+        log.info("[OneBotApiWsProxyListener.onOpen]到 {} 的连接建立成功。",  config.getWsUrl() + "/api");
     }
 }

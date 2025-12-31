@@ -56,6 +56,11 @@ public class YuniWebSocketConnector {
         return webSocket;
     }
 
+    public void send(String message) {
+        // 发送消息
+        webSocket.send(message);
+    }
+
     public String sendAndReceive(String message, String echoFlag) {
         // 发送消息，并创建回调 future
         CompletableFuture<String> future = new CompletableFuture<>();

@@ -1,11 +1,15 @@
 import com.yuier.yuni.core.net.ws.CommonWebSocketHandler;
 import com.yuier.yuni.core.net.ws.CommonWebSocketManager;
+import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
+import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
+import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import config.MaiMaiAdapterConfig;
+import okhttp3.Request;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
@@ -18,45 +22,28 @@ import org.springframework.web.socket.client.WebSocketConnectionManager;
  */
 
 public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
+
+    private static final String WS_CONNECT_TO_MAIMAI_ADAPTER = "ws_connect_to_maimai_adapter";
+
     @Override
     public Action getAction() {
         return () -> {
-            /* 向 MaiBot-Napcat-Adapter 发起连接 */
             // 获取配置
             MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromJar("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
-            PluginUtils.registerBeanUtil(config, "maimaiAdapterPluginConfig");
-            // 获取 wsManager
-            CommonWebSocketManager wsManager = PluginUtils.getBean(CommonWebSocketManager.class);
-            // 创建 handler
-            CommonWebSocketHandler maimaiAdapterHandler = getCommonWebSocketHandler(config, wsManager);
-            PluginUtils.registerBeanUtil(maimaiAdapterHandler, "maimaiAdapterHandler");
-            // 创建连接配置
-            wsManager.createConnection(
-                    config.getConnectionId(),
-                    config.getServerUrl(),
-                    maimaiAdapterHandler);
-            wsManager.setAuthToken(config.getConnectionId(), config.getToken());
-            WebSocketConnectionManager connectionManager = wsManager.getConnectionManager(config.getConnectionId());
-            HttpHeaders headers = connectionManager.getHeaders();
-            headers.add("X-Self-ID", PluginUtils.getBotId() + "");
-            headers.add("X-Client-Role", "Universal");
-            // 启动连接
-            wsManager.startConnection(config.getConnectionId());
+            PluginUtils.registerBeanToSpring(config, "maimaiAdapterPluginConfig");
+            Request request = new Request.Builder()
+                    .url(config.getServerUrl())
+                    .addHeader("Authorization", "Bearer " + config.getToken())
+                    .build();
+            OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
+            MaiMaiAdapterWsProxyListener maiMaiAdapterWsProxyListener = new MaiMaiAdapterWsProxyListener(serialization);
+            // 创建连接器
+            YuniWebSocketConnector maimaiAdapterConnector = new YuniWebSocketConnector(request, maiMaiAdapterWsProxyListener);
+            maiMaiAdapterWsProxyListener.setConnector(maimaiAdapterConnector);
+            YuniWebSocketManager manager = PluginUtils.getBean(YuniWebSocketManager.class);
+            // 启动连接器
+            manager.startNewConnection(WS_CONNECT_TO_MAIMAI_ADAPTER, maimaiAdapterConnector);
         };
-    }
-
-    private static CommonWebSocketHandler getCommonWebSocketHandler(MaiMaiAdapterConfig config, CommonWebSocketManager wsManager) {
-        // 自定义代理 handler
-        MaiMaiAdapterWsProxyHandler maiMaiAdapterWsProxyHandler = new MaiMaiAdapterWsProxyHandler();
-        CommonWebSocketHandler maimaiAdapterHandler = new CommonWebSocketHandler(
-                config.getConnectionId(),
-                config.getServerUrl(),
-                wsManager,
-                maiMaiAdapterWsProxyHandler,
-                config.getHeartbeatInterval(),
-                config.getReconnectInterval()
-        );
-        return maimaiAdapterHandler;
     }
 
     @Override

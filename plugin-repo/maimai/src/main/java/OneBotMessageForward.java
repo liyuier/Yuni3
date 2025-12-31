@@ -38,6 +38,6 @@ public class OneBotMessageForward extends PatternPlugin {
 
     @Override
     public PatternDetector getDetector() {
-        return new PatternDetector(chain -> true);
+        return new PatternDetector(chain -> false);
     }
 }

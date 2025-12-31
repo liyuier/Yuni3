@@ -43,20 +43,20 @@ public class OneBotEventWsProxyListener implements YuniBusinessProxyListener {
 
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        log.info("到 {} 的连接已经关闭。",  config.getWsUrl() + "/event");
+        log.info("[OneBotEventWsProxyListener.onClosed]到 {} 的连接已经关闭。",  config.getWsUrl() + "/event");
     }
 
     @Override
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        log.info("到 {} 的连接即将关闭。",  config.getWsUrl() + "/event");
+        log.info("[OneBotEventWsProxyListener.onClosing]到 {} 的连接即将关闭。",  config.getWsUrl() + "/event");
     }
 
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        log.info("到 {} 的连接发生错误。错误信息：{}, 响应信息：{} 。 即将重启连接。",  config.getWsUrl() + "/event", t.getMessage(), response);
+        log.info("[OneBotEventWsProxyListener.onFailure]到 {} 的连接发生错误。错误信息：{}, 响应信息：{} 。 即将重启连接。",  config.getWsUrl() + "/event", t.getMessage(), response);
         t.printStackTrace();
         manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
-        log.info("已重启到 {} 的连接。",  config.getWsUrl() + "/event");
+        log.info("[OneBotEventWsProxyListener.onFailure]已重启到 {} 的连接。",  config.getWsUrl() + "/event");
     }
 
     @Override
@@ -64,10 +64,10 @@ public class OneBotEventWsProxyListener implements YuniBusinessProxyListener {
         try {
             handleTextMessage(text);
         } catch (Exception e) {
-            log.error("处理 OneBot 消息时发生错误，即将重启。");
+            log.error("[OneBotEventWsProxyListener.onMessage]处理 OneBot 消息时发生错误，即将重启。");
             e.printStackTrace();
             manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
-            log.info("已重启到 {} 的连接。",  config.getWsUrl() + "/event");
+            log.info("[OneBotEventWsProxyListener.onMessage]已重启到 {} 的连接。",  config.getWsUrl() + "/event");
         } finally {
             clearSystemAfterHandleMessage();
         }
@@ -75,12 +75,12 @@ public class OneBotEventWsProxyListener implements YuniBusinessProxyListener {
 
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
-        log.info("收到 OneBot 发来二进制的消息: {}", bytes);
+        log.info("[OneBotEventWsProxyListener.onMessage]收到 OneBot 发来二进制的消息: {}", bytes);
     }
 
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-        log.info("到 {} 的连接建立成功。",  config.getWsUrl() + "/event");
+        log.info("[OneBotEventWsProxyListener.onOpen]到 {} 的连接建立成功。",  config.getWsUrl() + "/event");
     }
 
     private void handleTextMessage(String text) {

@@ -1,9 +1,5 @@
 package com.yuier.yuni.plugin.util;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.bot.BotModel;
@@ -17,11 +13,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templateresolver.StringTemplateResolver;
 
-import java.nio.file.Paths;
 import java.util.jar.JarFile;
 
 /**
@@ -96,12 +88,12 @@ public class PluginUtils {
      * @param bean 实例
      * @param <T> bean 的类型
      */
-    public static <T> void registerBeanUtil(T bean) {
+    public static <T> void registerBeanToSpring(T bean) {
         String beanName = StringUtils.uncapitalize(bean.getClass().getSimpleName());
-        registerBeanUtil(bean, beanName);
+        registerBeanToSpring(bean, beanName);
     }
 
-    public static <T> void registerBeanUtil(T bean, String beanName) {
+    public static <T> void registerBeanToSpring(T bean, String beanName) {
 
         // 获取 Spring 上下文
         ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
