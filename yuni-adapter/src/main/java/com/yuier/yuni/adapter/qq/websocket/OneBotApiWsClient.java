@@ -25,7 +25,7 @@ import java.util.Map;
  * @Author yuier
  * @Package com.yuier.yuni.adapter.qq.websocket
  * @Date 2025/12/29 16:09
- * @description:
+ * @description:  到 /api 的 ws 请求客户端
  */
 
 public class OneBotApiWsClient {

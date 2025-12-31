@@ -12,7 +12,6 @@ import com.yuier.yuni.core.api.system.LoginInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import lombok.Data;
 
@@ -31,13 +30,9 @@ public class OneBotWsAdapter implements OneBotAdapter {
 
     private OneBotDeserializer deserializer;
     private OneBotApiWsClient apiClient;
-    private OneBotWsSessionStarter wsSessionStarter;
-    private YuniWebSocketManager manager;
 
-    public OneBotWsAdapter(OneBotDeserializer deserializer, OneBotWsSessionStarter oneBotWsSessionStarter, YuniWebSocketManager webSocketManager) {
+    public OneBotWsAdapter(OneBotDeserializer deserializer) {
         this.deserializer = deserializer;
-        wsSessionStarter = oneBotWsSessionStarter;
-        manager = webSocketManager;
     }
 
     @Override

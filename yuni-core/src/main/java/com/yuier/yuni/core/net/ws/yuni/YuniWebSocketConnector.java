@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author yuier
  * @Package com.yuier.yuni.core.net.ws.yuni
  * @Date 2025/12/29 3:22
- * @description:
+ * @description:  OkHttp WebSocket 连接包装类，用于启动连接、通过 webSocket 维护连接等
  */
 
 @Data
@@ -33,17 +33,25 @@ public class YuniWebSocketConnector {
     private WebSocket webSocket;
 
     private Map<String, CompletableFuture<String>> requestFutures = new ConcurrentHashMap<>();
+
     private int timeOutInterval = 3000;  // 默认超时时间为 3 秒
     private int heartBeatInterval = 30000;  // 默认心跳间隔为 30 秒
 
-    public YuniWebSocketConnector(OkHttpClient client, Request request, YuniWebSocketListener listener) {
-        this.client = client;
+    public YuniWebSocketConnector(Request request, YuniBusinessProxyListener proxyListener) {
+        this.client = new OkHttpClient();
         this.request = request;
-        this.listener = listener;
+        this.listener = new YuniWebSocketListener(proxyListener);
     }
 
     public WebSocket startConnection() {
         // 启动并设置 WebSocket
+        webSocket = client.newWebSocket(request, listener);
+        return webSocket;
+    }
+
+    public WebSocket restartConnection() {
+        // 重新启动 WebSocket
+        webSocket.close(1000, "重新连接");
         webSocket = client.newWebSocket(request, listener);
         return webSocket;
     }
@@ -62,8 +70,9 @@ public class YuniWebSocketConnector {
         try {
             return future.join();
         } catch (CompletionException e) {
-            log.info(e.getCause().getMessage());
-            return null;
+            log.info("[YuniWebSocketConnector.sendAndReceive]请求失败，失败消息: {}", e.getCause().getMessage());
+            e.printStackTrace();
+            return "";
         }
     }
 

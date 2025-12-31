@@ -37,7 +37,7 @@ public class YuniWebSocketManager {
     public void restartConnection(String connectionId) {
         YuniWebSocketConnector connector = webSocketConnectorMap.get(connectionId);
         if (connector != null) {
-            WebSocket webSocket = connector.startConnection();
+            WebSocket webSocket = connector.restartConnection();
             webSocketConnectorMap.put(connectionId, connector);
         }
     }

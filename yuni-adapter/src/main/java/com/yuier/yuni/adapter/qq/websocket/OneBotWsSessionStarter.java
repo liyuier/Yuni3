@@ -1,9 +1,11 @@
 package com.yuier.yuni.adapter.qq.websocket;
 
 import com.yuier.yuni.adapter.config.OneBotCommunicate;
-import com.yuier.yuni.adapter.qq.websocket.listener.OneBotApiWsListener;
+import com.yuier.yuni.adapter.qq.websocket.listener.OneBotApiWsProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
+import com.yuier.yuni.core.util.OneBotDeserializer;
+import com.yuier.yuni.core.util.OneBotSerialization;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,15 @@ public class OneBotWsSessionStarter {
     @Autowired
     private YuniWebSocketManager manager;
     @Autowired
-    OneBotApiWsListener apiListener;
+    private OneBotDeserializer deserializer;
+    @Autowired
+    private OneBotSerialization serialization;
 
 
     /**
      * 向 OneBot 实现建立 ws 连接
      */
-    public void startOneBotSession() {
+    public void startOneBotApiSession() {
 
         // 建立到 /api 的连接
         OkHttpClient apiClient = new OkHttpClient();
@@ -41,10 +45,16 @@ public class OneBotWsSessionStarter {
                 .url(config.getWsUrl() + "/api")
                 .addHeader("Authorization", "Bearer " + config.getToken())
                 .build();
-        YuniWebSocketConnector apiConnector = new YuniWebSocketConnector(apiClient, apiRequest, apiListener);
+        OneBotApiWsProxyListener eventProxyListener = new OneBotApiWsProxyListener(
+                config,
+                deserializer,
+                serialization,
+                manager
+        );
+        YuniWebSocketConnector apiConnector = new YuniWebSocketConnector(apiRequest, eventProxyListener);
+        eventProxyListener.setConnector(apiConnector);
         apiConnector.setTimeOutInterval(config.getWsTimeout());
         apiConnector.setHeartBeatInterval(config.getWsHeartbeatInterval());
-        apiListener.setConnector(apiConnector);
         manager.startNewConnection(ONEBOT_API_SOCKET_ID, apiConnector);
     }
 }

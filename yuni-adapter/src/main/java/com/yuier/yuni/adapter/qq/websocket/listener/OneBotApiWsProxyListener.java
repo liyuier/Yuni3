@@ -2,8 +2,8 @@ package com.yuier.yuni.adapter.qq.websocket.listener;
 
 import com.yuier.yuni.adapter.config.OneBotCommunicate;
 import com.yuier.yuni.adapter.qq.websocket.module.WsResponse;
+import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
-import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
@@ -14,37 +14,37 @@ import okhttp3.WebSocket;
 import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 
 import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_EVENT_SOCKET_ID;
 
 /**
- * @Title: OneBotApiWsListener
+ * @Title: OneBotApiWsProxyListener
  * @Author yuier
- * @Package com.yuier.yuni.adapter.qq.websocket
- * @Date 2025/12/29 3:30
+ * @Package com.yuier.yuni.adapter.qq.websocket.listener
+ * @Date 2025/12/31 7:35
  * @description:
  */
 
-@Data
 @Slf4j
-@Component
-public class OneBotApiWsListener extends YuniWebSocketListener {
+@Data
+public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
 
-    @Autowired
     OneBotCommunicate config;
-    @Autowired
     OneBotDeserializer deserializer;
-    @Autowired
     OneBotSerialization serialization;
-    @Autowired
     YuniWebSocketManager manager;
 
     // 持有一下自己所在的 connector
     private YuniWebSocketConnector connector;
+
+    public OneBotApiWsProxyListener(OneBotCommunicate config, OneBotDeserializer deserializer, OneBotSerialization serialization, YuniWebSocketManager manager) {
+        this.config = config;
+        this.deserializer = deserializer;
+        this.serialization = serialization;
+        this.manager = manager;
+    }
 
     /**
      * WebSocket 连接完全关闭
@@ -109,6 +109,7 @@ public class OneBotApiWsListener extends YuniWebSocketListener {
         } catch (Exception e) {
             log.warn("接收到非请求消息: {}", text);
         }
+
     }
 
     /**

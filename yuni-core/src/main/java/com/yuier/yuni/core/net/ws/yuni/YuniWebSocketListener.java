@@ -1,7 +1,9 @@
 package com.yuier.yuni.core.net.ws.yuni;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -17,8 +19,13 @@ import org.jetbrains.annotations.Nullable;
  * @description:
  */
 
+@Data
+@Slf4j
 @NoArgsConstructor
+@AllArgsConstructor
 public class YuniWebSocketListener extends WebSocketListener {
+
+    private YuniBusinessProxyListener proxyListener;
 
     /**
      * WebSocket 连接完全关闭
@@ -28,7 +35,8 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        super.onClosed(webSocket, code, reason);
+        log.info("[YuniWebSocketListener.onClosed]连接已关闭，状态码: {}, 原因: {}", code, reason);
+        proxyListener.onClosed(webSocket, code, reason);
     }
 
     /**
@@ -39,7 +47,8 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-        super.onClosing(webSocket, code, reason);
+        log.info("[YuniWebSocketListener.onClosing]连接即将关闭，状态码: {}, 原因: {}", code, reason);
+        proxyListener.onClosing(webSocket, code, reason);
     }
 
     /**
@@ -50,7 +59,9 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        super.onFailure(webSocket, t, response);
+        log.info("[YuniWebSocketListener.onFailure]连接发生错误，服务器响应: {}, 错误堆栈: ", response);
+        t.printStackTrace();
+        proxyListener.onFailure(webSocket, t, response);
     }
 
     /**
@@ -60,7 +71,8 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-        super.onMessage(webSocket, text);
+        log.info("[YuniWebSocketListener.onMessage]收到文本消息: {}", text);
+        proxyListener.onMessage(webSocket, text);
     }
 
     /**
@@ -70,7 +82,8 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
-        super.onMessage(webSocket, bytes);
+        log.info("[YuniWebSocketListener.onMessage]收到二进制消息: {}", bytes);
+        proxyListener.onMessage(webSocket, bytes);
     }
 
     /**
@@ -80,6 +93,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-        super.onOpen(webSocket, response);
+        log.info("[YuniWebSocketListener.onOpen]连接成功，服务器响应: {}", response);
+        proxyListener.onOpen(webSocket, response);
     }
 }

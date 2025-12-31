@@ -3,42 +3,43 @@ package com.yuier.yuni.engine.manager.init;
 import com.yuier.yuni.adapter.config.OneBotCommunicate;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.event.OneBotEvent;
-import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketListener;
+import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
-import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.engine.event.EventBridge;
 import com.yuier.yuni.event.detector.message.command.CommandMatcher;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_EVENT_SOCKET_ID;
 
 /**
- * @Title: OneBotEventWsListener
+ * @Title: OneBotEventWsProxyListener
  * @Author yuier
- * @Package com.yuier.yuni.adapter.qq.websocket
- * @Date 2025/12/29 3:31
- * @description:
+ * @Package com.yuier.yuni.engine.manager.init
+ * @Date 2025/12/31 8:07
+ * @description: 事件监听器代理
  */
 
 @Slf4j
-@Component
-public class OneBotEventWsListener extends YuniWebSocketListener {
+@Data
+public class OneBotEventWsProxyListener implements YuniBusinessProxyListener {
 
-    @Autowired
     private OneBotAdapter adapter;
-    @Autowired
     private EventBridge eventBridge;
-    @Autowired
-    private OneBotCommunicate config;
-    @Autowired
+    OneBotCommunicate config;
     YuniWebSocketManager manager;
+
+    public OneBotEventWsProxyListener(OneBotAdapter adapter, EventBridge eventBridge, OneBotCommunicate config, YuniWebSocketManager manager) {
+        this.adapter = adapter;
+        this.eventBridge = eventBridge;
+        this.config = config;
+        this.manager = manager;
+    }
 
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
@@ -88,6 +89,9 @@ public class OneBotEventWsListener extends YuniWebSocketListener {
         eventBridge.publishRawEvent(oneBotEvent);
     }
 
+    /**
+     * 处理完消息后，重置一下系统状态
+     */
     private void clearSystemAfterHandleMessage() {
         CommandMatcher.clear();
     }

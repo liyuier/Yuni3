@@ -1,10 +1,11 @@
 package com.yuier.yuni.engine.manager.init;
 
 import com.yuier.yuni.adapter.config.OneBotCommunicate;
+import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
+import com.yuier.yuni.engine.event.EventBridge;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,9 @@ public class SystemInitializeProcessor {
     @Autowired
     private YuniWebSocketManager manager;
     @Autowired
-    OneBotEventWsListener eventListener;
+    OneBotAdapter adapter;
+    @Autowired
+    private EventBridge eventBridge;
 
     public void checkDatabaseFile() throws IOException {
         // 检查数据库文件是否存在
@@ -55,12 +58,17 @@ public class SystemInitializeProcessor {
     public void startOneBotEventSession() {
         if ("ws".equals(mode)) {
             // 建立到 /event 的连接
-            OkHttpClient eventClient = new OkHttpClient();
             Request eventRequest = new Request.Builder()
                     .url(config.getWsUrl() + "/event")
                     .addHeader("Authorization", "Bearer " + config.getToken())
                     .build();
-            YuniWebSocketConnector eventConnector = new YuniWebSocketConnector(eventClient, eventRequest, eventListener);
+            OneBotEventWsProxyListener eventProxyListener = new OneBotEventWsProxyListener(
+                    adapter,
+                    eventBridge,
+                    config,
+                    manager
+            );
+            YuniWebSocketConnector eventConnector = new YuniWebSocketConnector(eventRequest, eventProxyListener);
             eventConnector.setTimeOutInterval(config.getWsTimeout());
             eventConnector.setHeartBeatInterval(config.getWsHeartbeatInterval());
             manager.startNewConnection(ONEBOT_EVENT_SOCKET_ID, eventConnector);

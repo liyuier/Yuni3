@@ -48,8 +48,8 @@ public class OneBotAdapterConfig {
     @Bean
     @ConditionalOnProperty(name = "onebot.communication.mode", havingValue = "ws")
     public OneBotAdapter oneBotWsAdapter() {
-        OneBotWsAdapter oneBotWsAdapter = new OneBotWsAdapter(oneBotDeserializer, oneBotWsSessionStarter, yuniWebSocketManager);
-        oneBotWsSessionStarter.startOneBotSession();
+        OneBotWsAdapter oneBotWsAdapter = new OneBotWsAdapter(oneBotDeserializer);
+        oneBotWsSessionStarter.startOneBotApiSession();
         OneBotApiWsClient apiClient = new OneBotApiWsClient(yuniWebSocketManager.getWebSocket(ONEBOT_API_SOCKET_ID), oneBotDeserializer, oneBotSerialization);
         oneBotWsAdapter.setApiClient(apiClient);
         return oneBotWsAdapter;
