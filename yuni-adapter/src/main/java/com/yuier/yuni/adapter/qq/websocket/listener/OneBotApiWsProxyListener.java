@@ -2,6 +2,7 @@ package com.yuier.yuni.adapter.qq.websocket.listener;
 
 import com.yuier.yuni.adapter.config.OneBotCommunicate;
 import com.yuier.yuni.adapter.qq.websocket.module.WsResponse;
+import com.yuier.yuni.core.net.ws.yuni.WsRequestModel;
 import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
@@ -93,7 +94,8 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
         try {
             WsResponse response = deserializer.deserialize(text, WsResponse.class);
             // 根据 echo 取出 future
-            CompletableFuture<String> future = connector.getRequestFutures().remove(response.getEcho());
+            WsRequestModel requestModel = connector.getRequestModelMap().remove(response.getEcho());
+            CompletableFuture<String> future = requestModel.getFuture();
             if (future != null) {
                 // 检查状态码
                 if (response.getRetcode() == 0) {

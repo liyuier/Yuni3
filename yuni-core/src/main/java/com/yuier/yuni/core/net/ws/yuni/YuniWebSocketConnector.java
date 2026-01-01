@@ -32,7 +32,7 @@ public class YuniWebSocketConnector {
 
     private WebSocket webSocket;
 
-    private Map<String, CompletableFuture<String>> requestFutures = new ConcurrentHashMap<>();
+    private Map<String, WsRequestModel> requestModelMap = new ConcurrentHashMap<>();
 
     private int timeOutInterval = 3000;  // 默认超时时间为 3 秒
     private int heartBeatInterval = 30000;  // 默认心跳间隔为 30 秒
@@ -65,11 +65,12 @@ public class YuniWebSocketConnector {
         // 发送消息，并创建回调 future
         CompletableFuture<String> future = new CompletableFuture<>();
         // 将发送出去的消息加入等待队列
-        requestFutures.put(echoFlag, future);
+        WsRequestModel wsRequestModel = new WsRequestModel(future, echoFlag, message);
+        requestModelMap.put(echoFlag, wsRequestModel);
         webSocket.send(message);
 
         // 设置超时时间
-        setTimeOut(future, echoFlag);
+        setTimeOut(wsRequestModel, echoFlag);
 
         // 等待 future 完成
         try {
@@ -81,19 +82,20 @@ public class YuniWebSocketConnector {
         }
     }
 
-    private void setTimeOut(CompletableFuture<String> future, String echoFlag) {
-        new Thread(() -> {  // 启动一个新线程等待到配置的超时时间结束
+    private void setTimeOut(WsRequestModel wsRequestModel, String echoFlag) {
+        new Thread(() -> {
             try {
-                Thread.sleep(timeOutInterval); // 等待直到超时结束
-                if (future.isDone()){  // 这玩意会在 listener 里处理
+                Thread.sleep(timeOutInterval); // 循环等待直到心跳间隔结束
+                if (wsRequestModel.getFuture().isDone()){  // 这玩意会在 listener 里处理
                     return;
                 }
-                // 如果到超时时间发现 future 没有完成，则认为请求超时，抛出异常，移除该 future
-                future.completeExceptionally(new RuntimeException("一条请求超时，消息标识为: " + echoFlag));
-                requestFutures.remove(echoFlag);
+                // 如果到心跳间隔时间发现 future 没有完成，则认为请求超时，抛出异常，移除该 future
+                wsRequestModel.getFuture().completeExceptionally(new RuntimeException("一条请求超时，请求内容为: " + wsRequestModel.getMessage()));
+                requestModelMap.remove(echoFlag);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }).start();
     }
+
 }

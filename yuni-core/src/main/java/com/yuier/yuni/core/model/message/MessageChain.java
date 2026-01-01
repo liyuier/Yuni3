@@ -58,7 +58,7 @@ public class MessageChain {
      * @return 是否以文本消息段开头
      */
     public Boolean startWithTextData() {
-        return getSegment(FIRST_INDEX).typeOf(TEXT) &&  // 第一个消息段是文本消息段
+        return !content.isEmpty() && getSegment(FIRST_INDEX).typeOf(TEXT) &&  // 第一个消息段是文本消息段
                 !((TextSegment) getSegment(FIRST_INDEX)).getText().trim().isEmpty();  // 文本消息段内容不为空
     }
 
@@ -76,7 +76,7 @@ public class MessageChain {
     }
 
     public boolean startWithReplyData() {
-        return content.get(FIRST_INDEX).typeOf(REPLY);
+        return !content.isEmpty() && content.get(FIRST_INDEX).typeOf(REPLY);
     }
 
     public MessageSegment removeSegment(int index) {
