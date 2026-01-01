@@ -146,17 +146,21 @@ public class PassivePluginMatcher {
             if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
                 YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
                 if (detector.match(event)) {
+                    YuniNoticeEvent yuniNoticeEvent = event.getYuniNoticeEvent();
+                    log.info(yuniNoticeEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     CompletableFuture.runAsync(() -> {
                         try {
-                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event.getYuniNoticeEvent());
+                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniNoticeEvent);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();
                         }
                     });
+                    return;
                 }
             }
         }
+        log.info(event.toLogString());
     }
 
     public void matchRequestEvent(YuniRequestEvent event, PluginContainer pluginContainer) {

@@ -43,7 +43,6 @@ public class YuniEventDispatcher {
 
     @EventListener
     public void noticeEventHandler(YuniNoticeEvent event) {
-        log.info(event.toLogString());
         pluginManager.handleNoticeEvent(event);
     }
 

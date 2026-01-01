@@ -1,9 +1,11 @@
 package com.yuier.yuni.event.util;
 
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
+import com.yuier.yuni.core.model.bot.BotModel;
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
@@ -97,7 +99,7 @@ public class EventLogUtil {
      */
     public static String getGroupMemberName(Long groupId, Long userId) {
         GroupMemberInfo groupMemberInfo = getGroupMemberInfo(groupId, userId);
-        return groupMemberInfo.getCardOrNickname();
+        return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
     }
 
     public static GroupInfo getGroupInfo(Long groupId) {
@@ -127,6 +129,9 @@ public class EventLogUtil {
      * @return 群成员在群中的描述
      */
     public static String memberNameAndIdLogString(Long groupId, Long userId) {
+        if (userId.equals(getBotId())) {
+            return botNameAndIdLogString();
+        }
         return "用户: " + EventLogUtil.getGroupMemberName(groupId, userId) + "(" + userId + ") ";
     }
 
@@ -135,7 +140,23 @@ public class EventLogUtil {
     }
 
     public static String userNameAndIdLogString(Long userId) {
+        if (userId.equals(getBotId())) {
+            return botNameAndIdLogString();
+        }
         GetStrangerInfo strangerInfo = getOneBotAdapter().getStrangerInfo(userId, true);
         return "好友: " + strangerInfo.getNickname() + "(" + userId + ") ";
+    }
+
+    public static BotModel getBotModelConfig() {
+        return SpringContextUtil.getBean(BotModel.class);
+    }
+
+    public static Long getBotId() {
+        return getBotModelConfig().getId();
+    }
+
+    public static String botNameAndIdLogString() {
+        BotModel botModelConfig = getBotModelConfig();
+        return "Bot: " + botModelConfig.getNickName() + "(" + botModelConfig.getId() + ") ";
     }
 }

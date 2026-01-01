@@ -27,6 +27,6 @@ public class PokeEvent extends YuniNoticeEvent {
         String userLogStr = EventLogUtil.memberNameAndIdLogString(groupId, userId);
         String targetLogStr = EventLogUtil.memberNameAndIdLogString(groupId, targetId);
         String groupLogStr = EventLogUtil.groupNameAndIdLogString(groupId);
-        return userLogStr + " 在" + groupLogStr + "戳了戳" + targetLogStr;
+        return userLogStr + "在" + groupLogStr + "戳了戳 " + targetLogStr;
     }
 }
