@@ -1,6 +1,7 @@
 package com.yuier.yuni.core.model.message;
 
 import com.yuier.yuni.core.constants.MessageSegmentTypes;
+import com.yuier.yuni.core.model.message.segment.AtSegment;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -64,6 +65,10 @@ public class MessageChain {
     public MessageChain addSegment(MessageSegment segment) {
         content.add(segment);
         return this;
+    }
+
+    public MessageChain addAt(long targetId) {
+        return addSegment(new AtSegment(String.valueOf(targetId))).addTextSegment(" ");
     }
 
     public MessageChain addTextSegment(String text) {

@@ -25,6 +25,10 @@ public class AtData {
     // 被 @ 的 QQ 用户名
     private String name;
 
+    public AtData(String qq) {
+        this.qq = qq;
+    }
+
     @Override
     public String toString() {
         return "[@" + this.qq + "]";

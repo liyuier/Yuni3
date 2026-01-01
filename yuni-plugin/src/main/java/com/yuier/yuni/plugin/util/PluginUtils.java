@@ -1,8 +1,10 @@
 package com.yuier.yuni.plugin.util;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.adapter.qq.http.OneBotHttpAdapter;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.bot.BotModel;
+import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.core.util.SpringContextUtil;
@@ -238,5 +240,13 @@ public class PluginUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void sendGroupMessage(long groupId, MessageChain message) {
+        getOneBotAdapter().sendGroupMessage(groupId, message);
+    }
+
+    public static void sendPrivateMessage(long userId, MessageChain message) {
+        getOneBotAdapter().sendPrivateMessage(userId, message);
     }
 }

@@ -25,6 +25,11 @@ public class AtSegment extends MessageSegment {
         super("at");
     }
 
+    public AtSegment(String qq) {
+        super("at");
+        this.data = new AtData(qq);
+    }
+
     public String getQq() {
         return data != null ? data.getQq() : null;
     }
