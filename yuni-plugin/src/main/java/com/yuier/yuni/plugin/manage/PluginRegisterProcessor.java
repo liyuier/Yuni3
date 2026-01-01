@@ -5,6 +5,9 @@ import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.detector.message.YuniEventDetector;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
+import com.yuier.yuni.event.detector.meta.YuniMetaDetector;
+import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
+import com.yuier.yuni.event.detector.request.YuniRequestDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
@@ -150,6 +153,12 @@ public class PluginRegisterProcessor {
             pluginContainer.getCommandPlugins().put(pluginId, instance);
         } else if (detector instanceof PatternDetector) {
             pluginContainer.getPatternPlugins().put(pluginId, instance);
+        } else if (detector instanceof YuniNoticeDetector) {
+            pluginContainer.getNoneMessagePlugins().put(pluginId, instance);
+        } else if (detector instanceof YuniRequestDetector) {
+            pluginContainer.getNoneMessagePlugins().put(pluginId, instance);
+        } else if (detector instanceof YuniMetaDetector) {
+            pluginContainer.getNoneMessagePlugins().put(pluginId, instance);
         }
     }
 

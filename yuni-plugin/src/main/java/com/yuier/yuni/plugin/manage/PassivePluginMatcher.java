@@ -7,6 +7,7 @@ import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
+import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -118,14 +119,44 @@ public class PassivePluginMatcher {
         return userPermission.getPriority() >= requiredPermission.getPriority();
     }
 
+    /**
+     * 通知事件只检查用户是否被 BAN
+     * @param instance 被动插件实例
+     * @param event 事件
+     * @return 是否通过
+     */
+    private boolean checkPermission(PassivePluginInstance instance, YuniNoticeEvent event) {
+        // 获取用户权限
+        UserPermission userPermission = permissionManager.getUserPermission(event, instance.getPluginMetadata().getId());
+        return userPermission.getPriority() > UserPermission.BLOCKED.getPriority();
+    }
+
 
     // 检查插件是否使能
     public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
         return pluginEnableProcessor.isPluginEnabled(event, instance);
     }
 
-    public void matchNoticeEvent(YuniNoticeEvent event, PluginContainer pluginContainer) {
+    private boolean isPluginEnabled(YuniNoticeEvent event, PassivePluginInstance instance) {
+        return pluginEnableProcessor. isPluginEnabled(event, instance);
+    }
 
+    public void matchNoticeEvent(YuniNoticeEvent event, PluginContainer pluginContainer) {
+        for (PassivePluginInstance instance : pluginContainer.getNoneMessagePlugins().values()) {
+            if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
+                YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
+                if (detector.match(event)) {
+                    log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event.getYuniNoticeEvent());
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        }
     }
 
     public void matchRequestEvent(YuniRequestEvent event, PluginContainer pluginContainer) {

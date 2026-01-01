@@ -5,6 +5,7 @@ import com.yuier.yuni.core.model.bot.BotModel;
 import com.yuier.yuni.core.util.BusinessMappingUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.permission.init.UserPermissionInitProcessor;
 import com.yuier.yuni.permission.service.GroupUserPluginPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,11 @@ public class UserPermissionManager {
             return userPermission;
         }
         return getUserDefaultPermission(event);
+    }
+
+    public UserPermission getUserPermission(YuniNoticeEvent event, String pluginId) {
+        UserPermission userPermissionException = getUserPermissionException(event.getRawNoticeEvent().getGroupId(), pluginId, event.getRawNoticeEvent().getUserId());
+        return userPermissionException != null ? userPermissionException : UserPermission.USER;
     }
 
     /**

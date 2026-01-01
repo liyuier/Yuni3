@@ -26,4 +26,8 @@ public class YuniNoticeEvent extends SpringYuniEvent {
     public String toLogString() {
         return "收到未定义通知事件。";
     }
+
+    public boolean isPrivate() {
+        return false;
+    }
 }

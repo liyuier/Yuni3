@@ -84,6 +84,7 @@ public class EventBridge {
         NoticeEvent noticeEvent = (NoticeEvent) event;
         YuniNoticeEvent yuniNoticeEvent = new YuniNoticeEvent();
         yuniNoticeEvent.setRawNoticeEvent(noticeEvent);
+        yuniNoticeEvent.setNoticeType(noticeEvent.getNoticeType());
         return yuniNoticeEvent;
     }
 
@@ -91,6 +92,7 @@ public class EventBridge {
         RequestEvent requestEvent = (RequestEvent) event;
         YuniRequestEvent yuniRequestEvent = new YuniRequestEvent();
         yuniRequestEvent.setRawRequestEvent(requestEvent);
+        yuniRequestEvent.setRequestType(requestEvent.getRequestType());
         return yuniRequestEvent;
     }
 
@@ -98,6 +100,7 @@ public class EventBridge {
         MetaEvent metaEvent = (MetaEvent) event;
         YuniMetaEvent yuniMetaEvent = new YuniMetaEvent();
         yuniMetaEvent.setRawMetaEvent(metaEvent);
+        yuniMetaEvent.setMetaEventType(metaEvent.getMetaEventType());
         return yuniMetaEvent;
     }
 }

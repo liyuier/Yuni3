@@ -12,12 +12,17 @@ import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 
 public class DefaultYuniMetaDetector implements YuniMetaDetector {
 
+    public DefaultYuniMetaDetector(YuniMetaMatcher matcher) {
+        this.matcher = matcher;
+    }
+
     private YuniMetaMatcher matcher;
     private YuniMetaEvent yuniMetaEvent;
 
     @Override
     public Boolean match(YuniMetaEvent event) {
         yuniMetaEvent = matcher.match(event);
+        event.setYuniMetaEvent(yuniMetaEvent);
         return yuniMetaEvent != null;
     }
 

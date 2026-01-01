@@ -34,7 +34,7 @@ public class PluginContainer {
 
     private final Map<String, PassivePluginInstance> commandPlugins = new ConcurrentHashMap<>();
     private final Map<String, PassivePluginInstance> patternPlugins = new ConcurrentHashMap<>();
-    private final Map<String, PassivePluginInstance> noticeAndRequestPlugins = new ConcurrentHashMap<>();
+    private final Map<String, PassivePluginInstance> noneMessagePlugins = new ConcurrentHashMap<>();
 
     public PluginInstance getPluginInstanceById(String pluginId) {
         ActivePluginInstance activePlugin = activePlugins.get(pluginId);
@@ -49,7 +49,7 @@ public class PluginContainer {
         if (passivePlugin != null) {
             return passivePlugin;
         }
-        passivePlugin = noticeAndRequestPlugins.get(pluginId);
+        passivePlugin = noneMessagePlugins.get(pluginId);
         if (passivePlugin != null) {
             return passivePlugin;
         }

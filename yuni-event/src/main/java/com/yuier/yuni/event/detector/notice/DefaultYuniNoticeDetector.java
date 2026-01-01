@@ -12,12 +12,17 @@ import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 
 public class DefaultYuniNoticeDetector implements YuniNoticeDetector {
 
+    public DefaultYuniNoticeDetector(YuniNoticeMatcher matcher) {
+        this.matcher = matcher;
+    }
+
     YuniNoticeMatcher matcher;
     YuniNoticeEvent yuniNoticeMatcher;
 
     @Override
     public Boolean match(YuniNoticeEvent event) {
         yuniNoticeMatcher = matcher.match(event);
+        event.setYuniNoticeEvent(yuniNoticeMatcher);
         return yuniNoticeMatcher != null;
     }
 

@@ -4,6 +4,7 @@ import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.bot.BotModel;
 import com.yuier.yuni.core.util.OneBotDeserializer;
+import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.manage.PluginRegisterProcessor;
@@ -217,5 +218,25 @@ public class PluginUtils {
     public static String getPluginId(YuniPlugin plugin) {
         PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
         return pluginRegisterProcessor.mapToPluginId(plugin);
+    }
+
+    public static <T> T serialize(String json, Class<T> clazz) {
+        OneBotDeserializer deserialization = SpringContextUtil.getBean(OneBotDeserializer.class);
+        try {
+            return deserialization.deserialize(json, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String deserialize(Object obj) {
+        OneBotSerialization serialization = SpringContextUtil.getBean(OneBotSerialization.class);
+        try {
+            return serialization.serialize( obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

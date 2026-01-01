@@ -1,6 +1,7 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.service.GroupPluginAbilityService;
@@ -29,6 +30,14 @@ public class PluginEnableProcessor {
     // 判断插件是否使能
     public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
         Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginMetadata().getId());
+        if (pluginEnabledException != null) {
+            return pluginEnabledException;
+        }
+        return getPluginDefaultEnabled(instance);
+    }
+
+    public boolean isPluginEnabled(YuniNoticeEvent event, PassivePluginInstance instance) {
+        Boolean pluginEnabledException = getPluginEnabledException(event.getRawNoticeEvent().getGroupId(), instance.getPluginMetadata().getId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }
