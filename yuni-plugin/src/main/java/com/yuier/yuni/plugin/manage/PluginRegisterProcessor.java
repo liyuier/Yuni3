@@ -154,11 +154,11 @@ public class PluginRegisterProcessor {
         } else if (detector instanceof PatternDetector) {
             pluginContainer.getPatternPlugins().put(pluginId, instance);
         } else if (detector instanceof YuniNoticeDetector) {
-            pluginContainer.getNoneMessagePlugins().put(pluginId, instance);
+            pluginContainer.getNoticePlugins().put(pluginId, instance);
         } else if (detector instanceof YuniRequestDetector) {
-            pluginContainer.getNoneMessagePlugins().put(pluginId, instance);
+            pluginContainer.getRequestPlugins().put(pluginId, instance);
         } else if (detector instanceof YuniMetaDetector) {
-            pluginContainer.getNoneMessagePlugins().put(pluginId, instance);
+            pluginContainer.getMetaPlugins().put(pluginId, instance);
         }
     }
 

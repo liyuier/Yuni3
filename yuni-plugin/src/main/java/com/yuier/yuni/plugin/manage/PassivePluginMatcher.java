@@ -7,7 +7,9 @@ import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
+import com.yuier.yuni.event.detector.meta.YuniMetaDetector;
 import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
+import com.yuier.yuni.event.detector.request.YuniRequestDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -142,7 +144,7 @@ public class PassivePluginMatcher {
     }
 
     public void matchNoticeEvent(YuniNoticeEvent event, PluginContainer pluginContainer) {
-        for (PassivePluginInstance instance : pluginContainer.getNoneMessagePlugins().values()) {
+        for (PassivePluginInstance instance : pluginContainer.getNoticePlugins().values()) {
             if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
                 YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
                 if (detector.match(event)) {
@@ -164,10 +166,42 @@ public class PassivePluginMatcher {
     }
 
     public void matchRequestEvent(YuniRequestEvent event, PluginContainer pluginContainer) {
-
+        for (PassivePluginInstance instance : pluginContainer.getRequestPlugins().values()) {
+            YuniRequestDetector detector = (YuniRequestDetector) instance.getDetector();
+            if (detector.match(event)) {
+                YuniRequestEvent yuniRequestEvent = event.getYuniRequestEvent();
+                log.info(yuniRequestEvent.toLogString());
+                log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniRequestEvent);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                });
+                return;
+            }
+        }
+        log.info(event.toLogString());
     }
 
     public void matchMetaEvent(YuniMetaEvent event, PluginContainer pluginContainer) {
-
+        for (PassivePluginInstance instance : pluginContainer.getMetaPlugins().values()) {
+            YuniMetaDetector detector = (YuniMetaDetector) instance.getDetector();
+            if (detector.match(event)) {
+                YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
+                log.info(yuniMetaEvent.toLogString());
+                log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniMetaEvent);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                });
+                return;
+            }
+        }
+        log.info(event.toLogString());
     }
 }
