@@ -120,6 +120,8 @@ public class PluginManager {
     }
 
     public void removeActivePlugin(String pluginId) {
+        // 移除主动插件
+
     }
 
     public void removePassivePlugin(String pluginId) {

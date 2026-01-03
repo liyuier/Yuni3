@@ -8,7 +8,7 @@ import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
-import com.yuier.yuni.plugin.model.active.scheduled.ScheduleActionPlugin;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 
 /**
@@ -19,7 +19,7 @@ import com.yuier.yuni.plugin.util.PluginUtils;
  * @description: 要色图
  */
 
-public class OhaYo extends ScheduleActionPlugin {
+public class OhaYo extends ScheduledPlugin {
 
     @Override
     public String cronExpression() {

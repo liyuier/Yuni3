@@ -1,9 +1,8 @@
 package com.yuier.yuni.plugin.util;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.adapter.qq.http.OneBotHttpAdapter;
+import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
-import com.yuier.yuni.core.model.bot.BotModel;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
@@ -42,8 +41,8 @@ public class PluginUtils {
      * 获取 Bot 配置实体
      * @return Bot 配置实体
      */
-    public static BotModel getBotModelConfig() {
-        return SpringContextUtil.getBean(BotModel.class);
+    public static Bot getBotModelConfig() {
+        return SpringContextUtil.getBean(Bot.class);
     }
 
     /**
@@ -248,5 +247,9 @@ public class PluginUtils {
 
     public static void sendPrivateMessage(long userId, MessageChain message) {
         getOneBotAdapter().sendPrivateMessage(userId, message);
+    }
+
+    public static String getAppDatabaseUrl() {
+        return "jdbc:sqlite:./" + getBotAppConfig().getSqliteDbFile();
     }
 }

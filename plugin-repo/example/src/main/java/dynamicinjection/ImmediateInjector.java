@@ -3,7 +3,7 @@ package dynamicinjection;
 import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
-import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
-public class ImmediateInjector extends ImmediateActionPlugin {
+public class ImmediateInjector extends ImmediatePlugin {
     @Override
     public Action getAction() {
         return () -> {

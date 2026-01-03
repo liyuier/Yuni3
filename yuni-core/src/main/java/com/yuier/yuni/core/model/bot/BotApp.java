@@ -16,4 +16,6 @@ import lombok.NoArgsConstructor;
 public class BotApp {
 
     private String commandFlag;
+    private String pluginDirectory;
+    private String sqliteDbFile;
 }

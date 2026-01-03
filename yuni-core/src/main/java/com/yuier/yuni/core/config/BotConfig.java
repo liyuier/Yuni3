@@ -1,6 +1,8 @@
 package com.yuier.yuni.core.config;
 
-import com.yuier.yuni.core.model.bot.BotModel;
+import com.yuier.yuni.core.model.bot.Bot;
+import com.yuier.yuni.core.model.bot.BotApp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -23,12 +25,16 @@ public class BotConfig {
     @Value("${bot.master-qq}")
     private Long masterId;
 
+    @Autowired
+    private BotApp botApp;
+
     @Bean
-    public BotModel bot() {
-        BotModel botModel = new BotModel();
-        botModel.setId(id);
-        botModel.setNickName(nickName);
-        botModel.setMasterId(masterId);
-        return botModel;
+    public Bot bot() {
+        Bot bot = new Bot();
+        bot.setId(id);
+        bot.setNickName(nickName);
+        bot.setMasterId(masterId);
+        bot.setBotApp(botApp);
+        return bot;
     }
 }

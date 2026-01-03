@@ -53,10 +53,11 @@ public class PluginEnable {
 
         // TODO 主动插件需要调用插件本身的 enable() 方法
         if (pluginInstance instanceof ActivePluginInstance) {
-            YuniPlugin plugin = pluginInstance.getPlugin();
-            plugin.enable(new PluginEnableEvent(eventContext.getGroupId(), eventContext.getUserId()));
             eventContext.getChatSession().response("主动类插件暂不完全支持配置开启 / 关闭，正在加紧适配中。。。");
         }
+
+        YuniPlugin plugin = pluginInstance.getPlugin();
+        plugin.enable(new PluginEnableEvent(eventContext.getGroupId(), eventContext.getUserId()));
 
         PluginManager pluginManager = PluginUtils.getBean(PluginManager.class);
         pluginManager.enablePlugin(eventContext, pluginId);
@@ -91,10 +92,11 @@ public class PluginEnable {
         }
         // TODO 主动插件需要调用插件本身的 disable() 方法
         if (pluginInstance instanceof ActivePluginInstance) {
-            YuniPlugin plugin = pluginInstance.getPlugin();
-            plugin.disable(new PluginDisableEvent(eventContext.getGroupId(), eventContext.getUserId()));
             eventContext.getChatSession().response("主动类插件暂不完全支持配置开启 / 关闭，正在加紧适配中。。。");
         }
+        
+        YuniPlugin plugin = pluginInstance.getPlugin();
+        plugin.disable(new PluginDisableEvent(eventContext.getGroupId(), eventContext.getUserId()));
         PluginManager pluginManager = PluginUtils.getBean(PluginManager.class);
         pluginManager.disablePlugin(eventContext, pluginId);
 

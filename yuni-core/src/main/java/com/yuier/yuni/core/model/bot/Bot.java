@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Title: BotModel
+ * @Title: Bot
  * @Author yuier
  * @Package com.yuier.yuni.core.model.bot
  * @Date 2025/12/24 3:39
@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class BotModel {
+public class Bot {
     private Long id;
     private String nickName;
     private Long masterId;
+    private BotApp botApp;
 }

@@ -1,7 +1,7 @@
 package com.yuier.yuni.permission.manage;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.core.model.bot.BotModel;
+import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.util.BusinessMappingUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
@@ -67,8 +67,8 @@ public class UserPermissionManager {
     public UserPermission getUserDefaultPermission(YuniMessageEvent event) {
         if (event.isPrivate()) {
             // 判断消息发送者是否为 master
-            BotModel botModel = SpringContextUtil.getBean(BotModel.class);
-            if (botModel.getMasterId().equals(event.getUserId())) {
+            Bot bot = SpringContextUtil.getBean(Bot.class);
+            if (bot.getMasterId().equals(event.getUserId())) {
                 return UserPermission.MASTER;
             }
             return UserPermission.USER;

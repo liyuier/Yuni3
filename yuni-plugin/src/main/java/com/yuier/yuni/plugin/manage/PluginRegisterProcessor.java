@@ -60,13 +60,12 @@ public class PluginRegisterProcessor {
     }
 
     public void registerPluginInstances(List<PluginInstance> instances, PluginContainer pluginContainer) {
-        // 在入口处统一维护插件示例-id映射
-        for (PluginInstance instance : instances) {
-            mapPluginBeanToId(instance);
-        }
-
         // 根据插件类型注册
         for (PluginInstance instance : instances) {
+            // 维护插件示例-id映射
+            mapPluginBeanToId(instance);
+            // 调用一下插件的 initialize 方法
+            instance.getPlugin().initialize();
             if (instance instanceof ActivePluginInstance) {
                 // 注册主动插件
                 registerActivePlugin((ActivePluginInstance) instance, pluginContainer);

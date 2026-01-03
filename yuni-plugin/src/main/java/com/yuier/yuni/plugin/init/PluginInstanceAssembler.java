@@ -14,9 +14,9 @@ import com.yuier.yuni.event.detector.message.YuniEventDetector;
 import com.yuier.yuni.plugin.model.*;
 import com.yuier.yuni.plugin.model.active.ActivePlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
-import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInterface;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
-import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPlugin;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInterface;
 import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -201,13 +201,13 @@ public class PluginInstanceAssembler {
                                                             PluginMetadata metadata) {
         ActivePluginInstance instance = null;
         // 判断是定时任务插件还是即使任务插件
-        if (activePlugin instanceof ScheduledPlugin scheduledPlugin) {
+        if (activePlugin instanceof ScheduledPluginInterface scheduledPluginInterface) {
             instance = new ScheduledPluginInstance();
-            instance.setPlugin(scheduledPlugin);
-            ((ScheduledPluginInstance) instance).setCronExpression(scheduledPlugin.cronExpression());
-        } else if (activePlugin instanceof ImmediatePlugin immediatePlugin) {
+            instance.setPlugin(scheduledPluginInterface);
+            ((ScheduledPluginInstance) instance).setCronExpression(scheduledPluginInterface.cronExpression());
+        } else if (activePlugin instanceof ImmediatePluginInterface immediatePluginInterface) {
             instance = new ImmediatePluginInstance();
-            instance.setPlugin(immediatePlugin);
+            instance.setPlugin(immediatePluginInterface);
         }
         assert instance != null;
         instance.setPluginMetadata(metadata);

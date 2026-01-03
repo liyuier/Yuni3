@@ -1,0 +1,19 @@
+{
+  "module_id": "event-manage",
+  "module_name": "通用事件处理模块",
+  "plugins": [
+    {
+      "id": "notice.PokeNotice",
+      "name": "戳一戳事件处理",
+      "version": "0.0.1",
+      "description": "戳一戳事件处理",
+      "tips": [
+        "戳一戳 bot ，bot 会回复"
+      ],
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true,
+      "build_in": true
+    }
+  ]
+}

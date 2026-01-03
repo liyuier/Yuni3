@@ -1,11 +1,10 @@
 package com.yuier.yuni.event.util;
 
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
-import com.yuier.yuni.core.model.bot.BotModel;
+import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
@@ -147,8 +146,8 @@ public class EventLogUtil {
         return "好友: " + strangerInfo.getNickname() + "(" + userId + ") ";
     }
 
-    public static BotModel getBotModelConfig() {
-        return SpringContextUtil.getBean(BotModel.class);
+    public static Bot getBotModelConfig() {
+        return SpringContextUtil.getBean(Bot.class);
     }
 
     public static Long getBotId() {
@@ -156,7 +155,7 @@ public class EventLogUtil {
     }
 
     public static String botNameAndIdLogString() {
-        BotModel botModelConfig = getBotModelConfig();
-        return "Bot: " + botModelConfig.getNickName() + "(" + botModelConfig.getId() + ") ";
+        Bot botConfig = getBotModelConfig();
+        return "Bot: " + botConfig.getNickName() + "(" + botConfig.getId() + ") ";
     }
 }

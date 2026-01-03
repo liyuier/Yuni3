@@ -6,7 +6,7 @@ import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
-import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 
 /**
@@ -17,7 +17,7 @@ import com.yuier.yuni.plugin.util.PluginUtils;
  * @description: 我是后背
  */
 
-public class IAmBack extends ImmediateActionPlugin {
+public class IAmBack extends ImmediatePlugin {
     @Override
     public Action getAction() {
         return () -> {

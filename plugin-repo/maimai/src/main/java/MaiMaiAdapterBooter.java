@@ -5,7 +5,7 @@ import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.plugin.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
-import com.yuier.yuni.plugin.model.active.immediate.ImmediateActionPlugin;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import config.MaiMaiAdapterConfig;
 import okhttp3.Request;
@@ -20,7 +20,7 @@ import static constants.MaiMaiConstants.WS_CONNECT_TO_MAIMAI_ADAPTER;
  * @description: maimai机器人适配器
  */
 
-public class MaiMaiAdapterBooter extends ImmediateActionPlugin {
+public class MaiMaiAdapterBooter extends ImmediatePlugin {
 
     @Override
     public Action getAction() {
