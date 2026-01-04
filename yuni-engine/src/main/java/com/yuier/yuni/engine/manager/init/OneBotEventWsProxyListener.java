@@ -63,11 +63,6 @@ public class OneBotEventWsProxyListener implements YuniBusinessProxyListener {
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
         try {
             handleTextMessage(text);
-        } catch (Exception e) {
-            log.error("[OneBotEventWsProxyListener.onMessage]处理 OneBot 消息时发生错误，即将重启。");
-            e.printStackTrace();
-            manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
-            log.info("[OneBotEventWsProxyListener.onMessage]已重启到 {} 的连接。",  config.getWsUrl() + "/event");
         } finally {
             clearSystemAfterHandleMessage();
         }
