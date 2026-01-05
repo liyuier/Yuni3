@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_EVENT_SOCKET_ID;
+import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_API_SOCKET_ID;
 
 /**
  * @Title: OneBotApiWsProxyListener
@@ -79,7 +79,7 @@ public class OneBotApiWsProxyListener implements YuniBusinessProxyListener {
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
         log.info("[OneBotApiWsProxyListener.onFailure]到 {} 的连接发生错误。错误信息：{}, 响应信息：{} 。 即将重启连接。",  config.getWsUrl() + "/api", t.getMessage(), response);
         t.printStackTrace();
-        manager.restartConnection(ONEBOT_EVENT_SOCKET_ID);
+        manager.restartConnection(ONEBOT_API_SOCKET_ID);
         log.info("[OneBotApiWsProxyListener.onFailure]已重启到 {} 的连接。",  config.getWsUrl() + "/api");
     }
 
