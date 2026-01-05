@@ -190,8 +190,6 @@ public class PassivePluginMatcher {
             YuniMetaDetector detector = (YuniMetaDetector) instance.getDetector();
             if (detector.match(event)) {
                 YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
-                log.info(yuniMetaEvent.toLogString());
-                log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                 CompletableFuture.runAsync(() -> {
                     try {
                         instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniMetaEvent);

@@ -14,6 +14,19 @@
       "dependencies": [],
       "default_enable": true,
       "build_in": true
+    },
+    {
+      "id": "meta.HeartBeatEvent",
+      "name": "OneBot 心跳事件处理",
+      "version": "0.0.1",
+      "description": "OneBot 心跳事件处理",
+      "tips": [
+        "接收心跳事件，简单打印一下"
+      ],
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true,
+      "build_in": true
     }
   ]
 }
