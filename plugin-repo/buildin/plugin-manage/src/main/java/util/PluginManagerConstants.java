@@ -19,4 +19,7 @@ public class PluginManagerConstants {
     public static final String PLUGIN_MANAGE_ENABLE_SEQ = "pluginSeq";
     public static final String PLUGIN_MANAGE_DISABLE = "关闭";
     public static final String PLUGIN_MANAGE_DISABLE_SEQ = "pluginSeq";
+
+    public static final String PLUGIN_MANAGE_RELOAD = "重载";
+    public static final String PLUGIN_MANAGE_RELOAD_SEQ = "pluginSeq";
 }

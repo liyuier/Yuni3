@@ -1,4 +1,4 @@
-package com.yuier.yuni.plugin.init;
+package com.yuier.yuni.plugin.manage.load;
 
 /**
  * @Title: PluginMetadataParser

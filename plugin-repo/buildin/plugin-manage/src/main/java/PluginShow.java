@@ -4,7 +4,7 @@ import com.yuier.yuni.core.model.message.segment.TextSegment;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
 import com.yuier.yuni.plugin.manage.PluginContainer;
-import com.yuier.yuni.plugin.manage.PluginEnableProcessor;
+import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.util.PluginUtils;

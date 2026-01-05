@@ -1,4 +1,4 @@
-package com.yuier.yuni.plugin.manage;
+package com.yuier.yuni.plugin.manage.match;
 
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.context.YuniMessageEvent;
@@ -11,6 +11,8 @@ import com.yuier.yuni.event.detector.meta.YuniMetaDetector;
 import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
 import com.yuier.yuni.event.detector.request.YuniRequestDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
+import com.yuier.yuni.plugin.manage.PluginContainer;
+import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.persistence.SavePluginCallEvent;

@@ -1,7 +1,7 @@
 package dynamicinjection;
 
-import com.yuier.yuni.plugin.event.PluginDisableEvent;
-import com.yuier.yuni.plugin.event.PluginEnableEvent;
+import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;

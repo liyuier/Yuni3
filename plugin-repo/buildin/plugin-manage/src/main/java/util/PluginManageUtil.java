@@ -4,7 +4,7 @@ import com.microsoft.playwright.*;
 import com.yuier.yuni.core.util.RedisUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.manage.PluginContainer;
-import com.yuier.yuni.plugin.manage.PluginEnableProcessor;
+import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;

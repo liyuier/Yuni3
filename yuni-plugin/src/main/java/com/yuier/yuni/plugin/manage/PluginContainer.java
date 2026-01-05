@@ -78,4 +78,16 @@ public class PluginContainer {
         String pluginId = getPluginIdByIndex(index);
         return getPluginInstanceById(pluginId);
     }
+
+    public void clear() {
+        pluginModuleIds.clear();
+        pluginIndexToIdMap.clear();
+        pluginModules.clear();
+        activePlugins.clear();
+        commandPlugins.clear();
+        patternPlugins.clear();
+        noticePlugins.clear();
+        requestPlugins.clear();
+        metaPlugins.clear();
+    }
 }

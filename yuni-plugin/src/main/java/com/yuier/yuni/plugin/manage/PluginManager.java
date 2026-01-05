@@ -5,9 +5,14 @@ import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
-import com.yuier.yuni.plugin.init.PluginInstanceAssembler;
+import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
+import com.yuier.yuni.plugin.manage.load.PluginInstanceAssembler;
+import com.yuier.yuni.plugin.manage.match.PassivePluginMatcher;
+import com.yuier.yuni.plugin.manage.register.PluginRegisterProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
+import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,16 +117,23 @@ public class PluginManager {
      * 插件卸载
      */
     public void unloadPlugin(String pluginId) {
-        // 移除主动插件的定时任务
-        removeActivePlugin(pluginId);
+        PluginInstance pluginInstance = pluginContainer.getPluginInstanceById(pluginId);
+        switch (pluginInstance) {
+            case null -> log.error("插件 {} 不存在", pluginId);
+            case ActivePluginInstance activePluginInstance ->
+                    // 移除主动插件
+                    removeActivePlugin(pluginId);
+            case PassivePluginInstance passivePluginInstance ->
+                    // 移除被动插件
+                    removePassivePlugin(pluginId);
+            default -> {
+            }
+        }
 
-        // 移除被动插件
-        removePassivePlugin(pluginId);
     }
 
     public void removeActivePlugin(String pluginId) {
-        // 移除主动插件
-
+        // 移除主动插件的定时任务
     }
 
     public void removePassivePlugin(String pluginId) {

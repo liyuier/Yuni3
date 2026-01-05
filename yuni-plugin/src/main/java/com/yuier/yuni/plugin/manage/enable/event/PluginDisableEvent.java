@@ -1,19 +1,19 @@
-package com.yuier.yuni.plugin.event;
+package com.yuier.yuni.plugin.manage.enable.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * @Title: PluginEnableEvent
+ * @Title: PluginDisableEvent
  * @Author yuier
  * @Package com.yuier.yuni.plugin.event
- * @Date 2025/12/27 20:38
+ * @Date 2025/12/27 20:46
  * @description:
  */
 
 @Data
 @AllArgsConstructor
-public class PluginEnableEvent {
+public class PluginDisableEvent {
 
     private Long groupId;
 

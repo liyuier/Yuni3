@@ -3,8 +3,8 @@ package com.yuier.yuni.plugin.model.passive.notice;
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.detector.notice.DefaultYuniNoticeDetector;
-import com.yuier.yuni.plugin.event.PluginDisableEvent;
-import com.yuier.yuni.plugin.event.PluginEnableEvent;
+import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.passive.PassivePlugin;
 
 /**

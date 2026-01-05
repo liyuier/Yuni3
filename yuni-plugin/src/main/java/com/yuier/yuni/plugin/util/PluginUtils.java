@@ -8,7 +8,7 @@ import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.manage.PluginManager;
-import com.yuier.yuni.plugin.manage.PluginRegisterProcessor;
+import com.yuier.yuni.plugin.manage.register.PluginRegisterProcessor;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
