@@ -3,9 +3,9 @@ package util;
 import com.microsoft.playwright.*;
 import com.yuier.yuni.core.util.RedisUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.plugin.manage.NewPluginContainer;
+import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
-import com.yuier.yuni.plugin.model.NewPluginModuleInstance;
+import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.util.PluginUtils;
@@ -92,7 +92,7 @@ public class PluginManageUtil {
     }
 
     public static Integer calculateHashCodeForShowingPluginDetail(YuniMessageEvent eventContext, String pluginId) {
-        NewPluginContainer container = PluginUtils.getBean(NewPluginContainer.class);
+        PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
         PluginInstance pluginInstance = container.getPluginInstanceByFullId(pluginId);
         return Objects.hash(
@@ -113,11 +113,11 @@ public class PluginManageUtil {
      * @return 插件列表的 hashCode
      */
     public static int calculateHashCodeForShowingPluginList(YuniMessageEvent event) {
-        NewPluginContainer container = PluginUtils.getBean(NewPluginContainer.class);
-        Map<String, NewPluginModuleInstance> pluginModules = container.getPluginModuleInstanceMap();
+        PluginContainer container = PluginUtils.getBean(PluginContainer.class);
+        Map<String, PluginModuleInstance> pluginModules = container.getPluginModuleInstanceMap();
         int[] singleHashes = new int[pluginModules.size()];
         int i = 0;
-        for (NewPluginModuleInstance moduleInstance : pluginModules.values()) {
+        for (PluginModuleInstance moduleInstance : pluginModules.values()) {
             singleHashes[i] = getModuleInstanceHashCodeForShowingPluginList(moduleInstance, event);
             i++;
         }
@@ -131,9 +131,9 @@ public class PluginManageUtil {
      * @param event 消息事件
      * @return 插件列表的 hashCode
      */
-    private static int getModuleInstanceHashCodeForShowingPluginList(NewPluginModuleInstance moduleInstance, YuniMessageEvent event) {
-        NewPluginContainer container = PluginUtils.getBean(NewPluginContainer.class);
-        List<PluginInstance> pluginInstances = container.getPluginListByModuleId(moduleInstance.getModuleId());
+    private static int getModuleInstanceHashCodeForShowingPluginList(PluginModuleInstance moduleInstance, YuniMessageEvent event) {
+        PluginContainer container = PluginUtils.getBean(PluginContainer.class);
+        List<PluginInstance> pluginInstances = container.getPluginInstanceListByModuleId(moduleInstance.getModuleId());
         int[] singleHashes = new int[pluginInstances.size()];
         for (int i = 0; i < pluginInstances.size(); i++) {
             PluginInstance pluginInstance = pluginInstances.get(i);

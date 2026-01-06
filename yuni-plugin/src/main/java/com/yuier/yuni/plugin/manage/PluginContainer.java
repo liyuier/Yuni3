@@ -127,11 +127,14 @@ public class PluginContainer {
 
     /**
      * 通过索引获取插件全限定 ID
-     * @param index 索引
+     * @param index 索引，从 1 开始
      * @return 插件全限定 ID
      */
     public String getPluginFullIdByIndex(int index) {
-        return pluginFullIds.get(index);
+        if (index <= 0 || index > pluginFullIds.size()) {
+            throw new IndexOutOfBoundsException("索引越界");
+        }
+        return pluginFullIds.get(index - 1);
     }
 
     /**

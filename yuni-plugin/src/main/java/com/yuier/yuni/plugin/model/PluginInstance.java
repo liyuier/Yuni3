@@ -17,7 +17,6 @@ public abstract class PluginInstance {
 
     private YuniPlugin plugin;
     private PluginMetadata pluginMetadata;
-    private String jarFileName;
 
     private int index;
 
@@ -38,6 +37,10 @@ public abstract class PluginInstance {
 
     public String getPluginName() {
         return pluginMetadata.getName();
+    }
+
+    public String getPluginDescription() {
+        return pluginMetadata.getDescription();
     }
 
     public Class<? extends YuniPlugin> getPluginClass() {

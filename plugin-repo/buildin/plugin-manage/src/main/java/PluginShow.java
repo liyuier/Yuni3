@@ -26,7 +26,7 @@ import static util.PluginManagerConstants.PLUGIN_MANAGE_VIEW;
  * @Title: PluginShow
  * @Author yuier
  * @Package PACKAGE_NAME
- * @Date 2025/12/28 3:11
+ * @Date 2026/1/7 0:55
  * @description: 插件信息展示
  */
 
@@ -36,14 +36,14 @@ public class PluginShow {
 
     /**
      * 显示插件列表
-     * @param eventContext  消息事件
-     * @param pluginManage  插件管理器
+     * @param eventContext  消息事件上下文
+     * @param pluginManage  插件管理插件，用于一些需求插件本身的操作
      */
     public void showPluginList(YuniMessageEvent eventContext, PluginManage pluginManage) {
-
+        // 取出缓存中，当前消息发送位置下的插件列表哈希，以及插件列表图片缓存
         Integer pluginModulesHashCode = PluginManageUtil.getPluginModulesHashCodeCache(eventContext);
         String pluginListImageCache = PluginManageUtil.getPluginListImageCache(eventContext);
-        // 先计算插件列表的 hashCode 是否有变动
+        // 先计算当前消息发送位置下的插件列表的 hashCode 是否有变动
         int currPluginListHashCode = PluginManageUtil.calculateHashCodeForShowingPluginList(eventContext);
         if (pluginModulesHashCode != null && pluginModulesHashCode.equals(currPluginListHashCode)) {
             // 哈希没变，直接返回缓存图片
@@ -54,8 +54,11 @@ public class PluginShow {
                 return;
             }
         }
+        /* 缓存图片不存在，或者插件列表的 hashCode 发生了变化，进入重新生成图片流程 */
+
+        // 先保存一下最新哈希
         PluginManageUtil.savePluginListHashCodeCache(eventContext, currPluginListHashCode);
-        // 缓存图片不存在或者插件列表的 hashCode 发生了变化，则重新生成图片缓存
+        // 获取模板字符串
         String templateFilePath = "templates/plugin-list.html";
         String templateStr = PluginUtils.loadTextFromPluginJar(pluginManage, templateFilePath);
         Context context = new Context();
@@ -67,13 +70,13 @@ public class PluginShow {
         // TODO 这里应该做成可选本地图片还是 bas64。由于我的 OneBot 客户端与 Yuni 部署在不同机器上，所以返回 Base64
         String imgBase64 = PluginManageUtil.screenForHtmlStrToBase64(htmlStr, "result-container");
         eventContext.getChatSession().response(new MessageChain(
-                new ImageSegment().setFile(buildImageDataFileNameForCache(imgBase64))
+                new ImageSegment().setFile(buildImageBase64DataFileNameForCache(imgBase64))
         ));
         // 保存图片缓存
-        PluginManageUtil.savePluginListImageCache(eventContext, buildImageDataFileNameForCache(imgBase64));
+        PluginManageUtil.savePluginListImageCache(eventContext, buildImageBase64DataFileNameForCache(imgBase64));
     }
 
-    private static String buildImageDataFileNameForCache(String fileName) {
+    private static String buildImageBase64DataFileNameForCache(String fileName) {
         return "base64://" + fileName;
     }
 
@@ -83,13 +86,16 @@ public class PluginShow {
      * @return  组装后的插件列表数据
      */
     public List<PluginListElement> assemblerPluginListData(YuniMessageEvent eventContext) {
+        // 准备
         ArrayList<PluginListElement> pluginListElements = new ArrayList<>();
-        // 组装数据
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
+
+        // 以插件模块为单位组装数据
         for (String moduleId : container.getPluginModuleIds()) {
-            PluginModuleInstance pluginModule = container.getPluginModuleById(moduleId);
-            List<PluginInstance> pluginInstances = pluginModule.getPluginInstances();
+            // 取出插件模块数据，与模块下各个单独插件的数据
+            PluginModuleInstance pluginModule = container.getPluginModuleInstanceByModuleId(moduleId);
+            List<PluginInstance> pluginInstances = container.getPluginInstanceListByModuleId(moduleId);
             if (pluginInstances == null || pluginInstances.isEmpty()) {
                 continue;
             }
@@ -98,8 +104,8 @@ public class PluginShow {
                 PluginInstance pluginInstance = pluginInstances.get(0);
                 pluginListElements.add(new PluginListElement(new PluginListSinglePlugin(
                         pluginInstance.getIndex(),
-                        pluginInstance.getPluginMetadata().getName(),
-                        pluginInstance.getPluginMetadata().getDescription(),
+                        pluginInstance.getPluginName(),
+                        pluginInstance.getPluginDescription(),
                         processor.isPluginEnabled(eventContext, pluginInstance)
 
                 )));
@@ -110,8 +116,8 @@ public class PluginShow {
                 for (PluginInstance pluginInstance : pluginInstances) {
                     pluginListModule.addSubPlugin(new PluginListSinglePlugin(
                             pluginInstance.getIndex(),
-                            pluginInstance.getPluginMetadata().getName(),
-                            pluginInstance.getPluginMetadata().getDescription(),
+                            pluginInstance.getPluginName(),
+                            pluginInstance.getPluginDescription(),
                             processor.isPluginEnabled(eventContext, pluginInstance)
                     ));
                 }
@@ -122,24 +128,27 @@ public class PluginShow {
     }
 
     /**
-     * 显示插件详情
-     * @param eventContext  消息事件
-     * @param commandMatched   命令匹配结果
-     * @param pluginManage  插件管理器
+     * 显示指定插件详情
+     * @param eventContext  消息事件上下文
+     * @param commandMatched  命令匹配结果
+     * @param pluginManage  插件管理插件，用于一些需求插件本身的操作
      */
     public void showPluginDetail(YuniMessageEvent eventContext, CommandMatched commandMatched, PluginManage pluginManage) {
+        // 先解析出要查看的插件序号
         TextSegment pluginSeqSegment = (TextSegment) commandMatched.getOptionOptionalArgValue(PLUGIN_MANAGE_VIEW);
-        Integer pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
+        int pluginSeq = Integer.parseInt(pluginSeqSegment.getText());
+        // 判断序号是否越界
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
-        String pluginId = container.getPluginIndexToIdMap().get(pluginSeq);
-        if (pluginId == null) {
+        if (pluginSeq <= 0 || pluginSeq > container.getPluginCount()) {
             eventContext.getChatSession().response("没有序号为" + pluginSeq + "的插件。");
             return;
         }
-        PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
-        Integer pluginDetailHashCodeCache = PluginManageUtil.getPluginDetailHashCodeCache(eventContext, pluginId);
-        String pluginDetailImageCache = PluginManageUtil.getPluginDetailImageCache(eventContext, pluginId);
-        Integer currentPluginHash = PluginManageUtil.calculateHashCodeForShowingPluginDetail(eventContext,  pluginId);
+        // 取出缓存中消息发送位置下插件详情哈希与详情图片的缓存
+        String pluginFullId = container.getPluginFullIdByIndex(pluginSeq);
+        Integer pluginDetailHashCodeCache = PluginManageUtil.getPluginDetailHashCodeCache(eventContext, pluginFullId);
+        String pluginDetailImageCache = PluginManageUtil.getPluginDetailImageCache(eventContext, pluginFullId);
+        // 计算消息发送位置的插件实时哈希
+        Integer currentPluginHash = PluginManageUtil.calculateHashCodeForShowingPluginDetail(eventContext,  pluginFullId);
         if (pluginDetailHashCodeCache != null && pluginDetailHashCodeCache.equals(currentPluginHash)) {
             // 哈希没变，直接返回缓存图片
             if (pluginDetailImageCache != null) {
@@ -149,30 +158,35 @@ public class PluginShow {
                 return;
             }
         }
-        PluginManageUtil.savePluginDetailHashCodeCache(eventContext, pluginId, currentPluginHash);
-        // 获取模板
+        /* 缓存图片不存在，或者插件列表的 hashCode 发生了变化，进入重新生成图片流程 */
+
+        // 先保存一下最新哈希
+        PluginManageUtil.savePluginDetailHashCodeCache(eventContext, pluginFullId, currentPluginHash);
+        // 获取模板字符串
         String templateFilePath = "templates/plugin-detail.html";
         String templateStr = PluginUtils.loadTextFromPluginJar(pluginManage, templateFilePath);
+        // 组装数据
         Context context = new Context();
         PluginEnableProcessor enableProcessor = PluginUtils.getBean(PluginEnableProcessor.class);
-        // 组装数据
-        PluginDetail pluginDetail = new PluginDetail();
-        pluginDetail.setIndex(pluginInstance.getIndex());
-        pluginDetail.setName(pluginInstance.getPluginMetadata().getName());
-        pluginDetail.setDescription(pluginInstance.getPluginMetadata().getDescription());
-        pluginDetail.setAuthor(pluginInstance.getPluginMetadata().getAuthor());
-        pluginDetail.setVersion(pluginInstance.getPluginMetadata().getVersion());
-        pluginDetail.setTips(pluginInstance.getPluginMetadata().getTips());
-        pluginDetail.setEnabled(enableProcessor.isPluginEnabled(eventContext, pluginInstance));
+        PluginInstance pluginInstance = container.getPluginInstanceByFullId(pluginFullId);
+        PluginDetail pluginDetail = new PluginDetail(
+                pluginInstance.getIndex(),
+                pluginInstance.getPluginName(),
+                pluginInstance.getPluginDescription(),
+                pluginInstance.getPluginMetadata().getTips(),
+                pluginInstance.getPluginMetadata().getAuthor(),
+                pluginInstance.getPluginMetadata().getVersion(),
+                enableProcessor.isPluginEnabled(eventContext, pluginInstance)
+        );
         context.setVariable("plugin", pluginDetail);
         // 渲染 HTML
         String htmlStr = PluginManageUtil.renderToHtml(templateStr, context);
+        // TODO 同上
         String imgBase64 = PluginManageUtil.screenForHtmlStrToBase64(htmlStr, "result-container");
         eventContext.getChatSession().response(new MessageChain(
-                new ImageSegment().setFile(buildImageDataFileNameForCache(imgBase64))
+                new ImageSegment().setFile(buildImageBase64DataFileNameForCache(imgBase64))
         ));
-        PluginManageUtil.savePluginDetailImageCache(eventContext, pluginId, buildImageDataFileNameForCache(imgBase64));
+        // 保存图片缓存
+        PluginManageUtil.savePluginDetailImageCache(eventContext, pluginFullId, buildImageBase64DataFileNameForCache(imgBase64));
     }
-
-
 }
