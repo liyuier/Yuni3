@@ -2,17 +2,22 @@ package util;
 
 import com.yuier.yuni.core.enums.YuniPluginType;
 import com.yuier.yuni.core.task.DynamicTaskManager;
+import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.manage.load.PluginLoadProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
+import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
+import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
+import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPluginInstance;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Title: PluginReloadProcessor
@@ -85,10 +90,64 @@ public class PluginReloadProcessor {
                 newPluginInstance.setIndex(oldStartIndex + newPluginInstances.indexOf(newPluginInstance));
                 // 维护类型插件列表
                 container.getPluginTypeToFullIdListMap().get(newPluginInstance.getPluginType()).add(newPluginInstance.getPluginFullId());
+                // 如果是主动插件，需要特殊处理
+                if (newPluginInstance instanceof ActivePluginInstance) {
+                    registerActivePlugin((ActivePluginInstance) newPluginInstance);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 注册主动插件
+     * @param instance 主动插件实例
+     */
+    private void registerActivePlugin(ActivePluginInstance instance) {
+        if (!instance.getPluginMetadata().getDefaultEnable()) {
+            log.info("主动插件 {} 默认不生效，已跳过执行流程", LogStringUtil.buildBrightBlueLog(instance.getPluginName()));
+            return;
+        }
+
+        // 判断是定时任务还是即时任务
+        if (instance instanceof ScheduledPluginInstance) {
+            registerSchedulePlugin((ScheduledPluginInstance) instance);
+        } else if (instance instanceof ImmediatePluginInstance) {
+            registerImmediatePlugin((ImmediatePluginInstance) instance);
+        }
+    }
+
+    /**
+     * 注册定时插件
+     * @param instance 定时插件实例
+     */
+    private void registerSchedulePlugin(ScheduledPluginInstance instance) {
+        String pluginId = instance.getPluginFullId();
+        // 创建定时任务
+        Runnable task = () -> {
+            try {
+                instance.getAction().execute();
+            } catch (Exception e) {
+                log.error("执行主动插件失败: {}", LogStringUtil.buildBrightBlueLog(pluginId), e);
+            }
+        };
+
+        // 注册到定时任务系统
+        DynamicTaskManager dynamicTaskManager = PluginUtils.getBean(DynamicTaskManager.class);
+        dynamicTaskManager.addCronTask(pluginId, instance.getCronExpression(), task);
+    }
+
+    /**
+     * 注册即时插件
+     * @param instance 即时插件实例
+     */
+    private void registerImmediatePlugin(ImmediatePluginInstance instance) {
+        // 直接执行一下就行了
+        CompletableFuture.runAsync(() -> {
+            instance.getAction().execute();
+            log.info("即时插件 {} 执行完毕", LogStringUtil.buildBrightBlueLog(instance.getPluginName()));
+        });
     }
 
     /**
