@@ -7,8 +7,8 @@ import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.core.util.SpringContextUtil;
+import com.yuier.yuni.plugin.manage.NewPluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
-import com.yuier.yuni.plugin.manage.register.PluginRegisterProcessor;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -160,8 +160,8 @@ public class PluginUtils {
      */
     public static String getPluginJarFileName(YuniPlugin plugin) {
         // 先根据 plugin 获取 plugin id
-        PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
-        String pluginId = pluginRegisterProcessor.mapToPluginId(plugin);
+        NewPluginContainer container = SpringContextUtil.getBean(NewPluginContainer.class);
+        String pluginId = container.getPluginFullIdByPluginClass(plugin.getClass());
         // 再根据 plugin id 获取 plugin jar 包
         PluginManager pluginManager = SpringContextUtil.getBean(PluginManager.class);
         return pluginManager.getPluginInstanceById(pluginId).getJarFileName();
@@ -217,8 +217,8 @@ public class PluginUtils {
     }
 
     public static String getPluginId(YuniPlugin plugin) {
-        PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
-        return pluginRegisterProcessor.mapToPluginId(plugin);
+        NewPluginContainer container = SpringContextUtil.getBean(NewPluginContainer.class);
+        return container.getPluginFullIdByPluginClass(plugin.getClass());
     }
 
     public static <T> T serialize(String json, Class<T> clazz) {

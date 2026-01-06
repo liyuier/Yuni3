@@ -24,7 +24,7 @@ public class PluginClassLoaderFactory {
      * 创建插件类加载器，为每个 jar 包单独创建
      * @param jarFile JAR 文件
      */
-    public PluginClassLoader create(File jarFile) throws MalformedURLException {
+    public PluginClassLoader create(File jarFile) {
         URL jarUrl = null;
         try {
             // 将 jar 包转换为 URL ，供 URLClassLoader 类加载器加载

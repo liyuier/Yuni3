@@ -1,5 +1,7 @@
 package com.yuier.yuni.plugin.model;
 
+import com.yuier.yuni.core.enums.YuniPluginType;
+import com.yuier.yuni.plugin.util.PluginBusinessMapUtil;
 import lombok.Data;
 
 /**
@@ -25,5 +27,26 @@ public abstract class PluginInstance {
     public Boolean isBuiltIn() {
         return pluginMetadata != null && pluginMetadata.getBuildIn();
     }
+
+    public YuniPluginType getPluginType() {
+        return PluginBusinessMapUtil.getPluginType(plugin);
+    }
+
+    public String getPluginId() {
+        return pluginMetadata.getId();
+    }
+
+    public String getPluginFullId() {
+        return pluginMetadata.getFullId();
+    }
+
+    public String getPluginName() {
+        return pluginMetadata.getName();
+    }
+
+    public Class<? extends YuniPlugin> getPluginClass() {
+        return plugin.getClass();
+    }
 }
+
 

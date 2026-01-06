@@ -1,15 +1,14 @@
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
-import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
-import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
-import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
+import com.yuier.yuni.plugin.manage.NewPluginContainer;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
-import com.yuier.yuni.plugin.manage.register.PluginRegisterProcessor;
+import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
@@ -79,8 +78,8 @@ public class PluginEnable {
         }
         PluginInstance pluginInstance = container.getPluginInstanceById(pluginId);
         UserPermission userPermission = permissionManager.getUserPermission(eventContext, pluginId);
-        PluginRegisterProcessor pluginRegisterProcessor = SpringContextUtil.getBean(PluginRegisterProcessor.class);
-        String pluginManageId = pluginRegisterProcessor.mapToPluginId(pluginManage);
+        NewPluginContainer newPluginContainer = PluginUtils.getBean(NewPluginContainer.class);
+        String pluginManageId = newPluginContainer.getPluginFullIdByIndex(pluginSeq);
          if (pluginId.equals(pluginManageId)) {
             eventContext.getChatSession().response("插件管理入口无法关闭");
             return;

@@ -21,21 +21,21 @@ public class PluginClassLoader extends URLClassLoader {
     }
 
     @Override
-    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadClass(String fullName, boolean resolve) throws ClassNotFoundException {
         // 检查是否为系统类或框架类，优先使用父类加载器
-        if (isSystemClass(name)) {
-            return super.loadClass(name, resolve);
+        if (isSystemClass(fullName)) {
+            return super.loadClass(fullName, resolve);
         }
 
         // 优先从当前加载器加载插件类
-        synchronized (getClassLoadingLock(name)) {
-            Class<?> loadedClass = findLoadedClass(name);
+        synchronized (getClassLoadingLock(fullName)) {
+            Class<?> loadedClass = findLoadedClass(fullName);
             if (loadedClass == null) {
                 try {
-                    loadedClass = findClass(name);
+                    loadedClass = findClass(fullName);
                 } catch (ClassNotFoundException e) {
                     // 委托给父类加载器
-                    loadedClass = super.loadClass(name, resolve);
+                    loadedClass = super.loadClass(fullName, resolve);
                 }
             }
 
@@ -51,9 +51,7 @@ public class PluginClassLoader extends URLClassLoader {
      */
     private boolean isSystemClass(String name) {
         return name.startsWith("java.") ||
-                name.startsWith("javax.") ||
-                name.startsWith("com.yuier.yuni.core") ||  // 框架核心类
-                name.startsWith("com.yuier.yuni.plugin");  // 插件系统类
+                name.startsWith("javax.");  // 插件系统类
     }
 }
 

@@ -60,6 +60,11 @@ public class PluginMetadata {
     @JsonProperty("default_enable")
     private Boolean defaultEnable = true;
 
+    /* metadata.json 中不填写的字段，由业务代码设置 */
+
+    // 插件全限定名，使用 模块ID-插件ID 的方式拼接
+    private String fullId;
+
     // 模块 ID
     private String moduleId;
 
