@@ -36,7 +36,7 @@ public class SavePluginCallEvent {
         pluginCallEntity.setSenderId(event.getUserId());
         pluginCallEntity.setGroupId(event.getGroupId());
         pluginCallEntity.setPluginModule(pluginMetadata.getModuleName());
-        pluginCallEntity.setPluginId(pluginMetadata.getId());
+        pluginCallEntity.setPluginId(pluginMetadata.getFullId());
         pluginCallEntity.setPluginName(pluginMetadata.getName());
         pluginCallEntity.setPluginDescription(pluginMetadata.getDescription());
         pluginCallEntity.setPluginAuthor(pluginMetadata.getAuthor());

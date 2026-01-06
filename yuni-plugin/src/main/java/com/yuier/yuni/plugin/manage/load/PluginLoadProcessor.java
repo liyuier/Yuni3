@@ -110,8 +110,8 @@ public class PluginLoadProcessor {
      * @param jarFile  JAR 包文件
      * @return 插件模块实例
      */
-    public NewPluginModuleInstance assemblePluginModule(File jarFile) throws Exception {
-        NewPluginModuleInstance pluginModuleInstance = new NewPluginModuleInstance();
+    public PluginModuleInstance assemblePluginModule(File jarFile) throws Exception {
+        PluginModuleInstance pluginModuleInstance = new PluginModuleInstance();
         pluginModuleInstance.setJarFileName(jarFile.getName());
         pluginModuleInstance.setPluginModuleMetadata(parseModuleMetadata(jarFile));
         return pluginModuleInstance;
@@ -123,7 +123,7 @@ public class PluginLoadProcessor {
      * @param pluginClasses  插件类列表
      * @return 插件实例列表
      */
-    public List<PluginInstance> assemblePluginInstances(NewPluginModuleInstance pluginModuleInstance, List<Class<?>> pluginClasses) {
+    public List<PluginInstance> assemblePluginInstances(PluginModuleInstance pluginModuleInstance, List<Class<?>> pluginClasses) {
         ArrayList<PluginInstance> pluginInstances = new ArrayList<>();
         for (Class<?> pluginClass : pluginClasses) {
             for (PluginMetadata pluginMetadata : pluginModuleInstance.getPluginMetadataList()) {

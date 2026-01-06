@@ -6,11 +6,11 @@ import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
-import com.yuier.yuni.plugin.manage.load.PluginInstanceAssembler;
+import com.yuier.yuni.plugin.manage.load.PluginLoadProcessor;
 import com.yuier.yuni.plugin.manage.match.PassivePluginMatcher;
 import com.yuier.yuni.plugin.manage.register.PluginRegisterProcessor;
-import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
+import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import lombok.Data;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @Title: PluginManager
@@ -39,30 +40,33 @@ public class PluginManager {
     @Value("${bot.app.plugin.directory:yuni-application/plugins}")
     private String pluginDirectoryPath;  // 插件目录
     @Autowired
-    private PluginInstanceAssembler pluginInstanceAssembler;
+    PluginContainer pluginContainer;
+    @Autowired
+    PluginEnableProcessor pluginEnableProcessor;
+    @Autowired
+    PluginLoadProcessor pluginLoadProcessor;
     @Autowired
     PluginRegisterProcessor pluginRegisterProcessor;
     @Autowired
-    PluginContainer pluginContainer;
-    @Autowired
     PassivePluginMatcher passivePluginMatcher;
-    @Autowired
-    PluginEnableProcessor pluginEnableProcessor;
 
     /**
      * 初始化插件系统
      */
     public void initializePlugins() {
-        // 加载插件 jar 包
-        File[] pluginJars = pluginInstanceAssembler.loadPluginJars(pluginDirectoryPath);
-        // 注册插件
-        for (File jarFile : pluginJars) {
+        // 获取插件 jar 包
+        List<File> files = pluginLoadProcessor.collectJarFilesFromPath(pluginDirectoryPath);
+        for (File jarFile : files) {
             log.info("扫描 jar 包: {}", LogStringUtil.buildYellowLog(jarFile.getName()));
             try {
-                // 加载插件
-                PluginModuleInstance pluginModuleInstance = pluginInstanceAssembler.assemblePluginModuleFromJar(jarFile);
-                // 注册插件
-                pluginRegisterProcessor.registerNewPluginModuleInstance(pluginModuleInstance, pluginContainer);
+                // 先装配插件模块实例
+                PluginModuleInstance pluginModuleInstance = pluginLoadProcessor.assemblePluginModule(jarFile);
+                registerPluginModuleInstance(pluginModuleInstance);
+
+                // 再解析插件实例列表
+                List<Class<?>> pluginClasses = pluginLoadProcessor.loadPluginClassesFromJarFile(jarFile);
+                List<PluginInstance> pluginInstanceList = pluginLoadProcessor.assemblePluginInstances(pluginModuleInstance, pluginClasses);
+                registerPluginInstances(pluginInstanceList);
             } catch (Exception e) {
                 log.error("加载 jar 包失败: {}", jarFile.getName(), e);
             }
@@ -71,12 +75,28 @@ public class PluginManager {
     }
 
     /**
+     * 注册新插件模块实例
+     * @param instance 新插件模块实例
+     */
+    public void registerPluginModuleInstance(PluginModuleInstance instance) {
+        pluginRegisterProcessor.registerNewPluginModuleInstance(instance);
+    }
+
+    /**
+     * 注册插件实例
+     * @param instances 插件实例列表
+     */
+    public void registerPluginInstances(List<PluginInstance> instances) {
+        pluginRegisterProcessor.registerPluginInstances(instances);
+    }
+
+    /**
      * 根据插件 id 获取插件实例
      * @param pluginId 插件 id
      * @return 插件实例
      */
     public PluginInstance getPluginInstanceById(String pluginId) {
-        return pluginContainer.getPluginInstanceById(pluginId);
+        return pluginContainer.getPluginInstanceByFullId(pluginId);
     }
 
     /**
@@ -84,22 +104,22 @@ public class PluginManager {
      * @param event  消息事件
      */
     public void handleMessageEvent(YuniMessageEvent event) {
-        passivePluginMatcher.matchMessageEvent(event, pluginContainer);
+        passivePluginMatcher.matchMessageEvent(event);
     }
 
     // 处理 notice 事件
     public void handleNoticeEvent(YuniNoticeEvent event) {
-        passivePluginMatcher.matchNoticeEvent(event, pluginContainer);
+        passivePluginMatcher.matchNoticeEvent(event);
     }
 
     // 处理 request 事件
     public void handleRequestEvent(YuniRequestEvent event) {
-        passivePluginMatcher.matchRequestEvent(event, pluginContainer);
+        passivePluginMatcher.matchRequestEvent(event);
     }
 
     // 处理 meta 事件
     public void handleMetaEvent(YuniMetaEvent event) {
-        passivePluginMatcher.matchMetaEvent(event, pluginContainer);
+        passivePluginMatcher.matchMetaEvent(event);
     }
 
     /**
@@ -117,7 +137,7 @@ public class PluginManager {
      * 插件卸载
      */
     public void unloadPlugin(String pluginId) {
-        PluginInstance pluginInstance = pluginContainer.getPluginInstanceById(pluginId);
+        PluginInstance pluginInstance = pluginContainer.getPluginInstanceByFullId(pluginId);
         switch (pluginInstance) {
             case null -> log.error("插件 {} 不存在", pluginId);
             case ActivePluginInstance activePluginInstance ->

@@ -29,7 +29,7 @@ public class PluginEnableProcessor {
 
     // 判断插件是否使能
     public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
-        Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginMetadata().getId());
+        Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginFullId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }
@@ -37,7 +37,7 @@ public class PluginEnableProcessor {
     }
 
     public boolean isPluginEnabled(YuniNoticeEvent event, PassivePluginInstance instance) {
-        Boolean pluginEnabledException = getPluginEnabledException(event.getRawNoticeEvent().getGroupId(), instance.getPluginMetadata().getId());
+        Boolean pluginEnabledException = getPluginEnabledException(event.getRawNoticeEvent().getGroupId(), instance.getPluginFullId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }

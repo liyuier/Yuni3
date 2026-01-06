@@ -11,7 +11,7 @@ import com.yuier.yuni.event.detector.meta.YuniMetaDetector;
 import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
 import com.yuier.yuni.event.detector.request.YuniRequestDetector;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
-import com.yuier.yuni.plugin.manage.NewPluginContainer;
+import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -44,7 +44,7 @@ public class PassivePluginMatcher {
     @Autowired
     SavePluginCallEvent savePluginCallEvent;
     @Autowired
-    NewPluginContainer pluginContainer;
+    PluginContainer pluginContainer;
 
     /* 匹配消息事件 */
 
@@ -126,7 +126,7 @@ public class PassivePluginMatcher {
      */
     private boolean checkPermission(PassivePluginInstance instance, YuniMessageEvent event) {
         // 获取用户权限
-        UserPermission userPermission = permissionManager.getUserPermission(event, instance.getPluginMetadata().getId());
+        UserPermission userPermission = permissionManager.getUserPermission(event, instance.getPluginFullId());
         UserPermission requiredPermission = instance.getPermission();
 
         return userPermission.getPriority() >= requiredPermission.getPriority();
@@ -145,6 +145,7 @@ public class PassivePluginMatcher {
             if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
                 YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
                 if (detector.match(event)) {
+                    matched = true;
                     // 感觉有点屎山，但是没办法了，先这样吧
                     // 匹配后的 event 中保存了实际的通知事件类型
                     YuniNoticeEvent yuniNoticeEvent = event.getYuniNoticeEvent();
@@ -175,7 +176,7 @@ public class PassivePluginMatcher {
      */
     private boolean checkPermission(PassivePluginInstance instance, YuniNoticeEvent event) {
         // 获取用户权限
-        UserPermission userPermission = permissionManager.getUserPermission(event, instance.getPluginMetadata().getId());
+        UserPermission userPermission = permissionManager.getUserPermission(event, instance.getPluginFullId());
         return userPermission.getPriority() > UserPermission.BLOCKED.getPriority();
     }
 
@@ -189,6 +190,7 @@ public class PassivePluginMatcher {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(requestPluginFullId);
             YuniRequestDetector detector = (YuniRequestDetector) instance.getDetector();
             if (detector.match(event)) {
+                matched = true;
                 YuniRequestEvent yuniRequestEvent = event.getYuniRequestEvent();
                 // 打个日志先
                 log.info(yuniRequestEvent.toLogString());
@@ -219,6 +221,7 @@ public class PassivePluginMatcher {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(metaPluginFullId);
             YuniMetaDetector detector = (YuniMetaDetector) instance.getDetector();
             if (detector.match(event)) {
+                matched = true;
                 YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
                 // 打个日志先
                 log.debug(yuniMetaEvent.toLogString());

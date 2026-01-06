@@ -32,10 +32,6 @@ public abstract class PluginInstance {
         return PluginBusinessMapUtil.getPluginType(plugin);
     }
 
-    public String getPluginId() {
-        return pluginMetadata.getId();
-    }
-
     public String getPluginFullId() {
         return pluginMetadata.getFullId();
     }

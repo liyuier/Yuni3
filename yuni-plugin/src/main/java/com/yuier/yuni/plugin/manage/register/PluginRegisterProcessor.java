@@ -2,8 +2,8 @@ package com.yuier.yuni.plugin.manage.register;
 
 import com.yuier.yuni.core.task.DynamicTaskManager;
 import com.yuier.yuni.core.util.LogStringUtil;
-import com.yuier.yuni.plugin.manage.NewPluginContainer;
-import com.yuier.yuni.plugin.model.NewPluginModuleInstance;
+import com.yuier.yuni.plugin.manage.PluginContainer;
+import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.active.ActivePluginInstance;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePluginInstance;
@@ -30,13 +30,13 @@ public class PluginRegisterProcessor {
     @Autowired
     DynamicTaskManager dynamicTaskManager;
     @Autowired
-    NewPluginContainer pluginContainer;
+    PluginContainer pluginContainer;
 
     /**
      * 注册插件模块实例
      * @param instance 插件模块实例
      */
-    public void registerNewPluginModuleInstance(NewPluginModuleInstance instance) {
+    public void registerNewPluginModuleInstance(PluginModuleInstance instance) {
         pluginContainer.addPluginModule(instance);
     }
 
@@ -47,7 +47,7 @@ public class PluginRegisterProcessor {
     public void registerPluginInstances(List<PluginInstance> instances) {
         for (PluginInstance instance : instances) {
             pluginContainer.addPlugin(instance);
-            log.info("已注册插件 {} | {} 到系统", LogStringUtil.buildBrightBlueLog(instance.getPluginName()), LogStringUtil.buildBrightBlueLog(instance.getPluginId()));
+            log.info("已注册插件 {} | {} 到系统", LogStringUtil.buildBrightBlueLog(instance.getPluginName()), LogStringUtil.buildBrightBlueLog(instance.getPluginFullId()));
             // 如果是主动插件，需要特殊处理
             if (instance instanceof ActivePluginInstance) {
                 registerActivePlugin((ActivePluginInstance) instance);
