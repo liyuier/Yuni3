@@ -19,6 +19,7 @@ public class PluginManage extends CommandPlugin {
 
     private PluginShow pluginShow = new PluginShow();
     private PluginEnable pluginEnable = new PluginEnable();
+    private PluginReload pluginReload = new PluginReload();
 
     @Override
     public void execute(YuniMessageEvent eventContext) {
@@ -37,7 +38,15 @@ public class PluginManage extends CommandPlugin {
         }
         if (commandMatched.hasOption(PLUGIN_MANAGE_DISABLE)) {
             if (commandMatched.optionHasRequiredArg(PLUGIN_MANAGE_DISABLE)) {
-                pluginEnable.disablePlugin(eventContext, commandMatched, this);
+                pluginEnable.disablePlugin(eventContext, commandMatched);
+            }
+        }
+        /* 待开发 */
+        if (commandMatched.hasOption(PLUGIN_MANAGE_RELOAD)) {
+            if (commandMatched.optionHasOptionalArg(PLUGIN_MANAGE_RELOAD)) {
+                pluginReload.reloadSpecifiedPlugin(eventContext, commandMatched);
+            } else {
+                pluginReload.reloadAllPlugins(eventContext, this);
             }
         }
     }
@@ -49,6 +58,7 @@ public class PluginManage extends CommandPlugin {
                 .addOptionWithOptionalArg(PLUGIN_MANAGE_VIEW, PLUGIN_MANAGE_VIEW_SEQ, "查看指定插件详情", CommandArgRequireType.NUMBER)
                 .addOptionWithRequiredArg(PLUGIN_MANAGE_ENABLE, PLUGIN_MANAGE_ENABLE_SEQ, "开启指定插件", CommandArgRequireType.NUMBER)
                 .addOptionWithRequiredArg(PLUGIN_MANAGE_DISABLE, PLUGIN_MANAGE_DISABLE_SEQ, "关闭指定插件", CommandArgRequireType.NUMBER)
+                .addOptionWithOptionalArg(PLUGIN_MANAGE_RELOAD, PLUGIN_MANAGE_RELOAD_SEQ, "重载插件", CommandArgRequireType.NUMBER)
                 .build()) ;
     }
 }

@@ -1,9 +1,8 @@
 package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.enums.YuniPluginType;
-import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.PluginMetadata;
+import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -38,7 +37,7 @@ public class PluginContainer {
     private final List<String> requestPluginFullIds = new ArrayList<>();
     private final List<String> metaPluginFullIds = new ArrayList<>();
     // 初始化插件类型到上面 Map 的映射
-    private final Map<YuniPluginType, List<String>> pluginFullIdToModuleIdMap = new ConcurrentHashMap<>(Map.of(
+    private final Map<YuniPluginType, List<String>> pluginTypeToFullIdListMap = new ConcurrentHashMap<>(Map.of(
             YuniPluginType.SCHEDULED, scheduledPluginFullIds,
             YuniPluginType.IMMEDIATE, immediatePluginFullIds,
             YuniPluginType.COMMAND, commandPluginFullIds,
@@ -52,7 +51,7 @@ public class PluginContainer {
     private final Map<String, PluginInstance> pluginFullIdToInstanceMap = new ConcurrentHashMap<>();
     // 插件模块实例，使用模块 ID 作为键
     private final Map<String, PluginModuleInstance> pluginModuleInstanceMap = new ConcurrentHashMap<>();
-
+    // 插件类到全限定 ID 的映射
     private final Map<Class<? extends YuniPlugin>, String> pluginClassToPluginFullIdMap = new ConcurrentHashMap<>();
     
     /* setters */
@@ -90,35 +89,9 @@ public class PluginContainer {
         // 维护插件索引
         pluginInstance.setIndex(pluginFullIds.size());
         // 维护类型插件列表
-        pluginFullIdToModuleIdMap.get(pluginInstance.getPluginType()).add(pluginInstance.getPluginFullId());
+        pluginTypeToFullIdListMap.get(pluginInstance.getPluginType()).add(pluginInstance.getPluginFullId());
     }
 
-    /**
-     * 刷新插件实例
-     * @param oldPluginInstance 旧插件实例
-     * @param newPluginInstance 新插件实例
-     */
-    public void refreshPluginInstance(PluginInstance oldPluginInstance, PluginInstance newPluginInstance) {
-        pluginFullIdToInstanceMap.put(oldPluginInstance.getPluginFullId(), newPluginInstance);
-        pluginClassToPluginFullIdMap.remove(oldPluginInstance.getPluginClass());
-        pluginClassToPluginFullIdMap.put(newPluginInstance.getPluginClass(), newPluginInstance.getPluginFullId());
-    }
-
-    /**
-     * 刷新插件元数据
-     * @param pluginFullId 插件全限定 ID
-     * @param newPluginMetadata 新插件元数据
-     */
-    public void refreshPluginMetadata(String pluginFullId, PluginMetadata newPluginMetadata) {
-        List<PluginMetadata> pluginMetadataList = getModuleByPluginFullId(pluginFullId).getPluginModuleMetadata().getPlugins();
-        for (int i = 0; i < pluginMetadataList.size(); i++) {
-            if (pluginMetadataList.get(i).getFullId().equals(pluginFullId)) {
-                pluginMetadataList.set(i, newPluginMetadata);
-                break;
-            }
-        }
-    }
-    
     /* getters */
 
     public int getPluginCount() {
@@ -188,7 +161,7 @@ public class PluginContainer {
      * @param pluginFullId 插件全限定 ID
      * @return 模块实例
      */
-    public PluginModuleInstance getModuleByPluginFullId(String pluginFullId) {
+    public PluginModuleInstance getPluginModuleByPluginFullId(String pluginFullId) {
         return getPluginModuleInstanceByModuleId(getModuleIdByPluginFullId(pluginFullId));
     }
 
@@ -223,5 +196,6 @@ public class PluginContainer {
 
         pluginFullIdToInstanceMap.clear();
         pluginModuleInstanceMap.clear();
+        pluginClassToPluginFullIdMap.clear();
     }
 }

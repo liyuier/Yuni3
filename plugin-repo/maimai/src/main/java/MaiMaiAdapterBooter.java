@@ -27,7 +27,6 @@ public class MaiMaiAdapterBooter extends ImmediatePlugin {
         return () -> {
             // 获取配置
             MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromJar("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
-            PluginUtils.registerBeanToSpring(config, "maimaiAdapterPluginConfig");
             Request request = new Request.Builder()
                     .url(config.getServerUrl())
                     .addHeader("Authorization", "Bearer " + config.getToken())
@@ -37,6 +36,7 @@ public class MaiMaiAdapterBooter extends ImmediatePlugin {
             // 创建连接器
             YuniWebSocketConnector maimaiAdapterConnector = new YuniWebSocketConnector(request, maiMaiAdapterWsProxyListener);
             maiMaiAdapterWsProxyListener.setConnector(maimaiAdapterConnector);
+            maiMaiAdapterWsProxyListener.setMaiMaiAdapterBooter(this);
             // 注册处理器，过程中传递一下连接器
             maiMaiAdapterWsProxyListener.getHandlerRegistry().registerHandlers(new MaiMaiRequestController(maimaiAdapterConnector));
             YuniWebSocketManager manager = PluginUtils.getBean(YuniWebSocketManager.class);
@@ -53,5 +53,11 @@ public class MaiMaiAdapterBooter extends ImmediatePlugin {
     @Override
     public void disable(PluginDisableEvent event) {
         // TODO 停止连接
+    }
+
+    @Override
+    public void destroy() {
+        YuniWebSocketManager manager = PluginUtils.getBean(YuniWebSocketManager.class);
+        manager.closeConnection(WS_CONNECT_TO_MAIMAI_ADAPTER);
     }
 }

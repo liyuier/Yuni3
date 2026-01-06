@@ -24,13 +24,4 @@ public class PassivePluginInstance extends PluginInstance {
     private YuniEventDetector<?> detector;
     private Method executeMethod;
 
-    @Override
-    public void initialize() throws Exception {
-
-    }
-
-    @Override
-    public void destroy() throws Exception {
-
-    }
 }

@@ -20,8 +20,13 @@ public abstract class PluginInstance {
 
     private int index;
 
-    public abstract void initialize() throws Exception;
-    public abstract void destroy() throws Exception;
+    public void initialize() {
+        plugin.initialize();
+    }
+
+    public void destroy() {
+        plugin.destroy();
+    }
 
     public Boolean isBuiltIn() {
         return pluginMetadata != null && pluginMetadata.getBuildIn();

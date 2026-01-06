@@ -16,13 +16,4 @@ public abstract class ActivePluginInstance extends PluginInstance {
 
     private Action action;
 
-    @Override
-    public void initialize() throws Exception {
-
-    }
-
-    @Override
-    public void destroy() throws Exception {
-
-    }
 }

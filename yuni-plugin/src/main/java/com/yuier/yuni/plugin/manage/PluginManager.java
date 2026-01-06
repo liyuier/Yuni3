@@ -57,21 +57,25 @@ public class PluginManager {
         // 获取插件 jar 包
         List<File> files = pluginLoadProcessor.collectJarFilesFromPath(pluginDirectoryPath);
         for (File jarFile : files) {
-            log.info("扫描 jar 包: {}", LogStringUtil.buildYellowLog(jarFile.getName()));
-            try {
-                // 先装配插件模块实例
-                PluginModuleInstance pluginModuleInstance = pluginLoadProcessor.assemblePluginModule(jarFile);
-                registerPluginModuleInstance(pluginModuleInstance);
-
-                // 再解析插件实例列表
-                List<Class<?>> pluginClasses = pluginLoadProcessor.loadPluginClassesFromJarFile(jarFile);
-                List<PluginInstance> pluginInstanceList = pluginLoadProcessor.assemblePluginInstances(pluginModuleInstance, pluginClasses);
-                registerPluginInstances(pluginInstanceList);
-            } catch (Exception e) {
-                log.error("加载 jar 包失败: {}", jarFile.getName(), e);
-            }
-            log.info("{} 加载完毕", LogStringUtil.buildYellowLog(jarFile.getName()));
+            loadAndRegisterPluginsFromSingleJarFile(jarFile);
         }
+    }
+
+    public void loadAndRegisterPluginsFromSingleJarFile(File jarFile) {
+        log.info("扫描 jar 包: {}", LogStringUtil.buildYellowLog(jarFile.getName()));
+        try {
+            // 先装配插件模块实例
+            PluginModuleInstance pluginModuleInstance = pluginLoadProcessor.assemblePluginModule(jarFile);
+            registerPluginModuleInstance(pluginModuleInstance);
+
+            // 再解析插件实例列表
+            List<Class<?>> pluginClasses = pluginLoadProcessor.loadPluginClassesFromJarFile(jarFile);
+            List<PluginInstance> pluginInstanceList = pluginLoadProcessor.assemblePluginInstances(pluginModuleInstance, pluginClasses);
+            registerPluginInstances(pluginInstanceList);
+        } catch (Exception e) {
+            log.error("加载 jar 包失败: {}", jarFile.getName(), e);
+        }
+        log.info("{} 加载完毕", LogStringUtil.buildYellowLog(jarFile.getName()));
     }
 
     /**

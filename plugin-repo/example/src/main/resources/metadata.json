@@ -41,26 +41,6 @@
       "author": "Yuier me@yuier.com",
       "dependencies": [],
       "default_enable": true
-    },
-    {
-      "id": "dynamicinjection.ImmediateInjector",
-      "name": "动态注入示例",
-      "version": "0.0.1",
-      "description": "动态注入一个类到 SpringBoot 容器中",
-      "tips": ["基于即时插件完成动作"],
-      "author": "Yuier me@yuier.com",
-      "dependencies": [],
-      "default_enable": true
-    },
-    {
-      "id": "dynamicinjection.InjectionResultTest",
-      "name": "动态注入结果测试",
-      "version": "0.0.1",
-      "description": "简单测试一下动态注入的结果",
-      "tips": ["向群聊内发送 “/test2”， 控制台会打印动态注入示例插件中注入的 Bean 的信息"],
-      "author": "Yuier me@yuier.com",
-      "dependencies": [],
-      "default_enable": true
     }
   ]
 }

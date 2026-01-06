@@ -4,6 +4,7 @@ import com.microsoft.playwright.*;
 import com.yuier.yuni.core.util.RedisUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.plugin.manage.PluginContainer;
+import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.PluginInstance;
@@ -296,5 +297,10 @@ public class PluginManageUtil {
         } else {
             log.error("找不到ID为 " + elementId + " 的元素");
         }
+    }
+
+    public static String getAppPluginDirectoryPath() {
+        PluginManager manager = PluginUtils.getBean(PluginManager.class);
+        return manager.getPluginDirectoryPath();
     }
 }

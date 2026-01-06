@@ -50,4 +50,32 @@ public class YuniWebSocketManager {
     public YuniWebSocketConnector getWebSocket(String connectionId) {
         return webSocketConnectorMap.get(connectionId);
     }
+
+    /**
+     * 关闭连接
+     * @param connectionId  连接 ID
+     */
+    public void closeConnection(String connectionId) {
+        webSocketConnectorMap.get(connectionId).getWebSocket().close(1000, "正常关闭");
+        webSocketConnectorMap.remove(connectionId);
+    }
+
+    /**
+     * 关闭所有连接
+     */
+    public void closeAllConnection() {
+        for (String connectionId : webSocketConnectorMap.keySet()) {
+            webSocketConnectorMap.get(connectionId).getWebSocket().close(1000, "正常关闭");
+        }
+        webSocketConnectorMap.clear();
+    }
+
+    /**
+     * 判断连接是否存在
+     * @param connectionId  连接 ID
+     * @return  是否存在
+     */
+    public Boolean connectionExist(String connectionId) {
+        return webSocketConnectorMap.containsKey(connectionId);
+    }
 }
