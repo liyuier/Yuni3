@@ -101,7 +101,7 @@ public class PassivePluginMatcher {
                     savePluginCallEvent.saveEvent(event, instance);
                 }
                 try {
-                    instance.getExecuteMethod().invoke(instance.getPassivePlugin(), event);
+                    instance.getExecuteMethod().invoke(instance.getPlugin(), event);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -139,6 +139,7 @@ public class PassivePluginMatcher {
      * @param event 通知事件
      */
     public void matchNoticeEvent(YuniNoticeEvent event) {
+        boolean matched = false;
         for (String noticePluginFullId : pluginContainer.getNoticePluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(noticePluginFullId);
             if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
@@ -153,13 +154,16 @@ public class PassivePluginMatcher {
                     // 跑一下，这里暂时先不像消息那样写，反正也不会有多少插件会处理通知事件的
                     CompletableFuture.runAsync(() -> {
                         try {
-                            instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniNoticeEvent);
+                            instance.getExecuteMethod().invoke(instance.getPlugin(), yuniNoticeEvent);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();
                         }
                     });
                 }
             }
+        }
+        if (!matched) {
+            log.info(event.toLogString());
         }
     }
 
@@ -180,6 +184,7 @@ public class PassivePluginMatcher {
      * @param event 请求事件
      */
     public void matchRequestEvent(YuniRequestEvent event) {
+        boolean matched = false;
         for (String requestPluginFullId : pluginContainer.getRequestPluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(requestPluginFullId);
             YuniRequestDetector detector = (YuniRequestDetector) instance.getDetector();
@@ -191,7 +196,7 @@ public class PassivePluginMatcher {
                 // 跑一下
                 CompletableFuture.runAsync(() -> {
                     try {
-                        instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniRequestEvent);
+                        instance.getExecuteMethod().invoke(instance.getPlugin(), yuniRequestEvent);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
@@ -199,7 +204,9 @@ public class PassivePluginMatcher {
             }
         }
         // 没匹配到处理插件，打印默认日志
-        log.info(event.toLogString());
+        if (!matched) {
+            log.info(event.toLogString());
+        }
     }
 
     /**
@@ -207,6 +214,7 @@ public class PassivePluginMatcher {
      * @param event 元事件
      */
     public void matchMetaEvent(YuniMetaEvent event) {
+        boolean matched = false;
         for (String metaPluginFullId : pluginContainer.getMetaPluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(metaPluginFullId);
             YuniMetaDetector detector = (YuniMetaDetector) instance.getDetector();
@@ -218,7 +226,7 @@ public class PassivePluginMatcher {
                 // 跑一下
                 CompletableFuture.runAsync(() -> {
                     try {
-                        instance.getExecuteMethod().invoke(instance.getPassivePlugin(), yuniMetaEvent);
+                        instance.getExecuteMethod().invoke(instance.getPlugin(), yuniMetaEvent);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
@@ -226,6 +234,8 @@ public class PassivePluginMatcher {
             }
         }
         // 没匹配到处理插件，打印默认日志
-        log.info(event.toLogString());
+        if (!matched) {
+            log.info(event.toLogString());
+        }
     }
 }

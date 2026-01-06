@@ -9,6 +9,7 @@ import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.manage.NewPluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
+import com.yuier.yuni.plugin.model.NewPluginModuleInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -161,10 +162,20 @@ public class PluginUtils {
     public static String getPluginJarFileName(YuniPlugin plugin) {
         // 先根据 plugin 获取 plugin id
         NewPluginContainer container = SpringContextUtil.getBean(NewPluginContainer.class);
-        String pluginId = container.getPluginFullIdByPluginClass(plugin.getClass());
-        // 再根据 plugin id 获取 plugin jar 包
-        PluginManager pluginManager = SpringContextUtil.getBean(PluginManager.class);
-        return pluginManager.getPluginInstanceById(pluginId).getJarFileName();
+        String pluginFullId = getPluginFullIdByPluginClass(plugin.getClass());
+        // 再根据插件 ID 获取模块 ID
+        NewPluginModuleInstance moduleByPluginFullId = container.getModuleByPluginFullId(pluginFullId);
+        return moduleByPluginFullId.getJarFileName();
+    }
+
+    /**
+     * 获取插件全 id
+     * @param pluginClass 插件类
+     * @return 插件全 id
+     */
+    public static String getPluginFullIdByPluginClass(Class<? extends YuniPlugin> pluginClass) {
+        NewPluginContainer container = getBean(NewPluginContainer.class);
+        return container.getPluginFullIdByPluginClass(pluginClass);
     }
 
     /**
@@ -198,7 +209,8 @@ public class PluginUtils {
      */
     public static String loadTextFromPluginJar(YuniPlugin plugin, String resourcePath) {
         String text = "";
-        try (JarFile jarFile = new JarFile(getPluginJarAppPath(plugin))) {
+        String pluginJarAppPath = getPluginJarAppPath(plugin);
+        try (JarFile jarFile = new JarFile(pluginJarAppPath)) {
             text = readFileTextFromJar(jarFile, resourcePath);
         } catch (Exception e) {
             log.error("从插件 jar 包中加载文本文件内容字符串失败！请检查 jar 包内文件路径是否正确！");

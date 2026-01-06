@@ -1,7 +1,6 @@
 package com.yuier.yuni.plugin.model.active;
 
 import com.yuier.yuni.plugin.model.PluginInstance;
-import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.Data;
 
 /**
@@ -15,13 +14,7 @@ import lombok.Data;
 @Data
 public abstract class ActivePluginInstance extends PluginInstance {
 
-    private ActivePlugin plugin;
     private Action action;
-
-    @Override
-    public YuniPlugin getPlugin() {
-        return plugin;
-    }
 
     @Override
     public void initialize() throws Exception {

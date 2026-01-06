@@ -61,40 +61,28 @@ public class PluginLoadProcessor {
      */
     public List<Class<?>> loadPluginClassesFromJarFile(File jarFile) throws Exception {
         List<Class<?>> pluginClasses = new ArrayList<>();
-        try (JarFile jar = new JarFile(jarFile)) {
-            // 遍历 JAR 包中的所有文件
-            Enumeration<JarEntry> entries = jar.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                // 检查是否为 .class 文件
-                if (entry.getName().endsWith(".class")) {
-                    String classFullName = entry.getName()
-                        .substring(0, entry.getName().length() - 6)  // 移除 .class 后缀
-                        .replace('/', '.');  // 将路径分割符替换为 .
+        try (PluginClassLoader pluginClassLoader = classLoaderFactory.create(jarFile)) {  // 每个 jar 包都单独创建一个类加载器
+            try (JarFile jar = new JarFile(jarFile)) {
+                // 遍历 JAR 包中的所有文件
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    // 检查是否为 .class 文件
+                    if (entry.getName().endsWith(".class")) {
+                        String classFullName = entry.getName()
+                                .substring(0, entry.getName().length() - 6)  // 移除 .class 后缀
+                                .replace('/', '.');  // 将路径分割符替换为 .
 
-                    // 加载类并检查是否为插件
-                    Class<?> clazz = loadClassFromJarByFullName(classFullName, jarFile);
-                    if (isPluginClass(clazz)) {
-                        pluginClasses.add(clazz);
+                        // 加载类并检查是否为插件
+                        Class<?> clazz = pluginClassLoader.loadClass(classFullName);
+                        if (isPluginClass(clazz)) {
+                            pluginClasses.add(clazz);
+                        }
                     }
                 }
             }
         }
         return pluginClasses;
-    }
-
-    /**
-     * 通过类全名从 JAR 包中加载类
-     * @param classFullName 类全名
-     * @param jarFile  JAR 包文件
-     * @return 类
-     */
-    public Class<?> loadClassFromJarByFullName(String classFullName, File jarFile) {
-        try (PluginClassLoader pluginClassLoader = classLoaderFactory.create(jarFile)) {
-            return pluginClassLoader.loadClass(classFullName);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -151,6 +139,8 @@ public class PluginLoadProcessor {
                     }
                     if (pluginInstance != null) {
                         pluginInstances.add(pluginInstance);
+                    } else {
+                        log.warn("插件实例创建失败: {}", pluginClass.getName());
                     }
                     break;
                 }

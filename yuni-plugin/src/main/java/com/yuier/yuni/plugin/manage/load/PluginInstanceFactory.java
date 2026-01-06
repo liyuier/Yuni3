@@ -72,6 +72,7 @@ public class PluginInstanceFactory {
         ScheduledPluginInterface scheduledPlugin = (ScheduledPluginInterface) yuniPlugin;
         ScheduledPluginInstance scheduledPluginInstance = new ScheduledPluginInstance();
         scheduledPluginInstance.setPluginMetadata(metadata);
+        scheduledPluginInstance.setPlugin(scheduledPlugin);
         scheduledPluginInstance.setAction(scheduledPlugin.getAction());
         scheduledPluginInstance.setPlugin(scheduledPlugin);
 
@@ -89,6 +90,7 @@ public class PluginInstanceFactory {
         ImmediatePluginInterface immediatePlugin = (ImmediatePluginInterface) yuniPlugin;
         ImmediatePluginInstance immediatePluginInstance = new ImmediatePluginInstance();
         immediatePluginInstance.setPluginMetadata(metadata);
+        immediatePluginInstance.setPlugin(immediatePlugin);
         immediatePluginInstance.setAction(immediatePlugin.getAction());
         immediatePluginInstance.setPlugin(immediatePlugin);
 
@@ -105,7 +107,7 @@ public class PluginInstanceFactory {
         PassivePlugin<?, ?> passivePlugin = (PassivePlugin<?, ?>) yuniPlugin;
         PassivePluginInstance passivePluginInstance = new PassivePluginInstance();
         passivePluginInstance.setPluginMetadata(metadata);
-        passivePluginInstance.setPlugin(yuniPlugin);
+        passivePluginInstance.setPlugin(passivePlugin);
 
         // 提取探测器
         YuniEventDetector<?> detector = passivePlugin.getDetector();

@@ -78,6 +78,7 @@ public class PluginRegisterProcessor {
      * @param instance 即时插件实例
      */
     private void registerImmediatePlugin(ImmediatePluginInstance instance) {
+        // 直接执行一下就行了
         CompletableFuture.runAsync(() -> {
             instance.getAction().execute();
             log.info("即时插件 {} 执行完毕", LogStringUtil.buildBrightBlueLog(instance.getPluginName()));
