@@ -122,7 +122,7 @@ public class PluginUtils {
     }
 
     /**
-     * 加载配置文件为 bean
+     * 加载配置 json 文件为 bean
      * @param configFilePath 配置文件路径
      * @param clazz bean 的类型
      * @param <T> bean 的类型
@@ -143,7 +143,7 @@ public class PluginUtils {
     }
 
     /**
-     * 加载配置文件为字符串
+     * 加载配置 json 文件为字符串
      * @param configFilePath 配置文件路径
      * @return 配置文件内容
      */
@@ -153,52 +153,6 @@ public class PluginUtils {
         }
 
         return loadTextFromPluginJar(plugin, configFilePath);
-    }
-
-    /**
-     * 获取插件 jar 包文件名
-     * @return 插件所在的 jar 包文件名
-     */
-    public static String getPluginJarFileName(YuniPlugin plugin) {
-        // 先根据 plugin 获取 plugin id
-        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
-        String pluginFullId = getPluginFullIdByPluginClass(plugin.getClass());
-        // 再根据插件 ID 获取模块 ID
-        PluginModuleInstance moduleByPluginFullId = container.getModuleByPluginFullId(pluginFullId);
-        return moduleByPluginFullId.getJarFileName();
-    }
-
-    /**
-     * 获取插件全 id
-     * @param pluginClass 插件类
-     * @return 插件全 id
-     */
-    public static String getPluginFullIdByPluginClass(Class<? extends YuniPlugin> pluginClass) {
-        PluginContainer container = getBean(PluginContainer.class);
-        return container.getPluginFullIdByPluginClass(pluginClass);
-    }
-
-    /**
-     * 获取插件 jar 包在 SpringBoot app 中的路径
-     * @param plugin 插件对象
-     * @return  插件 jar 包在 SpringBoot app 中的路径
-     */
-    public static String getPluginJarAppPath(YuniPlugin plugin) {
-        return getPluginManager().getPluginDirectoryPath() + "/" + getPluginJarFileName(plugin);
-    }
-
-    /**
-     * 从 jar 包中读取文本文件内容
-     * @param jarFile 插件 jar 包
-     * @param filePath 文件路径
-     * @return 文件内容
-     */
-    private static String readFileTextFromJar(JarFile jarFile, String filePath) {
-        try {
-            return new String(jarFile.getInputStream(jarFile.getEntry(filePath)).readAllBytes());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -219,6 +173,42 @@ public class PluginUtils {
         return text;
     }
 
+    /**
+     * 获取插件 jar 包在 SpringBoot app 中的路径
+     * @param plugin 插件对象
+     * @return  插件 jar 包在 SpringBoot app 中的路径
+     */
+    public static String getPluginJarAppPath(YuniPlugin plugin) {
+        return getPluginManager().getPluginDirectoryPath() + "/" + getPluginJarFileName(plugin);
+    }
+
+    /**
+     * 获取插件 jar 包文件名
+     * @return 插件所在的 jar 包文件名
+     */
+    public static String getPluginJarFileName(YuniPlugin plugin) {
+        // 先根据 plugin 获取 plugin id
+        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
+        String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
+        // 再根据插件 ID 获取模块 ID
+        PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
+        return moduleByPluginFullId.getJarFileName();
+    }
+
+    /**
+     * 从 jar 包中读取文本文件内容
+     * @param jarFile 插件 jar 包
+     * @param filePath 文件路径
+     * @return 文件内容
+     */
+    private static String readFileTextFromJar(JarFile jarFile, String filePath) {
+        try {
+            return new String(jarFile.getInputStream(jarFile.getEntry(filePath)).readAllBytes());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // 检查文件名是否为 json
     public static boolean isJsonFile(String fileName) {
         return fileName.endsWith(".json");
@@ -226,11 +216,6 @@ public class PluginUtils {
 
     public static PluginManager getPluginManager() {
         return SpringContextUtil.getBean(PluginManager.class);
-    }
-
-    public static String getPluginId(YuniPlugin plugin) {
-        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
-        return container.getPluginFullIdByPluginClass(plugin.getClass());
     }
 
     public static <T> T serialize(String json, Class<T> clazz) {

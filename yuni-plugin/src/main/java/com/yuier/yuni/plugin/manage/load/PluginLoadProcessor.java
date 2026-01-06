@@ -125,8 +125,8 @@ public class PluginLoadProcessor {
      */
     public List<PluginInstance> assemblePluginInstances(PluginModuleInstance pluginModuleInstance, List<Class<?>> pluginClasses) {
         ArrayList<PluginInstance> pluginInstances = new ArrayList<>();
-        for (Class<?> pluginClass : pluginClasses) {
-            for (PluginMetadata pluginMetadata : pluginModuleInstance.getPluginMetadataList()) {
+        for (PluginMetadata pluginMetadata : pluginModuleInstance.getPluginMetadataList()) {
+            for (Class<?> pluginClass : pluginClasses) {
                 // 以插件类全限定名匹配元数据中的 id
                 if (pluginClass.getName().equals(pluginMetadata.getId())) {
                     pluginMetadataPreProcess(pluginModuleInstance.getPluginModuleMetadata(), pluginMetadata);
