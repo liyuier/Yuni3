@@ -5,7 +5,7 @@ spring:
   application:
     name: yuni-application
   datasource:  # 数据库配置
-    url: jdbc:sqlite:data/${bot.app.sqlite-db-file}  # 数据库使用 sqlite, 数据库文件默认在跟目录下。文件名由下方的 sqlite-db-file 属性指定
+    url: jdbc:sqlite:${bot.app.sqlite-db-file}  # 数据库使用 sqlite, 数据库文件默认在跟目录下。文件名由下方的 sqlite-db-file 属性指定
     driver-class-name: org.sqlite.JDBC  # 数据库驱动
     username:
     password:
@@ -62,8 +62,8 @@ bot:
   app:
     command-flag: /  # 定义命令时的全局前缀
     plugin:
-      directory: yuni-application/plugins  # 插件 jar 包的位置，默认位于 application 模块的 plugins 目录下
-    sqlite-db-file: yuni3.db  # 应用使用的 sqlite 数据库文件名，该文件位于根目录下
+      directory: plugins  # 插件 jar 包的位置，默认位于 application 模块的 plugins 目录下
+    sqlite-db-file: data/yuni3.db  # 应用使用的 sqlite 数据库文件名
 
 yuni:  # 用于 banner.txt
   name: Yuni
