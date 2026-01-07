@@ -24,7 +24,7 @@ hs_err_pid*
 replay_pid*
 
 # application.yml
-application.yml
+application*.yml
 # IDEA
 .idea
 /.idea/

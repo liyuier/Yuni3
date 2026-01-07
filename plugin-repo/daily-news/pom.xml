@@ -47,7 +47,7 @@
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
-                                    <outputDirectory>../../yuni-application/plugins</outputDirectory>
+                                    <outputDirectory>../../plugins</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

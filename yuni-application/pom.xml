@@ -94,4 +94,23 @@
         </dependency>
     </dependencies>
 
+    <!-- SpringBoot打包插件（生成可执行Jar） -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!-- 自定义Jar包名称（简化部署） -->
+        <finalName>yuni-app</finalName>
+    </build>
+
 </project>
