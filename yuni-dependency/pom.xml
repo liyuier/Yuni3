@@ -23,6 +23,8 @@
         <spring-websocket.version>6.1.13</spring-websocket.version>
         <jackson.version>2.17.2</jackson.version>
         <okhttp.version>4.9.3</okhttp.version>
+        <jdbi3-core.version>3.39.1</jdbi3-core.version>
+        <jdbi3-annotations.version>3.39.1</jdbi3-annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -90,6 +92,18 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
+            </dependency>
+
+            <!-- JDBI 核心 -->
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-core</artifactId>
+                <version>${jdbi3-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-sqlobject</artifactId>
+                <version>${jdbi3-annotations.version}</version>
             </dependency>
 
         </dependencies>

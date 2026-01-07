@@ -1,6 +1,9 @@
 package com.yuier.yuni.plugin.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.adapter.qq.http.OneBotResponse;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.message.MessageChain;
@@ -12,7 +15,13 @@ import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
 import java.util.jar.JarFile;
 
 /**
@@ -218,5 +227,19 @@ public class PluginUtils {
 
     public static String getAppDatabaseUrl() {
         return "jdbc:sqlite:./" + getBotAppConfig().getSqliteDbFile();
+    }
+
+    public static <T> T simplePost(String url, Map<String, Object> params, Class<T> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(params, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        try {
+            String bodyJson = response.getBody();
+            return getBean(ObjectMapper.class).readValue(bodyJson, responseType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

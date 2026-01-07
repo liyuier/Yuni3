@@ -19,6 +19,7 @@ import com.yuier.yuni.core.util.SpringContextUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Title: OneBotApiWsClient
@@ -42,12 +43,16 @@ public class OneBotApiWsClient {
     }
 
     private <T> T quickSendOneBotApiRequest(WsRequest request, Class<T> responseClass) {
-        try {
-            String responseDataJson = connector.sendAndReceive(serialization.serialize(request), request.getEcho());
-            return deserializer.deserialize(responseDataJson, responseClass);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        CompletableFuture<T> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                String responseDataJson = connector.sendAndReceive(serialization.serialize(request), request.getEcho());
+                return deserializer.deserialize(responseDataJson, responseClass);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+        return future.join();
     }
 
     public SendGroupMessage sendGroupMessage(long groupId, MessageChain message) {

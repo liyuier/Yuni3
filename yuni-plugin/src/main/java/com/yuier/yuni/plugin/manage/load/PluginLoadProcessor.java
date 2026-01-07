@@ -138,6 +138,7 @@ public class PluginLoadProcessor {
                         continue;
                     }
                     if (pluginInstance != null) {
+                        pluginInstance.initialize();
                         pluginInstances.add(pluginInstance);
                     } else {
                         log.warn("插件实例创建失败: {}", pluginClass.getName());
