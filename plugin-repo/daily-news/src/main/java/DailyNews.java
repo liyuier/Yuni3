@@ -12,6 +12,8 @@ import db.DBHelper;
 import db.DailyNewsGroupEnable;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -30,6 +32,12 @@ public class DailyNews extends ScheduledPlugin {
         return () -> {
             // 先获取每日早报内容
             DailyNewsResponse dailyNewsResponse = PluginUtils.simplePost("https://api.2xb.cn/zaob", null, DailyNewsResponse.class);
+            // 判断是否当天的日报
+            String todayFormatStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!todayFormatStr.equals(dailyNewsResponse.getDatatime())) {
+                log.info("接口响应日期为 {}, 非本日日报，不发送", dailyNewsResponse.getDatatime());
+                return;
+            }
             MessageChain dailyNewsMessageChain = new MessageChain(new ImageSegment().setFile(dailyNewsResponse.getImageUrl()));
             // 先获取群列表
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
@@ -37,14 +45,10 @@ public class DailyNews extends ScheduledPlugin {
             List<Long> groupIdList = groupList.stream()
                     .map(GroupListElement::getGroupId)
                     .toList();
-            log.info("群列表：{}", groupIdList);
             // 再根据策略发送
             DailyNewsStrategyConfig strategyConfig = PluginUtils.loadJsonConfigFromJar("daily_news_strategy.json", DailyNewsStrategyConfig.class, this);
-            log.info("策略：{}", strategyConfig.getStrategy());
             if ("blacklist".equals(strategyConfig.getStrategy())) {
-                log.info("黑名单模式");
                 List<DailyNewsGroupEnable> blackLists = DBHelper.findBlackLists();
-                log.info("黑名单：{}", blackLists);
                 groupIdList.forEach(groupId -> {
                     if (blackLists.stream().noneMatch(blackGroup -> blackGroup.getGroupId().equals(groupId))) {
                         // 发送群消息
@@ -52,9 +56,7 @@ public class DailyNews extends ScheduledPlugin {
                     }
                 });
             } else if ("whitelist".equals(strategyConfig.getStrategy())) {
-                log.info("白名单模式");
                 List<DailyNewsGroupEnable> whiteLists = DBHelper.findWhiteLists();
-                log.info("白名单：{}", whiteLists);
                 groupIdList.forEach(groupId -> {
                     if (whiteLists.stream().anyMatch(whiteGroup -> whiteGroup.getGroupId().equals(groupId))) {
                         // 发送群消息
