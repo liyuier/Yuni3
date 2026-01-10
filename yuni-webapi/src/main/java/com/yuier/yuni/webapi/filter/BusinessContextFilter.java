@@ -1,7 +1,6 @@
 package com.yuier.yuni.webapi.filter;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.engine.manager.context.RequestContextManager;
 import com.yuier.yuni.event.detector.message.command.CommandMatcher;
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;
