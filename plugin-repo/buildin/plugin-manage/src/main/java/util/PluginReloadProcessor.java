@@ -95,6 +95,14 @@ public class PluginReloadProcessor {
                     registerActivePlugin((ActivePluginInstance) newPluginInstance);
                 }
             }
+            // 维护后续模块下插件索引
+            for (int i = moduleIndex + 1; i < container.getPluginModuleIds().size(); i++) {
+                String moduleId = container.getPluginModuleIds().get(i);
+                List<PluginInstance> pluginInstances = container.getPluginInstanceListByModuleId(moduleId);
+                for (PluginInstance pluginInstance : pluginInstances) {
+                    pluginInstance.setIndex(pluginInstance.getIndex() + newPluginInstances.size() - oldPluginInstances.size());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
