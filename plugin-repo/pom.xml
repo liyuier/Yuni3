@@ -20,6 +20,7 @@
         <module>buildin/eventmanage</module>
         <module>daily-news</module>
         <module>buildin/help</module>
+        <module>chieru</module>
     </modules>
 
 </project>

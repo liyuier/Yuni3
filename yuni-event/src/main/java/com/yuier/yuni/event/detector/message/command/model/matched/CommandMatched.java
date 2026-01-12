@@ -40,6 +40,10 @@ public class CommandMatched {
         return argsMatchedout.get(name);
     }
 
+    public MessageSegment getArgValue(String name) {
+        return getArg(name).getValue();
+    }
+
     // 判断是否存在选项
     public Boolean hasOption(String flag) {
         return optionsMatchedout.containsKey(flag);
