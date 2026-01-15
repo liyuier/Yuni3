@@ -22,7 +22,7 @@ public class IAmBack extends ImmediatePlugin {
     public Action getAction() {
         return () -> {
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-            SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(930198267, new MessageChain("我是后背"));
+            SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(876900675, new MessageChain("我是后背"));
         };
     }
 
