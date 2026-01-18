@@ -90,3 +90,15 @@
 ### 麦麦
 
 通过适配插件引入麦麦实现 AI 聊天能力，麦麦的部署参考 [MaiBot 部署指南](https://docs.mai-mai.org/manual/deployment/) 、 [MaiBot Napcat Adapter 文档](https://docs.mai-mai.org/manual/adapters/napcat.html)
+
+## TODO
+
+* 引入持续对话特性，为插件提供更强大的能力
+
+* 开发可视化管理界面
+
+* 优化适配层，提供更好的适配层开发体验
+
+* 事件、API 的适配。。。
+
+* 有趣插件的补充。。。
