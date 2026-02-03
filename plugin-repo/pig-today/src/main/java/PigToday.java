@@ -55,7 +55,11 @@ public class PigToday extends CommandPlugin {
 
     private void getMemberPigToday(YuniMessageEvent eventContext, CommandMatched commandMatched) {
         AtSegment atSegment = (AtSegment) commandMatched.getArgValue(TARGET_MEMBER);
-        Long targetQq = Long.parseLong(atSegment.getQq());
+        String targetQqStr = atSegment.getQq();
+        if (targetQqStr.equals("all")) {
+            eventContext.getChatSession().reply("请指定具体群友");
+        }
+        Long targetQq = Long.parseLong(targetQqStr);
         PigTodayCache pigToday = getPigToday(targetQq);
         String targetMemberName = PluginUtils.getGroupMemberName(eventContext.getGroupId(), targetQq);
         eventContext.getChatSession().reply(new MessageChain(targetMemberName + " 今天是: \n" + pigToday.getImageTitle() + "\n")
