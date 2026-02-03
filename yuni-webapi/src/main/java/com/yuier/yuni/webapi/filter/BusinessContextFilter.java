@@ -1,7 +1,6 @@
 package com.yuier.yuni.webapi.filter;
 
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.event.detector.message.command.CommandMatcher;
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +28,10 @@ public class BusinessContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
-            // 刷新 CommandMatcher 的 chainForCommand
-            CommandMatcher.chainForCommand = null;
-
             // 继续执行请求连
             filterChain.doFilter(servletRequest, servletResponse);
-
         } finally {
-            CommandMatcher.chainForCommand = null;
+
         }
     }
 

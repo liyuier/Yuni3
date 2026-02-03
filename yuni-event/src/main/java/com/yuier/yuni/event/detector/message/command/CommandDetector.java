@@ -30,7 +30,8 @@ public class CommandDetector implements MessageDetector {
         if (!messageTypeMatches(event)) {
             return false;
         }
-        CommandMatched commandMatched = CommandMatcher.match(commandModel, event.getMessageChain());
+        CommandMatcher commandMatcher = new CommandMatcher();
+        CommandMatched commandMatched = commandMatcher.match(commandModel, event.getMessageChain());
         if (commandMatched.getMatchSuccess()) {
             event.setCommandMatched(commandMatched);
             return true;

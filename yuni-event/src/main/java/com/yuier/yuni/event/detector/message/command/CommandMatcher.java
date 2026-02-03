@@ -41,9 +41,9 @@ import static com.yuier.yuni.core.constants.SystemConstants.FIRST_INDEX;
 @NoArgsConstructor
 public class CommandMatcher {
 
-    public static MessageChainForCommand chainForCommand = null;
+    public MessageChainForCommand chainForCommand = null;
 
-    public static CommandMatched match(CommandModel model, MessageChain chain) {
+    public CommandMatched match(CommandModel model, MessageChain chain) {
         CommandMatched commandMatched = new CommandMatched();
         if (model == null || chain == null) {
             return notMatch();
@@ -129,7 +129,7 @@ public class CommandMatcher {
      * @param model 命令建模
      * @param optionsMatched 选项匹配结果
      */
-    private static void matchOptions(MessageChainForCommand chainForCommand, CommandModel model, Map<String, CommandOptionMatched> optionsMatched) {
+    private void matchOptions(MessageChainForCommand chainForCommand, CommandModel model, Map<String, CommandOptionMatched> optionsMatched) {
         // 逻辑跟匹配可选参数的逻辑一模一样，只是在判断能否匹配的地方不同
         for (CommandOption option : model.getOptions()) {
             if (chainForCommand.messageSegsMatchedEnd()) {
@@ -257,7 +257,7 @@ public class CommandMatcher {
      * @param model 命令建模
      * @param argsMatched 参数匹配结果
      */
-    private static void matchOptionalArgs(MessageChainForCommand chainForCommand, CommandModel model, Map<String, CommandArgMatched> argsMatched) {
+    private void matchOptionalArgs(MessageChainForCommand chainForCommand, CommandModel model, Map<String, CommandArgMatched> argsMatched) {
         /*
          * 采用 “先到先得，过时不候” 的方式匹配可选参数
          * 具体来说，使用指针单向遍历消息段，并使用 for 循环遍历可选参数。
@@ -309,7 +309,7 @@ public class CommandMatcher {
                 // 如果 cfc 中储存了回复消息，该参数直接匹配上
                 // 将该参数 加入匹配结果中
                 /* WARN 如果在指令中定义了多个回复消息参数，那么这里会出问题
-                * 不过显然一条正常的 QQ 消息中不会出现多个回复消息段，正常也不会有人这么定义一条命令 */
+                 * 不过显然一条正常的 QQ 消息中不会出现多个回复消息段，正常也不会有人这么定义一条命令 */
                 argsMatched.put(arg.getName(), new CommandArgMatched(
                         arg.getName(),
                         arg.getDescription(),
@@ -347,7 +347,7 @@ public class CommandMatcher {
      * @param model 命令建模
      * @return 匹配结果
      */
-    private static Map<String, CommandArgMatched> matchRequiredArgs(MessageChainForCommand chainForCommand, CommandModel model) {
+    private Map<String, CommandArgMatched> matchRequiredArgs(MessageChainForCommand chainForCommand, CommandModel model) {
         Map<String, CommandArgMatched> argsMatched = new HashMap<>();
         // 遍历所有必选参数，检查是否可以与消息段按顺序匹配上
         // 因为在 match 函数前半部分检查过参数消息量必然能满足最低要求，因此这里不需要考虑消息段指针越界问题
@@ -400,7 +400,7 @@ public class CommandMatcher {
      * @param arg 参数
      * @return 匹配结果
      */
-    private static Boolean messageSegmentMatcherArg(MessageSegment messageSeg, CommandArg arg) {
+    private Boolean messageSegmentMatcherArg(MessageSegment messageSeg, CommandArg arg) {
         final Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
         switch (arg.getRequiredType()) {
             case PLAIN -> {
@@ -440,7 +440,7 @@ public class CommandMatcher {
      * @param url  待检查的字符串
      * @return  是否为合法 URL
      */
-    private static Boolean isValidUrl(String url) {
+    private Boolean isValidUrl(String url) {
         try {
             new URL(url);
             return true;
@@ -454,7 +454,7 @@ public class CommandMatcher {
      * @param chain 消息链
      * @return 命令消息链
      */
-    private static MessageChainForCommand convertToMessageChainForCommand(MessageChain chain) {
+    private MessageChainForCommand convertToMessageChainForCommand(MessageChain chain) {
         // 如果缓存中已经存在，则直接返回
         if (chainForCommand != null) {
             chainForCommand.resetCurSegIndex();
@@ -501,22 +501,22 @@ public class CommandMatcher {
     }
 
     // 从 SpringContextUtil 中获取 OneBotAdapter
-    private static OneBotAdapter getOneBotAdapter() {
+    private OneBotAdapter getOneBotAdapter() {
         return SpringContextUtil.getBean(OneBotAdapter.class);
     }
 
     // 获取 BotApp
-    private static BotApp getBotApp() {
+    private BotApp getBotApp() {
         return SpringContextUtil.getBean(BotApp.class);
     }
 
-    private static CommandMatched notMatch() {
+    private CommandMatched notMatch() {
         CommandMatched matched = new CommandMatched();
         matched.setMatchSuccess(false);
         return matched;
     }
 
-    public static void clear() {
+    public void clear() {
         chainForCommand = null;
     }
 }

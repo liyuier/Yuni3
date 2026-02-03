@@ -6,7 +6,6 @@ import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.engine.event.EventBridge;
-import com.yuier.yuni.event.detector.message.command.CommandMatcher;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
@@ -88,6 +87,6 @@ public class OneBotEventWsProxyListener implements YuniBusinessProxyListener {
      * 处理完消息后，重置一下系统状态
      */
     private void clearSystemAfterHandleMessage() {
-        CommandMatcher.clear();
+
     }
 }
