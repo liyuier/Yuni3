@@ -76,6 +76,7 @@ public class EventBridge {
         chatSession.setGroupId(messageEvent.getGroupId());
         chatSession.setMessageType(messageEvent.getMessageType());
         chatSession.setAdapter(adapter);
+        chatSession.setMessageId(messageEvent.getMessageId());
         yuniMessageEvent.setChatSession(chatSession);
         return yuniMessageEvent;
     }

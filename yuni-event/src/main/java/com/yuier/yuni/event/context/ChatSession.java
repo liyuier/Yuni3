@@ -45,6 +45,9 @@ public class ChatSession {
     // 当前会话的 OneBot 侧基础 URL
     private String OneBotBaseUrl;
 
+    // 消息ID
+    private Long messageId;
+
     public ChatSession(OneBotAdapter adapter) {
         this.adapter = adapter;
     }
@@ -68,6 +71,15 @@ public class ChatSession {
     }
 
     public SendMessage response(String text) {
-        return  response(new MessageChain(text));
+        return response(new MessageChain(text));
+    }
+
+    public SendMessage reply(MessageChain chain) {
+        chain.addReply(String.valueOf(messageId));
+        return response(chain);
+    }
+
+    public SendMessage reply(String text) {
+        return reply(new MessageChain(text));
     }
 }

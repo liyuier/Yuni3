@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.adapter.qq.http.OneBotResponse;
+import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.message.MessageChain;
@@ -21,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarFile;
 
@@ -193,10 +195,12 @@ public class PluginUtils {
         return fileName.endsWith(".json");
     }
 
+    // 获取插件管理器
     public static PluginManager getPluginManager() {
         return SpringContextUtil.getBean(PluginManager.class);
     }
 
+    // 序列化
     public static <T> T serialize(String json, Class<T> clazz) {
         OneBotDeserializer deserialization = SpringContextUtil.getBean(OneBotDeserializer.class);
         try {
@@ -207,6 +211,7 @@ public class PluginUtils {
         return null;
     }
 
+    // 反序列化
     public static String deserialize(Object obj) {
         OneBotSerialization serialization = SpringContextUtil.getBean(OneBotSerialization.class);
         try {
@@ -217,18 +222,22 @@ public class PluginUtils {
         return null;
     }
 
+    // 发送群消息
     public static void sendGroupMessage(long groupId, MessageChain message) {
         getOneBotAdapter().sendGroupMessage(groupId, message);
     }
 
+    // 发送私聊消息
     public static void sendPrivateMessage(long userId, MessageChain message) {
         getOneBotAdapter().sendPrivateMessage(userId, message);
     }
 
+    // 获取数据库连接 URL
     public static String getAppDatabaseUrl() {
         return "jdbc:sqlite:./" + getBotAppConfig().getSqliteDbFile();
     }
 
+    // 简单 Post 请求
     public static <T> T simplePost(String url, Map<String, Object> params, Class<T> responseType) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -241,5 +250,27 @@ public class PluginUtils {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // 简单 Get 请求
+    public static <T> T simpleGet(String url, Map<String, String> params, Class<T> responseType) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, params);
+        try {
+            String bodyJson = response.getBody();
+            return getBean(ObjectMapper.class).readValue(bodyJson, responseType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 不带参数的 Get 请求
+    public static <T> T simpleGet(String url, Class<T> responseType) {
+        return simpleGet(url, new HashMap<>(), responseType);
+    }
+
+    public static String getGroupMemberName(long groupId, long userId) {
+        GroupMemberInfo groupMemberInfo = getOneBotAdapter().getGroupMemberInfo(groupId, userId, true);
+        return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
     }
 }

@@ -21,6 +21,7 @@
         <module>daily-news</module>
         <module>buildin/help</module>
         <module>chieru</module>
+        <module>pig-today</module>
     </modules>
 
 </project>

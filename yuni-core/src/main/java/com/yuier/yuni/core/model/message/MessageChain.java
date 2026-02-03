@@ -2,6 +2,7 @@ package com.yuier.yuni.core.model.message;
 
 import com.yuier.yuni.core.constants.MessageSegmentTypes;
 import com.yuier.yuni.core.model.message.segment.AtSegment;
+import com.yuier.yuni.core.model.message.segment.ReplySegment;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -73,6 +74,11 @@ public class MessageChain {
 
     public MessageChain addTextSegment(String text) {
         return addSegment(new TextSegment(text));
+    }
+
+    public MessageChain addReply(String id) {
+        content.addFirst(new ReplySegment(id));
+        return this;
     }
 
     public boolean startWithReplyData() {

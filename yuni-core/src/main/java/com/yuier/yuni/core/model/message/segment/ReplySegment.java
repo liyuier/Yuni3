@@ -25,6 +25,11 @@ public class ReplySegment extends MessageSegment {
         super("reply");
     }
 
+    public ReplySegment(String id) {
+        super("reply");
+        this.data = new ReplyData(id);
+    }
+
     public String getId() {
         return data != null ? data.getId() : null;
     }
