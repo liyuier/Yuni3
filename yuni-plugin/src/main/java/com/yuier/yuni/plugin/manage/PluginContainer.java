@@ -36,6 +36,7 @@ public class PluginContainer {
     private final List<String> noticePluginFullIds = new ArrayList<>();
     private final List<String> requestPluginFullIds = new ArrayList<>();
     private final List<String> metaPluginFullIds = new ArrayList<>();
+    private final List<String> messageSentPluginFullIds = new ArrayList<>();
     // 初始化插件类型到上面 Map 的映射
     private final Map<YuniPluginType, List<String>> pluginTypeToFullIdListMap = new ConcurrentHashMap<>(Map.of(
             YuniPluginType.SCHEDULED, scheduledPluginFullIds,
@@ -44,7 +45,8 @@ public class PluginContainer {
             YuniPluginType.PATTERN, patternPluginFullIds,
             YuniPluginType.NOTICE, noticePluginFullIds,
             YuniPluginType.REQUEST, requestPluginFullIds,
-            YuniPluginType.META, metaPluginFullIds
+            YuniPluginType.META, metaPluginFullIds,
+            YuniPluginType.MESSAGE_SENT, messageSentPluginFullIds
     ));
 
     // 保存插件实例，使用全限定 ID 作为键
@@ -193,6 +195,7 @@ public class PluginContainer {
         noticePluginFullIds.clear();
         requestPluginFullIds.clear();
         metaPluginFullIds.clear();
+        messageSentPluginFullIds.clear();
 
         pluginFullIdToInstanceMap.clear();
         pluginModuleInstanceMap.clear();

@@ -2,6 +2,7 @@ package com.yuier.yuni.plugin.manage;
 
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
@@ -163,6 +164,10 @@ public class PluginManager {
     public void removePassivePlugin(String pluginId) {
         // 移除被动插件
 
+    }
+
+    public void handleMessageSentEvent(YuniMessageSentEvent event) {
+        passivePluginMatcher.matchMessageSentEvent(event);
     }
 }
 

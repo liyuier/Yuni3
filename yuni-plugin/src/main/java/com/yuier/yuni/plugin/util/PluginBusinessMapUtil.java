@@ -8,6 +8,7 @@ import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPlugin;
 import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
+import com.yuier.yuni.plugin.model.passive.message.MessageSentPlugin;
 import com.yuier.yuni.plugin.model.passive.message.PatternPlugin;
 import com.yuier.yuni.plugin.model.passive.meta.MetaPlugin;
 import com.yuier.yuni.plugin.model.passive.notice.NoticePlugin;
@@ -47,6 +48,7 @@ public class PluginBusinessMapUtil {
             case NoticePlugin noticePlugin -> YuniPluginType.NOTICE;
             case RequestPlugin requestPlugin -> YuniPluginType.REQUEST;
             case MetaPlugin metaPlugin -> YuniPluginType.META;
+            case MessageSentPlugin messageSentPlugin -> YuniPluginType.MESSAGE_SENT;
             case null, default -> YuniPluginType.UNKNOWN;
         };
     }

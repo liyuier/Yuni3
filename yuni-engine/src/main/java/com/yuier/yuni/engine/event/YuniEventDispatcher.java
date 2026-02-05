@@ -46,6 +46,7 @@ public class YuniEventDispatcher {
     public void messageSentEventHandler(YuniMessageSentEvent event) {
         log.info(event.toLogString());
         eventSaver.saveEvent(event);
+        pluginManager.handleMessageSentEvent(event);
     }
 
     @EventListener

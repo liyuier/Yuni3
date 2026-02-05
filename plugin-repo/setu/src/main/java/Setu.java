@@ -46,6 +46,10 @@ public class Setu extends CommandPlugin {
         String title = oneSetu.getTitle();
         String author = oneSetu.getAuthor();
         String imgUrl = oneSetu.getUrls().getRegular();
+        if (imgUrl == null || imgUrl.isEmpty()) {
+            eventContext.getChatSession().response("Lolicon Api 获取图片地址失败。");
+            return;
+        }
         eventContext.getChatSession().response(new MessageChain(
                 "pid: " + pid + "\n" +
                 "title: " + title + "\n" +

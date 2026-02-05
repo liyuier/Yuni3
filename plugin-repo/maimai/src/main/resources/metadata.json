@@ -21,6 +21,16 @@
       "author": "Yuier me@yuier.com",
       "dependencies": [],
       "default_enable": true
+    },
+    {
+      "id": "OneBotMessageSentForward",
+      "name": "麦麦适配器-自身发送消息转发器",
+      "version": "0.0.1",
+      "description": "maimai 自身发送的消息也转发给 MaiBot-Napcat-Adapter",
+      "tips": [],
+      "author": "Yuier me@yuier.com",
+      "dependencies": [],
+      "default_enable": true
     }
   ]
 }

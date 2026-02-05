@@ -16,5 +16,6 @@ public enum YuniPluginType {
     PATTERN,
     NOTICE,
     REQUEST,
-    META
+    META,
+    MESSAGE_SENT
 }

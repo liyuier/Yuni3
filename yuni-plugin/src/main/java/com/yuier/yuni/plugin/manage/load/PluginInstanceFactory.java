@@ -44,6 +44,7 @@ public class PluginInstanceFactory {
         this.pluginInstanceCreatorMap.put(YuniPluginType.NOTICE, this::createPassivePluginInstance);
         this.pluginInstanceCreatorMap.put(YuniPluginType.REQUEST, this::createPassivePluginInstance);
         this.pluginInstanceCreatorMap.put(YuniPluginType.META, this::createPassivePluginInstance);
+        this.pluginInstanceCreatorMap.put(YuniPluginType.MESSAGE_SENT, this::createPassivePluginInstance);
     }
 
     /**

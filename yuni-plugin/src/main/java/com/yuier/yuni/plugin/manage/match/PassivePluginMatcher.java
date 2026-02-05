@@ -2,6 +2,7 @@ package com.yuier.yuni.plugin.manage.match;
 
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
@@ -239,6 +240,25 @@ public class PassivePluginMatcher {
         // 没匹配到处理插件，打印默认日志
         if (!matched) {
             log.info(event.toLogString());
+        }
+    }
+
+    /**
+     * 匹配消息发送事件
+     * @param event 消息发送事件
+     */
+    public void matchMessageSentEvent(YuniMessageSentEvent event) {
+        for (String messageSentPluginFullId : pluginContainer.getMessageSentPluginFullIds()) {
+            PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(messageSentPluginFullId);
+            // 消息发送事件没什么好匹配的，直接执行就行 TODO 上面的执行逻辑也要优化一下
+            log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
+            CompletableFuture.runAsync(() -> {
+                try {
+                    instance.getExecuteMethod().invoke(instance.getPlugin(), event);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 }
