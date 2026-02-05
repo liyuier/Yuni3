@@ -14,5 +14,6 @@ public class OneBotPostType {
     public static final String NOTICE = "notice";
     public static final String REQUEST = "request";
     public static final String META_EVENT = "meta_event";
+    public static final String MESSAGE_SENT = "message_sent";
 
 }

@@ -8,6 +8,7 @@ import com.yuier.yuni.core.util.BeanCopyUtils;
 import com.yuier.yuni.event.context.ChatSession;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
@@ -45,6 +46,8 @@ public class EventBridge {
         switch (event.getPostType()) {
             case OneBotPostType.MESSAGE:
                 return buildYuniMessageEvent(event);
+            case OneBotPostType.MESSAGE_SENT:
+                return buildYuniMessageSentEvent(event);
             case OneBotPostType.META_EVENT:
                 return buildYuniMetaEvent(event);
             case OneBotPostType.NOTICE:
@@ -79,6 +82,16 @@ public class EventBridge {
         chatSession.setMessageId(messageEvent.getMessageId());
         yuniMessageEvent.setChatSession(chatSession);
         return yuniMessageEvent;
+    }
+
+    private YuniMessageSentEvent buildYuniMessageSentEvent(OneBotEvent event) {
+        MessageSentEvent messageSentEvent = (MessageSentEvent) event;
+        YuniMessageSentEvent yuniMessageSentEvent = BeanCopyUtils.copyBean(messageSentEvent, YuniMessageSentEvent.class);
+        yuniMessageSentEvent.setMessage(messageSentEvent.getMessage());
+        yuniMessageSentEvent.setMessageChain(new MessageChain(messageSentEvent.getMessage()));
+        yuniMessageSentEvent.setSender(messageSentEvent.getSender());
+        yuniMessageSentEvent.setMessageSentEvent(messageSentEvent);
+        return yuniMessageSentEvent;
     }
 
     private YuniNoticeEvent buildYuniNoticeEvent(OneBotEvent event) {

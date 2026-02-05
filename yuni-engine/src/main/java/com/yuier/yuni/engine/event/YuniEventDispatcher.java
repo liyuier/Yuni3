@@ -3,6 +3,7 @@ package com.yuier.yuni.engine.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
@@ -39,6 +40,12 @@ public class YuniEventDispatcher {
         log.info(event.toLogString());
         eventSaver.saveEvent(event);
         pluginManager.handleMessageEvent(event);
+    }
+
+    @EventListener
+    public void messageSentEventHandler(YuniMessageSentEvent event) {
+        log.info(event.toLogString());
+        eventSaver.saveEvent(event);
     }
 
     @EventListener

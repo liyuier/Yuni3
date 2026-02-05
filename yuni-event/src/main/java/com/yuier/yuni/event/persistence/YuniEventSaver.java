@@ -2,6 +2,7 @@ package com.yuier.yuni.event.persistence;
 
 import com.yuier.yuni.core.util.YuniTimeUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;
 import com.yuier.yuni.event.service.ReceiveMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,26 @@ public class YuniEventSaver {
     ReceiveMessageService receiveMessageService;
 
     public void saveEvent(YuniMessageEvent event) {
+        ReceiveMessageEntity receiveMessageEntity = new ReceiveMessageEntity();
+        receiveMessageEntity.setTimeStamp(event.getTime());
+        receiveMessageEntity.setFormatTime(YuniTimeUtil.formatTimestamp(event.getTime()));
+        receiveMessageEntity.setSelfId(event.getSelfId());
+        receiveMessageEntity.setMessageType(event.getMessageType());
+        receiveMessageEntity.setSubType(event.getSubType());
+        receiveMessageEntity.setMessageId(event.getMessageId());
+        receiveMessageEntity.setSenderId(event.getUserId());
+        receiveMessageEntity.setSenderName(event.getSender().getNickname());
+        receiveMessageEntity.setRole(event.getSender().getRole());
+        receiveMessageEntity.setToLogStr(event.toPlainLogString());
+        receiveMessageEntity.setRawMessage(event.getRawMessage());
+        receiveMessageEntity.setRawJson(event.getRawJson());
+        receiveMessageEntity.setGroupId(event.getGroupId());
+        receiveMessageEntity.setMessageFormat(event.getMessageFormat());
+        receiveMessageEntity.setRealId(event.getRealId());
+        receiveMessageService.saveEvent(receiveMessageEntity);
+    }
+
+    public void saveEvent(YuniMessageSentEvent event) {
         ReceiveMessageEntity receiveMessageEntity = new ReceiveMessageEntity();
         receiveMessageEntity.setTimeStamp(event.getTime());
         receiveMessageEntity.setFormatTime(YuniTimeUtil.formatTimestamp(event.getTime()));

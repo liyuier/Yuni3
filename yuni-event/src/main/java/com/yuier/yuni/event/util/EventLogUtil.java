@@ -8,6 +8,7 @@ import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import org.springframework.stereotype.Component;
 
 
@@ -157,5 +158,51 @@ public class EventLogUtil {
     public static String botNameAndIdLogString() {
         Bot botConfig = getBotModelConfig();
         return "Bot: " + botConfig.getNickName() + "(" + botConfig.getId() + ") ";
+    }
+
+    public static String toLog(YuniMessageSentEvent event) {
+        // 发->群/私丨[群聊(群号)]/用户名(QQ号): 消息
+        String sendDescription = "";
+        String targetInfoLog = "";
+        String messageLog = "";
+        if (event.isGroup()) {
+            sendDescription = LogStringUtil.buildPurpleLog("发->群");
+            Long groupId = event.getGroupId();
+            String groupIdStr = String.valueOf(groupId);
+            String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
+            targetInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]: ";
+        } else if (event.isPrivate()) {
+            sendDescription = LogStringUtil.buildPurpleLog("发->私");
+            Long userId = event.getUserId();
+            String userIdStr = String.valueOf(userId);
+            String userName = getOneBotAdapter().getStrangerInfo(userId, true).getNickname();
+            targetInfoLog = "[" + LogStringUtil.buildBrightRedLog(userName) + "(" + userIdStr + ")]: ";
+        }
+        messageLog = LogStringUtil.buildBrightBlueLog(event.getMessageChain().toString());
+        String logStr = sendDescription + "丨" + targetInfoLog + messageLog;
+        return LogStringUtil.escapeString(logStr);
+    }
+
+    public static String toPlainLog(YuniMessageSentEvent event) {
+        // 发->群/私丨[群聊(群号)]/用户名(QQ号): 消息
+        String sendDescription = "";
+        String targetInfoLog = "";
+        String messageLog = "";
+        if (event.isGroup()) {
+            sendDescription = "发->群";
+            Long groupId = event.getGroupId();
+            String groupIdStr = String.valueOf(groupId);
+            String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
+            targetInfoLog = "[" + groupName + "(" + groupIdStr + ")]: ";
+        } else if (event.isPrivate()) {
+            sendDescription = "发->私";
+            Long userId = event.getUserId();
+            String userIdStr = String.valueOf(userId);
+            String userName = getOneBotAdapter().getStrangerInfo(userId, true).getNickname();
+            targetInfoLog = "[" + userName + "(" + userIdStr + ")]: ";
+        }
+        messageLog = event.getMessageChain().toString();
+        String logStr = sendDescription + "丨" + targetInfoLog + messageLog;
+        return LogStringUtil.escapeString(logStr);
     }
 }
