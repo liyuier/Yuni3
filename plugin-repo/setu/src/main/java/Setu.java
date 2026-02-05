@@ -44,10 +44,12 @@ public class Setu extends CommandPlugin {
         ApiResponseSetu oneSetu = loliconApiResponse.getData().get(0);
         long pid = oneSetu.getPid();
         String title = oneSetu.getTitle();
+        String author = oneSetu.getAuthor();
         String imgUrl = oneSetu.getUrls().getRegular();
         eventContext.getChatSession().response(new MessageChain(
                 "pid: " + pid + "\n" +
-                "title: " + title + "\n"
+                "title: " + title + "\n" +
+                "author: " + author + "\n"
         ).addSegment(new ImageSegment().setFile(imgUrl)));
     }
 }
