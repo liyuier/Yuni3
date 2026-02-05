@@ -22,6 +22,7 @@
         <module>buildin/help</module>
         <module>chieru</module>
         <module>pig-today</module>
+        <module>setu</module>
     </modules>
 
 </project>
