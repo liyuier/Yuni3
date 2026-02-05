@@ -23,6 +23,7 @@
         <module>chieru</module>
         <module>pig-today</module>
         <module>setu</module>
+        <module>anti-gbf</module>
     </modules>
 
 </project>
