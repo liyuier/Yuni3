@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Base64;
 
 /**
@@ -37,6 +38,7 @@ public class YaoWoYiZhi extends CommandPlugin {
 
     private static final String 要我一直 = "要我一直";
     private static final String 吗 = "吗";
+    private static final String[] supportImageEndName = new String[] {"jpg", "png", "jpeg"};
 
     @Override
     public CommandDetector getDetector() {
@@ -48,70 +50,79 @@ public class YaoWoYiZhi extends CommandPlugin {
     @Override
     public void execute(YuniMessageEvent eventContext) {
         ImageSegment targetImage = (ImageSegment) eventContext.getCommandMatched().getArgValue(TARGET_IMAGE);
-        // 获取图片 URL
+        String imageFileName = targetImage.getFile();
         String imageFileUrl = targetImage.getUrl();
-        String lowerUrl = imageFileUrl.toLowerCase();
         String imageBase64 = null;
-        // 尝试用 GIF 解码器读取
-        GifDecoder decoder = new GifDecoder();
-        int status = -1;
-        try (InputStream stream = new URL(imageFileUrl).openStream(); BufferedInputStream buffered = new BufferedInputStream(stream)) {
-            // 标记流以便重置
-            buffered.mark(Integer.MAX_VALUE);
-            status = decoder.read(buffered);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        if (status == GifDecoder.STATUS_OK && decoder.getFrameCount() > 0) {
-            // 是 GIF，使用已读取的 decoder
-            imageBase64 = processGifFromUrl(decoder);
-        } else {
-            // 不是 GIF
+
+        // 根据图片后缀判断图片类型
+        String imageEndName = getImageEndName(imageFileName.toLowerCase());
+        if ("gif".equals(imageEndName)) {
+            imageBase64 = processGifFromUrl(imageFileUrl);
+        } else if (Arrays.asList(supportImageEndName).contains(imageEndName)) {
             imageBase64 = processStaticImageFromUrl(imageFileUrl);
+        } else {
+            eventContext.getChatSession().response("不支持的图片格式: " + imageEndName);
+            return;
         }
         eventContext.getChatSession().response(new MessageChain(new ImageSegment().setFile("base64://" + imageBase64)));
     }
 
+    private String getImageEndName(String lowerName) {
+        String[] split = lowerName.split("\\.");
+        return split[split.length - 1];
+    }
+
     /**
      * 处理gif图片
-     * @param decoder GIF 解码器
+     * @param imageFileUrl GIF 解码器
      * @return 图片Base64
      */
-    private String processGifFromUrl(GifDecoder decoder) {
+    private String processGifFromUrl(String imageFileUrl) {
+        GifDecoder decoder = new GifDecoder();
+        try (InputStream stream = new URL(imageFileUrl).openStream(); BufferedInputStream buffered = new BufferedInputStream(stream)) {
+            // 标记流以便重置
+            buffered.mark(Integer.MAX_VALUE);
+            int status = decoder.read(buffered);
+            if (status != GifDecoder.STATUS_OK || decoder.getFrameCount() <= 0) {
+                throw new RuntimeException("GIF 解码失败");
+            }
 
-        int frameCount = decoder.getFrameCount();
-        // 处理第一帧以获取输出格式
-        BufferedImage firstFrame = decoder.getFrame(0);
-        BufferedImage sampleFrame = processSingleFrame(firstFrame);
-        // 创建输出流
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        AnimatedGifEncoder encoder = new AnimatedGifEncoder();
-        encoder.start(outputStream);
-        encoder.setRepeat(decoder.getLoopCount());
+            int frameCount = decoder.getFrameCount();
+            // 处理第一帧以获取输出格式
+            BufferedImage firstFrame = decoder.getFrame(0);
+            BufferedImage sampleFrame = processSingleFrame(firstFrame);
+            // 创建输出流
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+            encoder.start(outputStream);
+            encoder.setRepeat(decoder.getLoopCount());
 
-        // 设置输出质量
-        encoder.setQuality(10); // 1-10，10为最高质量
+            // 设置输出质量
+            encoder.setQuality(10); // 1-10，10为最高质量
 
-        // 批量处理所有帧
-        for (int i = 0; i < frameCount; i++) {
-            BufferedImage frame = decoder.getFrame(i);
-            int delay = decoder.getDelay(i);
+            // 批量处理所有帧
+            for (int i = 0; i < frameCount; i++) {
+                BufferedImage frame = decoder.getFrame(i);
+                int delay = decoder.getDelay(i);
 
-            // 优化内存使用：处理完成后立即释放原帧
-            BufferedImage processedFrame = processSingleFrame(frame);
+                // 优化内存使用：处理完成后立即释放原帧
+                BufferedImage processedFrame = processSingleFrame(frame);
 
-            encoder.setDelay(Math.max(delay, 10)); // 最小延迟10ms避免播放过快
-            encoder.addFrame(processedFrame);
+                encoder.setDelay(Math.max(delay, 10)); // 最小延迟10ms避免播放过快
+                encoder.addFrame(processedFrame);
 
-            // 帮助GC
-            frame.flush();
-            processedFrame.flush();
+                // 帮助GC
+                frame.flush();
+                processedFrame.flush();
+            }
+
+            encoder.finish();
+
+            byte[] gifBytes = outputStream.toByteArray();
+            return Base64.getEncoder().encodeToString(gifBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        encoder.finish();
-
-        byte[] gifBytes = outputStream.toByteArray();
-        return Base64.getEncoder().encodeToString(gifBytes);
     }
 
     /**
