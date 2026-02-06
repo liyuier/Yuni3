@@ -22,8 +22,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
@@ -188,6 +194,31 @@ public class PluginUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 从插件 jar 包中加载字体文件
+     * @param plugin 插件对象
+     * @param fontFilePath 字体文件路径
+     * @param fontSize 字体大小
+     * @return 字体对象
+     */
+    public static Font loadFontFromJar(YuniPlugin plugin, String fontFilePath, int fontSize) {
+        Font font = null;
+        String pluginJarAppPath = getPluginJarAppPath(plugin);
+        try (JarFile jarFile = new JarFile(Paths.get(pluginJarAppPath).toFile())) {
+            JarEntry fontEntry = jarFile.getJarEntry(fontFilePath);
+            try (InputStream fontIs = jarFile.getInputStream(fontEntry)) {
+                // 5. 核心：从输入流解析为原始 Font 对象（Font.TRUETYPE_FONT 兼容 TTF/OTF 格式）
+                Font originalFont = Font.createFont(Font.TRUETYPE_FONT, fontIs);
+                // 6. 原始 Font 大小为 1，派生为指定大小的可用 Font 对象（不改变字体本身）
+                font = originalFont.deriveFont((float) fontSize);
+            }
+        } catch (Exception e) {
+            log.error("从插件 jar 包中加载字体文件失败");
+            e.printStackTrace();
+        }
+        return font;
     }
 
     // 检查文件名是否为 json

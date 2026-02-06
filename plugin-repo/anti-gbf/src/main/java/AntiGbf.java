@@ -18,6 +18,6 @@ public class AntiGbf extends PatternPlugin {
 
     @Override
     public void execute(YuniMessageEvent eventContext) {
-        eventContext.getChatSession().reply("大家不要相信，这是骑空士的陷阱！");
+        eventContext.getChatSession().reply("大家不要信，这是骑空士的陷阱！");
     }
 }

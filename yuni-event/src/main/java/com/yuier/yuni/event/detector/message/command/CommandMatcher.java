@@ -60,7 +60,7 @@ public class CommandMatcher {
          */
         String commandFlag = getBotApp().getCommandFlag();
         TextSegment textSegment = (TextSegment) chainForCommand.getContent().get(FIRST_INDEX);
-        if (!textSegment.getText().equals(commandFlag + model.getHead())) {
+        if (!textSegment.getText().strip().equals(commandFlag + model.getHead())) {
             return notMatch();
         }
         // 如果拆分出来的消息段数量不能满足指令的最低个数，则判不匹配
@@ -87,6 +87,7 @@ public class CommandMatcher {
         if (stringCommandArgMatchedMap ==  null) {
             return notMatch();
         }
+        argsMatched = stringCommandArgMatchedMap;
         // 如果 cfc 已经遍历完毕，则返回匹配成功
         if (chainForCommand.messageSegsMatchedEnd()) {
             // 将匹配出的必选参数放入 commandMatched 中
@@ -467,8 +468,8 @@ public class CommandMatcher {
                 // 将文本消息以空格为分割符，拆分为多段
                 String[] strArr = ((TextSegment) segment).getText().split(BLANK_SPACE);
                 for (String str : strArr) {
-                    if (!str.trim().isEmpty()) {
-                        chainForCommand.addTextSegment(str);
+                    if (!str.isBlank()) {
+                        chainForCommand.addTextSegment(str.strip());
                     }
                 }
             } else {

@@ -166,6 +166,10 @@ public class PluginManager {
 
     }
 
+    /**
+     * 处理消息发送事件
+     * @param event 消息发送事件
+     */
     public void handleMessageSentEvent(YuniMessageSentEvent event) {
         passivePluginMatcher.matchMessageSentEvent(event);
     }

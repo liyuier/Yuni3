@@ -29,6 +29,10 @@ public class ImageSegment extends MessageSegment {
         return data != null ? data.getFile() : null;
     }
 
+    public String getUrl() {
+        return data != null ? data.getUrl() : null;
+    }
+
     public ImageSegment setFile(String file) {
         if (data == null) {
             data = new ImageData(file);
