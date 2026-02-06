@@ -1,3 +1,6 @@
+
+import com.madgag.gif.fmsware.AnimatedGifEncoder;
+import com.madgag.gif.fmsware.GifDecoder;
 import com.yuier.yuni.core.enums.CommandArgRequireType;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.segment.ImageSegment;
@@ -11,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Base64;
 
@@ -42,7 +48,78 @@ public class YaoWoYiZhi extends CommandPlugin {
     @Override
     public void execute(YuniMessageEvent eventContext) {
         ImageSegment targetImage = (ImageSegment) eventContext.getCommandMatched().getArgValue(TARGET_IMAGE);
+        // 获取图片 URL
         String imageFileUrl = targetImage.getUrl();
+        String lowerUrl = imageFileUrl.toLowerCase();
+        String imageBase64 = null;
+        // 尝试用 GIF 解码器读取
+        GifDecoder decoder = new GifDecoder();
+        int status = -1;
+        try (InputStream stream = new URL(imageFileUrl).openStream(); BufferedInputStream buffered = new BufferedInputStream(stream)) {
+            // 标记流以便重置
+            buffered.mark(Integer.MAX_VALUE);
+            status = decoder.read(buffered);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (status == GifDecoder.STATUS_OK && decoder.getFrameCount() > 0) {
+            // 是 GIF，使用已读取的 decoder
+            imageBase64 = processGifFromUrl(decoder);
+        } else {
+            // 不是 GIF
+            imageBase64 = processStaticImageFromUrl(imageFileUrl);
+        }
+        eventContext.getChatSession().response(new MessageChain(new ImageSegment().setFile("base64://" + imageBase64)));
+    }
+
+    /**
+     * 处理gif图片
+     * @param decoder GIF 解码器
+     * @return 图片Base64
+     */
+    private String processGifFromUrl(GifDecoder decoder) {
+
+        int frameCount = decoder.getFrameCount();
+        // 处理第一帧以获取输出格式
+        BufferedImage firstFrame = decoder.getFrame(0);
+        BufferedImage sampleFrame = processSingleFrame(firstFrame);
+        // 创建输出流
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+        encoder.start(outputStream);
+        encoder.setRepeat(decoder.getLoopCount());
+
+        // 设置输出质量
+        encoder.setQuality(10); // 1-10，10为最高质量
+
+        // 批量处理所有帧
+        for (int i = 0; i < frameCount; i++) {
+            BufferedImage frame = decoder.getFrame(i);
+            int delay = decoder.getDelay(i);
+
+            // 优化内存使用：处理完成后立即释放原帧
+            BufferedImage processedFrame = processSingleFrame(frame);
+
+            encoder.setDelay(Math.max(delay, 10)); // 最小延迟10ms避免播放过快
+            encoder.addFrame(processedFrame);
+
+            // 帮助GC
+            frame.flush();
+            processedFrame.flush();
+        }
+
+        encoder.finish();
+
+        byte[] gifBytes = outputStream.toByteArray();
+        return Base64.getEncoder().encodeToString(gifBytes);
+    }
+
+    /**
+     * 处理静态图片
+     * @param imageFileUrl 图片 URL
+     * @return 图片 Base64
+     */
+    private String processStaticImageFromUrl(String imageFileUrl) {
         // 下载图片
         BufferedImage originalImage = null;
         try {
@@ -50,20 +127,25 @@ public class YaoWoYiZhi extends CommandPlugin {
         } catch (IOException e) {
             log.error("下载 QQ 图片失败: ");
             e.printStackTrace();
-            return;
+            return null;
         }
-        String imageBase64 = null;
+
+        // 处理单帧图片
+        BufferedImage resultImage = processSingleFrame(originalImage);
+
+        // 转换为Base64
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            imageBase64 = processImage(originalImage);
+            ImageIO.write(resultImage, "jpg", baos);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (FontFormatException e) {
-            throw new RuntimeException(e);
+            log.error("图片转换失败");
+            e.printStackTrace();
         }
-        eventContext.getChatSession().response(new MessageChain(new ImageSegment().setFile("base64://" + imageBase64)));
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.getEncoder().encodeToString(imageBytes);
     }
 
-    private String processImage(BufferedImage originalImage) throws IOException, FontFormatException {
+    private BufferedImage processSingleFrame(BufferedImage originalImage) {
         // 统一新图片尺寸
         int newMainImgWidth = 600;  // 新主图宽度统一为 600px
         int newMainImgHeight = (int) (originalImage.getHeight() * 600.0 / originalImage.getWidth());  // 等比例计算新主图高度
@@ -122,17 +204,7 @@ public class YaoWoYiZhi extends CommandPlugin {
 
         // 释放资源
         g2d.dispose();
-
-        // 转换为 Base64
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(resultImage, "jpg", baos);
-        } catch (IOException e) {
-            log.error("图片转换失败: ");
-            e.printStackTrace();
-        }
-        byte[] imageBytes = baos.toByteArray();
-        return Base64.getEncoder().encodeToString(imageBytes);
+        return resultImage;
     }
 
     /**

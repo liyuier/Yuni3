@@ -25,6 +25,7 @@
         <okhttp.version>4.9.3</okhttp.version>
         <jdbi3-core.version>3.39.1</jdbi3-core.version>
         <jdbi3-annotations.version>3.39.1</jdbi3-annotations.version>
+        <animated-gif-lib.version>1.4</animated-gif-lib.version>
     </properties>
 
     <dependencyManagement>
@@ -104,6 +105,12 @@
                 <groupId>org.jdbi</groupId>
                 <artifactId>jdbi3-sqlobject</artifactId>
                 <version>${jdbi3-annotations.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.madgag</groupId>
+                <artifactId>animated-gif-lib</artifactId>
+                <version>${animated-gif-lib.version}</version>
             </dependency>
 
         </dependencies>
