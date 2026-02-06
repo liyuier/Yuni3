@@ -11,6 +11,7 @@ import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.event.detector.meta.YuniMetaDetector;
 import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
 import com.yuier.yuni.event.detector.request.YuniRequestDetector;
+import com.yuier.yuni.event.service.ReceiveMessageService;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
@@ -46,6 +47,8 @@ public class PassivePluginMatcher {
     SavePluginCallEvent savePluginCallEvent;
     @Autowired
     PluginContainer pluginContainer;
+    @Autowired
+    ReceiveMessageService receiveMessageService;
 
     /* 匹配消息事件 */
 
@@ -65,6 +68,8 @@ public class PassivePluginMatcher {
                 if (detector.match(event)) {
                     log.info("匹配到插件: {}", commandPluginInstance.getPluginName());
                     matchedPluginInstances.add(commandPluginInstance);
+                    // 记录一下这个消息是个指令消息
+                    receiveMessageService.flagAsCommandEvent(event);
                 }
             }
         }

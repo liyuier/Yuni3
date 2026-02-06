@@ -52,4 +52,10 @@ public class ReceiveMessageEntity {
     private String messageFormat;
 
     private Long realId;
+
+    private Boolean isPlainText;
+
+    private Boolean isSelfSent;
+
+    private Boolean isCommand;
 }

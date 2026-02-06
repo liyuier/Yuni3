@@ -1,6 +1,7 @@
 package com.yuier.yuni.event.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;
 
 /**
@@ -12,5 +13,7 @@ import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;
 public interface ReceiveMessageService extends IService<ReceiveMessageEntity> {
 
     void saveEvent(ReceiveMessageEntity receiveMessageEntity);
+
+    void flagAsCommandEvent(YuniMessageEvent event);
 }
 

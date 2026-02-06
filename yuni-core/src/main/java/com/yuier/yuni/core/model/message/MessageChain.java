@@ -127,4 +127,13 @@ public class MessageChain {
         }
         return false;
     }
+
+    public Boolean isPlainText() {
+        for (MessageSegment seg : content) {
+            if (!seg.typeOf(TEXT)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

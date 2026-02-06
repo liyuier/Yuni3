@@ -39,6 +39,8 @@ public class YuniEventSaver {
         receiveMessageEntity.setGroupId(event.getGroupId());
         receiveMessageEntity.setMessageFormat(event.getMessageFormat());
         receiveMessageEntity.setRealId(event.getRealId());
+        receiveMessageEntity.setIsPlainText(event.getMessageChain().isPlainText());
+        receiveMessageEntity.setIsSelfSent(false);
         receiveMessageService.saveEvent(receiveMessageEntity);
     }
 
@@ -59,6 +61,8 @@ public class YuniEventSaver {
         receiveMessageEntity.setGroupId(event.getGroupId());
         receiveMessageEntity.setMessageFormat(event.getMessageFormat());
         receiveMessageEntity.setRealId(event.getRealId());
+        receiveMessageEntity.setIsPlainText(event.getMessageChain().isPlainText());
+        receiveMessageEntity.setIsSelfSent(true);
         receiveMessageService.saveEvent(receiveMessageEntity);
     }
 }
