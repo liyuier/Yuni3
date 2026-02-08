@@ -2,7 +2,6 @@ import com.yuier.yuni.core.model.message.segment.TextSegment;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
 import com.yuier.yuni.plugin.manage.PluginContainer;
-import com.yuier.yuni.plugin.manage.load.PluginLoadProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
 import com.yuier.yuni.plugin.util.PluginUtils;
@@ -12,8 +11,13 @@ import util.PluginManageUtil;
 import util.PluginReloadProcessor;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static util.PluginManagerConstants.PLUGIN_MANAGE_RELOAD;
 
@@ -76,14 +80,20 @@ public class PluginReload {
             log.warn("插件目录不存在: {}", appPluginDirectoryPath);
             return new ArrayList<>();
         }
-        File[] jarFiles = pluginDir.listFiles((dir, name) ->
-                name.endsWith(".jar") &&  // 筛选 jar 包
-                (name.equals(jarFileName) || name.startsWith(moduleId)));  // 筛选插件缓存的 jar 包名称，或者以模块 ID 开头的 jar 包名称
-        if (jarFiles == null) {
-            log.warn("插件目录为空: {}", appPluginDirectoryPath);
-            return new ArrayList<>();
+
+        Path rootPath = Paths.get(appPluginDirectoryPath);
+
+        try (Stream<Path> walkStream = Files.walk(rootPath)) {  // 使用 try-with-resources 确保 Stream 资源被正确关闭
+            return walkStream.filter(Files::isRegularFile) // 确保是文件，不是目录
+                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"))  // 只保留 .jar 文件
+                    .map(Path::toFile)  // 转换为 File 对象
+                    .filter(file -> file.getName().equals(jarFileName)
+                            || file.getName().startsWith(moduleId))  // 筛选插件缓存的 jar 包名称，或者以模块 ID 开头的 jar 包名称
+                    .toList();
+        } catch (IOException e) {
+            log.error("遍历目录时发生错误: {}", appPluginDirectoryPath, e);
+            return List.of();
         }
-        return List.of(jarFiles);
     }
 
     public void reloadAllPlugins(YuniMessageEvent eventContext, PluginManage pluginManage) {

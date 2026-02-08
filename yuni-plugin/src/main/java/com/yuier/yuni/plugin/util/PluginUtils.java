@@ -3,7 +3,6 @@ package com.yuier.yuni.plugin.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.adapter.qq.http.OneBotResponse;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
@@ -23,8 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -150,7 +147,7 @@ public class PluginUtils {
      */
     public static String loadTextFromPluginJar(YuniPlugin plugin, String resourcePath) {
         String text = "";
-        String pluginJarAppPath = getPluginJarAppPath(plugin);
+        String pluginJarAppPath = getPluginJarRelativePath(plugin);
         try (JarFile jarFile = new JarFile(pluginJarAppPath)) {
             text = readFileTextFromJar(jarFile, resourcePath);
         } catch (Exception e) {
@@ -165,8 +162,13 @@ public class PluginUtils {
      * @param plugin 插件对象
      * @return  插件 jar 包在 SpringBoot app 中的路径
      */
-    public static String getPluginJarAppPath(YuniPlugin plugin) {
-        return getPluginManager().getPluginDirectoryPath() + "/" + getPluginJarFileName(plugin);
+    public static String getPluginJarRelativePath(YuniPlugin plugin) {
+        // 先根据 plugin 获取 plugin id
+        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
+        String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
+        // 再根据插件 ID 获取模块
+        PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
+        return moduleByPluginFullId.getJarFileRelativePath();
     }
 
     /**
@@ -177,7 +179,7 @@ public class PluginUtils {
         // 先根据 plugin 获取 plugin id
         PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
         String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
-        // 再根据插件 ID 获取模块 ID
+        // 再根据插件 ID 获取模块
         PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
         return moduleByPluginFullId.getJarFileName();
     }
@@ -205,7 +207,7 @@ public class PluginUtils {
      */
     public static Font loadFontFromJar(YuniPlugin plugin, String fontFilePath, int fontSize) {
         Font font = null;
-        String pluginJarAppPath = getPluginJarAppPath(plugin);
+        String pluginJarAppPath = getPluginJarRelativePath(plugin);
         try (JarFile jarFile = new JarFile(Paths.get(pluginJarAppPath).toFile())) {
             JarEntry fontEntry = jarFile.getJarEntry(fontFilePath);
             try (InputStream fontIs = jarFile.getInputStream(fontEntry)) {

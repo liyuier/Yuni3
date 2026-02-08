@@ -6,12 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Stream;
 
 /**
  * @Title: PluginLoadProcessor
@@ -38,20 +43,27 @@ public class PluginLoadProcessor {
      * @return JAR 文件列表
      */
     public List<File> collectJarFilesFromPath(String path) {
-        File pluginDir = new File(path);
+        Path rootPath = Paths.get(path);
 
-        if (!pluginDir.exists() || !pluginDir.isDirectory()) {
+        if (!Files.exists(rootPath)) {
             log.warn("插件目录不存在: {}", path);
-            return new ArrayList<>();
+            return List.of(); // 返回不可变空列表
         }
 
-        // 使用 FilenameFilter 过滤 jar 包
-        File[] jarFiles = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
-        if (jarFiles == null) {
-            log.warn("插件目录为空: {}", path);
-            return new ArrayList<>();
+        if (!Files.isDirectory(rootPath)) {
+            log.warn("路径不是一个目录: {}", path);
+            return List.of();
         }
-        return List.of(jarFiles);
+
+        try (Stream<Path> walkStream = Files.walk(rootPath)) {  // 使用 try-with-resources 确保 Stream 资源被正确关闭
+            return walkStream.filter(Files::isRegularFile) // 确保是文件，不是目录
+                    .filter(p -> p.toString().toLowerCase().endsWith(".jar"))  // 只保留 .jar 文件
+                    .map(Path::toFile)  // 转换为 File 对象
+                    .toList();
+        } catch (IOException e) {
+            log.error("遍历目录时发生错误: {}", path, e);
+            return List.of(); // 发生错误时返回空列表
+        }
     }
 
     /**
@@ -113,6 +125,7 @@ public class PluginLoadProcessor {
     public PluginModuleInstance assemblePluginModule(File jarFile) throws Exception {
         PluginModuleInstance pluginModuleInstance = new PluginModuleInstance();
         pluginModuleInstance.setJarFileName(jarFile.getName());
+        pluginModuleInstance.setJarFileRelativePath(jarFile.getPath());
         pluginModuleInstance.setPluginModuleMetadata(parseModuleMetadata(jarFile));
         return pluginModuleInstance;
     }

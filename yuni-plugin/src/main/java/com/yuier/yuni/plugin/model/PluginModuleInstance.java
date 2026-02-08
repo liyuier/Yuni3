@@ -20,6 +20,7 @@ public class PluginModuleInstance {
 
     // 这里假设 jar 包都直接放在插件目录下，不创建子目录
     private String jarFileName;
+    private String jarFileRelativePath;
 
     private PluginModuleMetadata pluginModuleMetadata;
 
