@@ -46,7 +46,7 @@ logging:
 
 onebot:
   communication:
-    mode: http  # 与 OneBot 的通信方式，目前只实现了 http
+    mode: ws  # 与 OneBot 的通信方式，允许 ws（WebSocket）和 http（HTTP），目前对 ws 适配比较完善，建议使用
     token:
     ws:
       url: ws://localhost:3001  #  WebSocket 的连接地址

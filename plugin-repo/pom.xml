@@ -25,6 +25,7 @@
         <module>setu</module>
         <module>anti-gbf</module>
         <module>yizhi</module>
+        <module>fortune</module>
     </modules>
 
 </project>
