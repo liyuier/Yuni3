@@ -22,11 +22,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @Title: PluginUtils
@@ -177,8 +182,10 @@ public class PluginUtils {
     public static Font loadFontFromPlugin(YuniPlugin plugin, String fontFilePath, int fontSize) {
         Font font = null;
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File(getPluginRootPath(plugin), fontFilePath))
-                    .deriveFont((float) fontSize);
+            byte[] fontData = Files.readAllBytes(Paths.get(getPluginRootPath(plugin)).resolve(fontFilePath)); // 读取字节
+            try (InputStream is = new ByteArrayInputStream(fontData)) { // 包装为流
+                font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont((float) fontSize); // 加载字体
+            }
         } catch (Exception e) {
             log.error("从插件中加载字体文件失败");
             e.printStackTrace();
@@ -268,5 +275,15 @@ public class PluginUtils {
     public static String getGroupMemberName(long groupId, long userId) {
         GroupMemberInfo groupMemberInfo = getOneBotAdapter().getGroupMemberInfo(groupId, userId, true);
         return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
+    }
+
+    public static <T> T getRandomElement(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            throw new IllegalArgumentException("列表为空！");
+        }
+
+        int index = ThreadLocalRandom.current().nextInt(list.size());
+
+        return list.get(index);
     }
 }

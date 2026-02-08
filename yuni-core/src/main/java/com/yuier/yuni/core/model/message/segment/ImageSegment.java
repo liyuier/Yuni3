@@ -42,6 +42,10 @@ public class ImageSegment extends MessageSegment {
         return this;
     }
 
+    public ImageSegment setBase64File(String imageBase64) {
+        return setFile("base64://" + imageBase64);
+    }
+
     public String getName() {
         return data != null ? data.getName() : null;
     }

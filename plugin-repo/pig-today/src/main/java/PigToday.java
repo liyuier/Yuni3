@@ -81,7 +81,7 @@ public class PigToday extends CommandPlugin {
             if (pigTodayMap != null && pigTodayMap.containsKey(targetQqStr)) {
                 PigTodayCache pigTodayCache = PluginUtils.serialize(pigTodayMap.get(targetQqStr), PigTodayCache.class);
                 assert pigTodayCache != null;
-                if (LocalDate.now().toString().equals(pigTodayCache.getData())) {
+                if (LocalDate.now().toString().equals(pigTodayCache.getDate())) {
                     return pigTodayCache;
                 }
             }

@@ -63,6 +63,10 @@ public class MessageChain {
                 !((TextSegment) getSegment(FIRST_INDEX)).getText().trim().isEmpty();  // 文本消息段内容不为空
     }
 
+    public MessageChain addAll(MessageChain messageChain) {
+        return addAll(messageChain.content);
+    }
+
     public MessageChain addSegment(MessageSegment segment) {
         content.add(segment);
         return this;
