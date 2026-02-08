@@ -66,7 +66,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>../../plugins/${project.artifactId}</outputDirectory> <!-- 目标目录 -->
+                            <outputDirectory>../../../plugins/${project.artifactId}</outputDirectory> <!-- 目标目录 -->
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory> <!-- 源目录 -->
