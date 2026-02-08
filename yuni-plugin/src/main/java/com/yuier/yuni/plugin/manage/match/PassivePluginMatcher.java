@@ -23,9 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @Title: PassivePluginMatcher
@@ -57,59 +56,60 @@ public class PassivePluginMatcher {
      * @param event 消息事件
      */
     public void matchMessageEvent(YuniMessageEvent event) {
-        List<PassivePluginInstance> matchedPluginInstances = new ArrayList<>();
 
+        AtomicBoolean isCommand = new AtomicBoolean(false);
         // 先匹配指令，如果匹配到了指令，那么不再继续匹配
         for (String commandPluginFullId : pluginContainer.getCommandPluginFullIds()) {
             PassivePluginInstance commandPluginInstance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(commandPluginFullId);
             // 权限检查与使能情况检查
-            if (isPluginEnabled(event, commandPluginInstance) && checkPermission(commandPluginInstance, event)) {
-                CommandDetector detector = (CommandDetector) commandPluginInstance.getDetector();
-                if (detector.match(event)) {
+            if (!isPluginEnabled(event, commandPluginInstance) || !checkPermission(commandPluginInstance, event)) {
+                return;
+            }
+            CommandDetector detector = (CommandDetector) commandPluginInstance.getDetector();
+            if (detector.match(event)) {
+                // 同步匹配，确保在后续判断是否应匹配模式插件时，匹配完所有命令插件
+                isCommand.set(true);
+                // 异步执行插件
+                CompletableFuture.runAsync(() -> {
                     log.info("匹配到插件: {}", commandPluginInstance.getPluginName());
-                    matchedPluginInstances.add(commandPluginInstance);
                     // 记录一下这个消息是个指令消息
                     receiveMessageService.flagAsCommandEvent(event);
-                }
+                    try {
+                        commandPluginInstance.getExecuteMethod().invoke(commandPluginInstance.getPlugin(), event);
+                        // 记录功能调用
+                        savePluginCallEvent.saveEvent(event, commandPluginInstance);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        event.getChatSession().response(
+                                "执行插件 " + commandPluginInstance.getPluginName() + " full id: " + commandPluginInstance.getPluginFullId() + " 失败，请联系开发人员。"
+                        );
+                    }
+                });
             }
         }
-        if (!matchedPluginInstances.isEmpty()) {
-            executePlugin(matchedPluginInstances, event, true);
+        if (isCommand.get()) {
             // 匹配到指令后不再继续匹配其他插件
             return;
         }
         // 再匹配模式类插件
         for (String patternPluginFullId : pluginContainer.getPatternPluginFullIds()) {
-            PassivePluginInstance patternPluginInstance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(patternPluginFullId);
-            // 权限检查
-            if (isPluginEnabled(event, patternPluginInstance) && checkPermission(patternPluginInstance, event)) {
+            CompletableFuture.runAsync(() -> {
+                PassivePluginInstance patternPluginInstance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(patternPluginFullId);
+                // 权限检查
+                if (!isPluginEnabled(event, patternPluginInstance) || !checkPermission(patternPluginInstance, event)) {
+                    return;
+                }
                 PatternDetector detector = (PatternDetector) patternPluginInstance.getDetector();
                 if (detector.match(event)) {
                     log.info("匹配到插件: {}", patternPluginInstance.getPluginMetadata().getName());
-                    matchedPluginInstances.add(patternPluginInstance);
-                }
-            }
-        }
-        // 模式匹配的插件暂时不记录调用事件
-        executePlugin(matchedPluginInstances, event, false);
-    }
-
-    /**
-     * 执行插件
-     * @param pluginInstances 插件实例列表
-     * @param event 事件
-     * @param saveCallEvent 是否保存调用事件
-     */
-    private void executePlugin(List<PassivePluginInstance> pluginInstances, YuniMessageEvent event, boolean saveCallEvent) {
-        for (PassivePluginInstance instance : pluginInstances) {
-            CompletableFuture.runAsync(() -> {
-                if (saveCallEvent) {
-                    savePluginCallEvent.saveEvent(event, instance);
-                }
-                try {
-                    instance.getExecuteMethod().invoke(instance.getPlugin(), event);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    try {
+                        patternPluginInstance.getExecuteMethod().invoke(patternPluginInstance.getPlugin(), event);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        event.getChatSession().response(
+                                "执行插件 " + patternPluginInstance.getPluginName() + " full id: " + patternPluginInstance.getPluginFullId() + " 失败，请联系开发人员。"
+                        );
+                    }
                 }
             });
         }
@@ -148,25 +148,26 @@ public class PassivePluginMatcher {
         boolean matched = false;
         for (String noticePluginFullId : pluginContainer.getNoticePluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(noticePluginFullId);
-            if (isPluginEnabled(event, instance) && checkPermission(instance, event)) {
-                YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
-                if (detector.match(event)) {
-                    matched = true;
+            if (!isPluginEnabled(event, instance) || !checkPermission(instance, event)) {
+                return;
+            }
+            YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
+            if (detector.match(event)) {
+                matched = true;
+                // 异步执行插件
+                CompletableFuture.runAsync(() -> {
                     // 感觉有点屎山，但是没办法了，先这样吧
                     // 匹配后的 event 中保存了实际的通知事件类型
                     YuniNoticeEvent yuniNoticeEvent = event.getYuniNoticeEvent();
                     // 打个日志先
                     log.info(yuniNoticeEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
-                    // 跑一下，这里暂时先不像消息那样写，反正也不会有多少插件会处理通知事件的
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            instance.getExecuteMethod().invoke(instance.getPlugin(), yuniNoticeEvent);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
+                    try {
+                        instance.getExecuteMethod().invoke(instance.getPlugin(), yuniNoticeEvent);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }
         if (!matched) {
@@ -191,18 +192,18 @@ public class PassivePluginMatcher {
      * @param event 请求事件
      */
     public void matchRequestEvent(YuniRequestEvent event) {
-        boolean matched = false;
+        AtomicBoolean matched = new AtomicBoolean(false);
         for (String requestPluginFullId : pluginContainer.getRequestPluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(requestPluginFullId);
             YuniRequestDetector detector = (YuniRequestDetector) instance.getDetector();
             if (detector.match(event)) {
-                matched = true;
-                YuniRequestEvent yuniRequestEvent = event.getYuniRequestEvent();
-                // 打个日志先
-                log.info(yuniRequestEvent.toLogString());
-                log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
+                matched.set(true);
                 // 跑一下
                 CompletableFuture.runAsync(() -> {
+                    YuniRequestEvent yuniRequestEvent = event.getYuniRequestEvent();
+                    // 打个日志先
+                    log.info(yuniRequestEvent.toLogString());
+                    log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     try {
                         instance.getExecuteMethod().invoke(instance.getPlugin(), yuniRequestEvent);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -212,7 +213,7 @@ public class PassivePluginMatcher {
             }
         }
         // 没匹配到处理插件，打印默认日志
-        if (!matched) {
+        if (!matched.get()) {
             log.info(event.toLogString());
         }
     }
@@ -222,19 +223,19 @@ public class PassivePluginMatcher {
      * @param event 元事件
      */
     public void matchMetaEvent(YuniMetaEvent event) {
-        boolean matched = false;
+        AtomicBoolean matched = new AtomicBoolean(false);
         for (String metaPluginFullId : pluginContainer.getMetaPluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(metaPluginFullId);
             YuniMetaDetector detector = (YuniMetaDetector) instance.getDetector();
             if (detector.match(event)) {
-                matched = true;
-                YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
-                // 打个日志先
-                log.debug(yuniMetaEvent.toLogString());
-                log.debug("匹配到插件: {}", instance.getPluginMetadata().getName());
-                // 跑一下
+                matched.set(true);
                 CompletableFuture.runAsync(() -> {
+                    // 跑一下
                     try {
+                        YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
+                        // 打个日志先
+                        log.debug(yuniMetaEvent.toLogString());
+                        log.debug("匹配到插件: {}", instance.getPluginMetadata().getName());
                         instance.getExecuteMethod().invoke(instance.getPlugin(), yuniMetaEvent);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
@@ -243,7 +244,7 @@ public class PassivePluginMatcher {
             }
         }
         // 没匹配到处理插件，打印默认日志
-        if (!matched) {
+        if (!matched.get()) {
             log.info(event.toLogString());
         }
     }
@@ -254,10 +255,10 @@ public class PassivePluginMatcher {
      */
     public void matchMessageSentEvent(YuniMessageSentEvent event) {
         for (String messageSentPluginFullId : pluginContainer.getMessageSentPluginFullIds()) {
-            PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(messageSentPluginFullId);
-            // 消息发送事件没什么好匹配的，直接执行就行 TODO 上面的执行逻辑也要优化一下
-            log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
             CompletableFuture.runAsync(() -> {
+                PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(messageSentPluginFullId);
+                // 消息发送事件没什么好匹配的，直接执行就行
+                log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                 try {
                     instance.getExecuteMethod().invoke(instance.getPlugin(), event);
                 } catch (IllegalAccessException | InvocationTargetException e) {

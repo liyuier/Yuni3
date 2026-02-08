@@ -55,8 +55,7 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
 
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-        log.info("[MaiMaiAdapterWsProxyListener.onFailure]到 MaiBot-Napcat-Adapter 的连接发生错误，" +
-                "错误信息：{}, 响应信息：{} 。正在准备重连。", t.getMessage(), response);
+        log.info("[MaiMaiAdapterWsProxyListener.onFailure]到 MaiBot-Napcat-Adapter 的连接发生错误，正在准备重连。");
         t.printStackTrace();
         connector.restartConnection();
         log.info("[MaiMaiAdapterWsProxyListener.onFailure]已重启到 MaiBot-Napcat-Adapter 的连接。");
