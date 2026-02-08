@@ -58,6 +58,31 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- 复制资源文件到 plugins 目录 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources-to-plugins</id> <!-- 给这个执行步骤一个唯一的 ID -->
+                        <phase>process-resources</phase> <!-- 绑定到 process-resources 阶段 -->
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../../plugins/${project.artifactId}</outputDirectory> <!-- 目标目录 -->
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory> <!-- 源目录 -->
+                                </resource>
+                            </resources>
+                            <!-- 关闭 Maven 属性过滤 -->
+                            <useDefaultDelimiters>false</useDefaultDelimiters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
