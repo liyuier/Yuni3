@@ -58,6 +58,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
+                    <!-- 移除默认的绑定到 process-resources 的 execution -->
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>none</phase>
+                    </execution>
                     <execution>
                         <id>copy-resources-to-plugins</id> <!-- 给这个执行步骤一个唯一的 ID -->
                         <phase>process-resources</phase> <!-- 绑定到 process-resources 阶段 -->
