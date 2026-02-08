@@ -30,7 +30,7 @@
 
     <build>
         <plugins>
-            <!-- 将构建结果输出到 application 目录下-->
+            <!-- 将构建结果输出到 plugins 目录下-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
