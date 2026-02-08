@@ -51,7 +51,7 @@ public class HooTrans extends CommandPlugin {
         TextSegment hooRawWordSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(HOO_TRANS_ENCODED_OPTION);
         String hooRawWords = hooRawWordSegment.getText();
         // 获取映射表，翻译为齁哦语言
-        TransMap transMap = PluginUtils.loadJsonConfigFromJar("trans-map.json", TransMap.class, this);
+        TransMap transMap = PluginUtils.loadJsonConfigFromPlugin("trans-map.json", TransMap.class, this);
         List<String> hooMap = transMap.getHoo();
         String hooCode = TransferUtil.encode(hooRawWords, hooMap);
         // 开头加一个 "齁"
@@ -63,7 +63,7 @@ public class HooTrans extends CommandPlugin {
         TextSegment hooWordSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(HOO_TRANS_DECODED_OPTION);
         String hooWords = hooWordSegment.getText();
         // 获取映射表
-        TransMap transMap = PluginUtils.loadJsonConfigFromJar("trans-map.json", TransMap.class, this);
+        TransMap transMap = PluginUtils.loadJsonConfigFromPlugin("trans-map.json", TransMap.class, this);
         List<String> hooMap = transMap.getHoo();
         // 检查开头是否有齁哦语标识
         if (!hooWords.startsWith(hooMap.get(0))) {

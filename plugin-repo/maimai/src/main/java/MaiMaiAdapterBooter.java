@@ -26,7 +26,7 @@ public class MaiMaiAdapterBooter extends ImmediatePlugin {
     public Action getAction() {
         return () -> {
             // 获取配置
-            MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromJar("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
+            MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromPlugin("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, this);
             Request request = new Request.Builder()
                     .url(config.getServerUrl())
                     .addHeader("Authorization", "Bearer " + config.getToken())

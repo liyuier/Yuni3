@@ -46,7 +46,7 @@ public class DailyNews extends ScheduledPlugin {
                     .map(GroupListElement::getGroupId)
                     .toList();
             // 再根据策略发送
-            DailyNewsStrategyConfig strategyConfig = PluginUtils.loadJsonConfigFromJar("daily_news_strategy.json", DailyNewsStrategyConfig.class, this);
+            DailyNewsStrategyConfig strategyConfig = PluginUtils.loadJsonConfigFromPlugin("daily_news_strategy.json", DailyNewsStrategyConfig.class, this);
             if ("blacklist".equals(strategyConfig.getStrategy())) {
                 List<DailyNewsGroupEnable> blackLists = DBHelper.findBlackLists();
                 groupIdList.forEach(groupId -> {

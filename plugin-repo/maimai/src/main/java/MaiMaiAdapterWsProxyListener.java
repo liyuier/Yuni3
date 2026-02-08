@@ -99,7 +99,7 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
      */
     private void startHeartbeat() {
         // 创建任务
-        MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromJar("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, maiMaiAdapterBooter);
+        MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromPlugin("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, maiMaiAdapterBooter);
         Long heartbeatInterval = config.getHeartbeatInterval();
         Runnable task = () -> {
             HeartbeatStatus heartbeatStatus = new HeartbeatStatus(true, true);

@@ -110,11 +110,11 @@ public class PluginLoadProcessor {
 
     /**
      * 解析插件元数据
-     * @param jarFile  JAR 包文件
+     * @param pluginModuleInstance  JAR 包文件
      * @return 插件元数据
      */
-    public PluginModuleMetadata parseModuleMetadata(File jarFile) throws Exception {
-        return metadataParser.parseModuleMetadata(jarFile);
+    public PluginModuleMetadata parseModuleMetadata(PluginModuleInstance pluginModuleInstance) throws Exception {
+        return metadataParser.parseModuleMetadata(pluginModuleInstance);
     }
 
     /**
@@ -125,8 +125,8 @@ public class PluginLoadProcessor {
     public PluginModuleInstance assemblePluginModule(File jarFile) throws Exception {
         PluginModuleInstance pluginModuleInstance = new PluginModuleInstance();
         pluginModuleInstance.setJarFileName(jarFile.getName());
-        pluginModuleInstance.setJarFileRelativePath(jarFile.getPath());
-        pluginModuleInstance.setPluginModuleMetadata(parseModuleMetadata(jarFile));
+        pluginModuleInstance.setJarFileParentPath(jarFile.getParent());
+        pluginModuleInstance.setPluginModuleMetadata(parseModuleMetadata(pluginModuleInstance));
         return pluginModuleInstance;
     }
 

@@ -38,7 +38,7 @@ public class PluginManager {
 
     // TODO 理顺逻辑，解决一堆管理功能
 
-    @Value("${bot.app.plugin.directory:yuni-application/plugins}")
+    @Value("${bot.app.plugin.directory:plugins}")
     private String pluginDirectoryPath;  // 插件目录
     @Autowired
     PluginContainer pluginContainer;

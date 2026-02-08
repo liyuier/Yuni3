@@ -22,7 +22,7 @@ public class HelpInfo extends CommandPlugin {
     @Override
     public void execute(YuniMessageEvent eventContext) {
         String helpInfoFilePath = "help-info.txt";
-        String helpInfoStr = PluginUtils.loadTextFromPluginJar(this, helpInfoFilePath);
+        String helpInfoStr = PluginUtils.loadTextFromPluginFolder(this, helpInfoFilePath);
         eventContext.getChatSession().response(helpInfoStr);
     }
 }

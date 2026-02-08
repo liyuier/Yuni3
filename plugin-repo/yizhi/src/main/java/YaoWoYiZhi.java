@@ -7,6 +7,7 @@ import com.yuier.yuni.core.model.message.segment.ImageSegment;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.command.model.CommandBuilder;
+import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -196,7 +197,7 @@ public class YaoWoYiZhi extends CommandPlugin {
         g2d.drawImage(smallImage, smallImageX, smallImageY, null);
 
         // 设置字体
-        Font font = PluginUtils.loadFontFromJar(this, "static/font/HarmonyOS_SansSC_Medium.ttf", 100);
+        Font font = PluginUtils.loadFontFromPlugin(this, "static/font/HarmonyOS_SansSC_Medium.ttf", 100);
 
         g2d.setFont(font);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);

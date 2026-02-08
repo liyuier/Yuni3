@@ -61,7 +61,7 @@ public class ChieruTrans extends CommandPlugin {
         TextSegment chieruRawWordSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(CHIERU_TRANS_ENCODED_OPTION);
         String chieruRawWords = chieruRawWordSegment.getText();
         // 获取映射表，翻译为切噜语言
-        TransMap transMap = PluginUtils.loadJsonConfigFromJar("trans-map.json", TransMap.class, this);
+        TransMap transMap = PluginUtils.loadJsonConfigFromPlugin("trans-map.json", TransMap.class, this);
         List<String> chieruMap = transMap.getChieru();
         String chieruCode = TransferUtil.encode(chieruRawWords, chieruMap);
         // 开头加一个 "切"
@@ -78,7 +78,7 @@ public class ChieruTrans extends CommandPlugin {
         TextSegment chieruWordSegment = (TextSegment) commandMatched.getOptionRequiredArgValue(CHIERU_TRANS_DECODED_OPTION);
         String chieruWords = chieruWordSegment.getText();
         // 获取映射表
-        TransMap transMap = PluginUtils.loadJsonConfigFromJar("trans-map.json", TransMap.class, this);
+        TransMap transMap = PluginUtils.loadJsonConfigFromPlugin("trans-map.json", TransMap.class, this);
         List<String> chieruMap = transMap.getChieru();
         // 检查开头是否有切噜语标识
         if (!chieruWords.startsWith(chieruMap.get(0))) {

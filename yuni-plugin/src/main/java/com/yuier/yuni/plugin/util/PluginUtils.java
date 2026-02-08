@@ -22,12 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.awt.*;
-import java.io.InputStream;
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * @Title: PluginUtils
@@ -106,13 +105,26 @@ public class PluginUtils {
     }
 
     /**
+     * 获取插件目录在 app 下的相对路径
+     * @return 插件目录
+     */
+    public static String getPluginRootPath(YuniPlugin plugin) {
+        // 先根据 plugin 获取 plugin id
+        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
+        String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
+        // 再根据插件 ID 获取模块
+        PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
+        return moduleByPluginFullId.getJarFileParentPath();
+    }
+
+    /**
      * 加载配置 json 文件为 bean
      * @param configFilePath 配置文件路径
      * @param clazz bean 的类型
      * @param <T> bean 的类型
      * @return bean
      */
-    public static <T> T loadJsonConfigFromJar(String configFilePath, Class<T> clazz, YuniPlugin plugin) {
+    public static <T> T loadJsonConfigFromPlugin(String configFilePath, Class<T> clazz, YuniPlugin plugin) {
         if (!isJsonFile(configFilePath)) {
             throw new RuntimeException("传入的文件路径不是 json 文件！");
         }
@@ -136,7 +148,7 @@ public class PluginUtils {
             throw new RuntimeException("传入的文件路径不是 json 文件！");
         }
 
-        return loadTextFromPluginJar(plugin, configFilePath);
+        return loadTextFromPluginFolder(plugin, configFilePath);
     }
 
     /**
@@ -145,79 +157,30 @@ public class PluginUtils {
      * @param resourcePath 文件在 jar 包内路径
      * @return 配置文件内容
      */
-    public static String loadTextFromPluginJar(YuniPlugin plugin, String resourcePath) {
+    public static String loadTextFromPluginFolder(YuniPlugin plugin, String resourcePath) {
         String text = "";
-        String pluginJarAppPath = getPluginJarRelativePath(plugin);
-        try (JarFile jarFile = new JarFile(pluginJarAppPath)) {
-            text = readFileTextFromJar(jarFile, resourcePath);
+        try {
+            text = Files.readString(Paths.get(getPluginRootPath(plugin), resourcePath));
         } catch (Exception e) {
-            log.error("从插件 jar 包中加载文本文件内容字符串失败！请检查 jar 包内文件路径是否正确！");
+            log.error("从插件包中加载文本文件内容字符串失败！请检查插件目录下文件路径是否正确！");
             e.printStackTrace();
         }
         return text;
     }
 
     /**
-     * 获取插件 jar 包在 SpringBoot app 中的路径
-     * @param plugin 插件对象
-     * @return  插件 jar 包在 SpringBoot app 中的路径
-     */
-    public static String getPluginJarRelativePath(YuniPlugin plugin) {
-        // 先根据 plugin 获取 plugin id
-        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
-        String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
-        // 再根据插件 ID 获取模块
-        PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
-        return moduleByPluginFullId.getJarFileRelativePath();
-    }
-
-    /**
-     * 获取插件 jar 包文件名
-     * @return 插件所在的 jar 包文件名
-     */
-    public static String getPluginJarFileName(YuniPlugin plugin) {
-        // 先根据 plugin 获取 plugin id
-        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
-        String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
-        // 再根据插件 ID 获取模块
-        PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
-        return moduleByPluginFullId.getJarFileName();
-    }
-
-    /**
-     * 从 jar 包中读取文本文件内容
-     * @param jarFile 插件 jar 包
-     * @param filePath 文件路径
-     * @return 文件内容
-     */
-    private static String readFileTextFromJar(JarFile jarFile, String filePath) {
-        try {
-            return new String(jarFile.getInputStream(jarFile.getEntry(filePath)).readAllBytes());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * 从插件 jar 包中加载字体文件
-     * @param plugin 插件对象
      * @param fontFilePath 字体文件路径
      * @param fontSize 字体大小
      * @return 字体对象
      */
-    public static Font loadFontFromJar(YuniPlugin plugin, String fontFilePath, int fontSize) {
+    public static Font loadFontFromPlugin(YuniPlugin plugin, String fontFilePath, int fontSize) {
         Font font = null;
-        String pluginJarAppPath = getPluginJarRelativePath(plugin);
-        try (JarFile jarFile = new JarFile(Paths.get(pluginJarAppPath).toFile())) {
-            JarEntry fontEntry = jarFile.getJarEntry(fontFilePath);
-            try (InputStream fontIs = jarFile.getInputStream(fontEntry)) {
-                // 5. 核心：从输入流解析为原始 Font 对象（Font.TRUETYPE_FONT 兼容 TTF/OTF 格式）
-                Font originalFont = Font.createFont(Font.TRUETYPE_FONT, fontIs);
-                // 6. 原始 Font 大小为 1，派生为指定大小的可用 Font 对象（不改变字体本身）
-                font = originalFont.deriveFont((float) fontSize);
-            }
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File(getPluginRootPath(plugin), fontFilePath))
+                    .deriveFont((float) fontSize);
         } catch (Exception e) {
-            log.error("从插件 jar 包中加载字体文件失败");
+            log.error("从插件中加载字体文件失败");
             e.printStackTrace();
         }
         return font;
