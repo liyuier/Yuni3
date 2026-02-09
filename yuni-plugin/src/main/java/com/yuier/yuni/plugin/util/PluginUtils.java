@@ -23,14 +23,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -203,8 +202,8 @@ public class PluginUtils {
         return SpringContextUtil.getBean(PluginManager.class);
     }
 
-    // 序列化
-    public static <T> T serialize(String json, Class<T> clazz) {
+    // 反序列化
+    public static <T> T deserialize(String json, Class<T> clazz) {
         OneBotDeserializer deserialization = SpringContextUtil.getBean(OneBotDeserializer.class);
         try {
             return deserialization.deserialize(json, clazz);
@@ -214,11 +213,11 @@ public class PluginUtils {
         return null;
     }
 
-    // 反序列化
-    public static String deserialize(Object obj) {
+    // 序列化
+    public static String serialize(Object obj) {
         OneBotSerialization serialization = SpringContextUtil.getBean(OneBotSerialization.class);
         try {
-            return serialization.serialize( obj);
+            return serialization.serialize(obj);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -277,6 +276,11 @@ public class PluginUtils {
         return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
     }
 
+    /**
+     * 从列表中随机挑选一个元素
+     * @param list 列表
+     * @return 随机元素
+     */
     public static <T> T getRandomElement(List<T> list) {
         if (list == null || list.isEmpty()) {
             throw new IllegalArgumentException("列表为空！");
@@ -285,5 +289,21 @@ public class PluginUtils {
         int index = ThreadLocalRandom.current().nextInt(list.size());
 
         return list.get(index);
+    }
+
+    /**
+     * 检查概率是否命中
+     * @param rate 概率
+     * @return 是否命中
+     */
+    public static Boolean checkHitProbability(float rate) {
+        if (rate < 0.0f || rate > 1.0f) {
+            throw new IllegalArgumentException(
+                    String.format("概率 rate 必须在 [0.0f, 1.0f] 范围内。当前值: %f", rate)
+            );
+        }
+
+        float randomValue = new Random().nextFloat();
+        return randomValue < rate;
     }
 }

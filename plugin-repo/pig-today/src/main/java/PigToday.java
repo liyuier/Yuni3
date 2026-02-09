@@ -79,7 +79,7 @@ public class PigToday extends CommandPlugin {
         if (RedisUtil.exists(PIGTODAY_CACHE_KEY)) {
             Map<String, String> pigTodayMap = (Map<String, String>) RedisUtil.get(PIGTODAY_CACHE_KEY);
             if (pigTodayMap != null && pigTodayMap.containsKey(targetQqStr)) {
-                PigTodayCache pigTodayCache = PluginUtils.serialize(pigTodayMap.get(targetQqStr), PigTodayCache.class);
+                PigTodayCache pigTodayCache = PluginUtils.deserialize(pigTodayMap.get(targetQqStr), PigTodayCache.class);
                 assert pigTodayCache != null;
                 if (LocalDate.now().toString().equals(pigTodayCache.getDate())) {
                     return pigTodayCache;
@@ -100,7 +100,7 @@ public class PigToday extends CommandPlugin {
                 pigImageData.getFilename(),
                 LocalDate.now().toString()
         );
-        pigTodayMap.put(targetQqStr, PluginUtils.deserialize(pigTodayCache));
+        pigTodayMap.put(targetQqStr, PluginUtils.serialize(pigTodayCache));
         RedisUtil.set(PIGTODAY_CACHE_KEY, pigTodayMap);
         return pigTodayCache;
     }

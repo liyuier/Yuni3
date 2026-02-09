@@ -21,7 +21,7 @@ public class HeartBeatEvent extends MetaPlugin {
     public DefaultYuniMetaDetector getDetector() {
         return new DefaultYuniMetaDetector(event -> {
             if ("heartbeat".equals(event.getMetaEventType())) {
-                return PluginUtils.serialize(event.getRawJson(), YuniHeartbeatEvent.class);
+                return PluginUtils.deserialize(event.getRawJson(), YuniHeartbeatEvent.class);
             }
             return null;
         });

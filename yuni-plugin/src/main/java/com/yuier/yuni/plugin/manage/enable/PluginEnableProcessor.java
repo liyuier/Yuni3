@@ -2,7 +2,9 @@ package com.yuier.yuni.plugin.manage.enable;
 
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
+import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.service.GroupPluginAbilityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class PluginEnableProcessor {
 
     @Autowired
     GroupPluginAbilityService groupPluginAbilityService;
+    @Autowired
+    PluginContainer pluginContainer;
 
     Map<String, Boolean> pluginEnableMap = new HashMap<>(); // TODO initialize
 
@@ -89,5 +93,21 @@ public class PluginEnableProcessor {
         groupPluginAbilityService.disablePlugin(groupId, pluginId);
         // 刷新缓存
         pluginEnableMap.put(assemblePluginEnableKey(groupId, pluginId), false);
+    }
+
+    /**
+     * 获取插件是否使能
+     * @param plugin 插件
+     * @param groupId 群组ID
+     * @return 是否使能
+     */
+    public Boolean isPluginEnabled(YuniPlugin plugin, Long groupId) {
+        String pluginId = pluginContainer.getPluginFullIdByPluginClass(plugin.getClass());
+        PluginInstance pluginInstance = pluginContainer.getPluginInstanceByFullId(pluginId);
+        Boolean pluginEnabledException = getPluginEnabledException(groupId, pluginInstance.getPluginFullId());
+        if (pluginEnabledException != null) {
+            return pluginEnabledException;
+        }
+        return getPluginDefaultEnabled(pluginInstance);
     }
 }

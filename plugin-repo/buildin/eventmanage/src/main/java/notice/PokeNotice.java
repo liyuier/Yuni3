@@ -33,10 +33,10 @@ public class PokeNotice extends NoticePlugin {
     public DefaultYuniNoticeDetector getDetector() {
         return new DefaultYuniNoticeDetector(event -> {
             if ("notify".equals(event.getNoticeType())) {
-                NoticeEvent noticeEvent = PluginUtils.serialize(event.getRawJson(), NoticeEvent.class);
+                NoticeEvent noticeEvent = PluginUtils.deserialize(event.getRawJson(), NoticeEvent.class);
                 assert noticeEvent != null;
                 if ("poke".equals(noticeEvent.getSubType())) {
-                    return PluginUtils.serialize(event.getRawJson(), PokeEvent.class);
+                    return PluginUtils.deserialize(event.getRawJson(), PokeEvent.class);
                 }
             }
             return null;
