@@ -16,13 +16,13 @@ import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.PluginInstance;
+import com.yuier.yuni.plugin.model.passive.PassivePlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
 import com.yuier.yuni.plugin.persistence.SavePluginCallEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -75,7 +75,7 @@ public class PassivePluginMatcher {
                     // 记录一下这个消息是个指令消息
                     receiveMessageService.flagAsCommandEvent(event);
                     try {
-                        commandPluginInstance.getExecuteMethod().invoke(commandPluginInstance.getPlugin(), event);
+                        ((PassivePlugin) commandPluginInstance.getPlugin()).execute(event);
                         // 记录功能调用
                         savePluginCallEvent.saveEvent(event, commandPluginInstance);
                     } catch (Exception e) {
@@ -103,7 +103,7 @@ public class PassivePluginMatcher {
                 if (detector.match(event)) {
                     log.info("匹配到插件: {}", patternPluginInstance.getPluginMetadata().getName());
                     try {
-                        patternPluginInstance.getExecuteMethod().invoke(patternPluginInstance.getPlugin(), event);
+                        ((PassivePlugin) patternPluginInstance.getPlugin()).execute(event);
                     } catch (Exception e) {
                         e.printStackTrace();
                         event.getChatSession().response(
@@ -163,8 +163,8 @@ public class PassivePluginMatcher {
                     log.info(yuniNoticeEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     try {
-                        instance.getExecuteMethod().invoke(instance.getPlugin(), yuniNoticeEvent);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        ((PassivePlugin) instance.getPlugin()).execute(event);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -205,8 +205,8 @@ public class PassivePluginMatcher {
                     log.info(yuniRequestEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     try {
-                        instance.getExecuteMethod().invoke(instance.getPlugin(), yuniRequestEvent);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        ((PassivePlugin) instance.getPlugin()).execute(event);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -230,14 +230,14 @@ public class PassivePluginMatcher {
             if (detector.match(event)) {
                 matched.set(true);
                 CompletableFuture.runAsync(() -> {
+                    YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
+                    // 打个日志先
+                    log.debug(yuniMetaEvent.toLogString());
+                    log.debug("匹配到插件: {}", instance.getPluginMetadata().getName());
                     // 跑一下
                     try {
-                        YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
-                        // 打个日志先
-                        log.debug(yuniMetaEvent.toLogString());
-                        log.debug("匹配到插件: {}", instance.getPluginMetadata().getName());
-                        instance.getExecuteMethod().invoke(instance.getPlugin(), yuniMetaEvent);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        ((PassivePlugin) instance.getPlugin()).execute(event);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
@@ -260,8 +260,8 @@ public class PassivePluginMatcher {
                 // 消息发送事件没什么好匹配的，直接执行就行
                 log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                 try {
-                    instance.getExecuteMethod().invoke(instance.getPlugin(), event);
-                } catch (IllegalAccessException | InvocationTargetException e) {
+                    ((PassivePlugin) instance.getPlugin()).execute(event);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });

@@ -22,6 +22,7 @@ public class PassivePluginInstance extends PluginInstance {
 
     private UserPermission permission;
     private YuniEventDetector<?> detector;
+    @Deprecated
     private Method executeMethod;
 
 }
