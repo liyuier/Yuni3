@@ -276,6 +276,7 @@ public class PluginUtils {
         }
 
         float randomValue = new Random().nextFloat();
+        log.debug("[CrazyThursdayUtil] 随机数：{}, rate: {}", randomValue, rate);
         return randomValue < rate;
     }
 }

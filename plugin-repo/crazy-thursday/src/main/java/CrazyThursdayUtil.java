@@ -22,8 +22,8 @@ import java.util.List;
 public class CrazyThursdayUtil {
 
     public static void 发送疯狂星期四文案(YuniPlugin plugin) {
-        // 每个时间点按照 0.8 的概率判断是否发送
-        if (!PluginUtils.checkHitProbability(0.8f)) {
+        // 每个时间点按照 0.85 的概率判断是否发送
+        if (!PluginUtils.checkHitProbability(0.85f)) {
             log.info("[CrazyThursdayUtil] 未命中概率，本次不发送消息");
             return;
         }
