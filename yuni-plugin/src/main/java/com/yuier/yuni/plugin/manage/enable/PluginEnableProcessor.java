@@ -110,4 +110,14 @@ public class PluginEnableProcessor {
         }
         return getPluginDefaultEnabled(pluginInstance);
     }
+
+    public Boolean isPluginEnabled(Long groupId, Class<YuniPlugin> pluginClazz) {
+        String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
+        PluginInstance pluginInstance = pluginContainer.getPluginInstanceByFullId(pluginId);
+        Boolean pluginEnabledException = getPluginEnabledException(groupId, pluginInstance.getPluginFullId());
+        if (pluginEnabledException != null) {
+            return pluginEnabledException;
+        }
+        return getPluginDefaultEnabled(pluginInstance);
+    }
 }
