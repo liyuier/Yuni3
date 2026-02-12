@@ -33,10 +33,9 @@ public class PluginReloadProcessor {
 
     /**
      * 重载指定插件
-     * @param pluginFullId 插件全 ID
      * @param jarFile 插件 jar 包
      */
-    public void reloadPlugin(String pluginFullId, File jarFile) {
+    public void reloadPlugin(File jarFile) {
         PluginLoadProcessor pluginLoadProcessor = PluginUtils.getBean(PluginLoadProcessor.class);
         PluginContainer container = PluginUtils.getBean(PluginContainer.class);
         try {

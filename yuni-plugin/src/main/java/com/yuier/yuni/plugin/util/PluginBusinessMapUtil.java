@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.util;
 
 import com.yuier.yuni.core.enums.YuniPluginType;
-import com.yuier.yuni.event.detector.message.YuniEventDetector;
+import com.yuier.yuni.event.detector.YuniEventDetector;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.YuniPlugin;

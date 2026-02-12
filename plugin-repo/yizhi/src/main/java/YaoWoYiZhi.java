@@ -197,7 +197,7 @@ public class YaoWoYiZhi extends CommandPlugin {
         g2d.drawImage(smallImage, smallImageX, smallImageY, null);
 
         // 设置字体
-        Font font = PluginUtils.loadFontFromPlugin(this, "static/font/HarmonyOS_SansSC_Medium.ttf", 100);
+        Font font = PluginUtils.loadFontFromPlugin("static/font/HarmonyOS_SansSC_Medium.ttf", 100, YaoWoYiZhi.class);
 
         g2d.setFont(font);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);

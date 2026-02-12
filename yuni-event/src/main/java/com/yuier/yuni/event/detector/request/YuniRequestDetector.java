@@ -1,7 +1,7 @@
 package com.yuier.yuni.event.detector.request;
 
 import com.yuier.yuni.event.context.request.YuniRequestEvent;
-import com.yuier.yuni.event.detector.message.YuniEventDetector;
+import com.yuier.yuni.event.detector.YuniEventDetector;
 
 /**
  * @Title: YuniRequestDetector

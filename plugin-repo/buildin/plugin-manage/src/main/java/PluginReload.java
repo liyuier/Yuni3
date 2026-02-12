@@ -59,7 +59,7 @@ public class PluginReload {
         // 重载插件
         File jarFile = possibleJarFiles.get(0);
         PluginReloadProcessor pluginReloadProcessor = new PluginReloadProcessor();
-        pluginReloadProcessor.reloadPlugin(pluginFullId, jarFile);
+        pluginReloadProcessor.reloadPlugin(jarFile);
         eventContext.getChatSession().response("已重载插件 " + pluginInstance.getPluginName());
     }
 

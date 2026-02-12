@@ -2,6 +2,7 @@ package com.yuier.yuni.event.detector.message;
 
 import com.yuier.yuni.core.enums.MessageType;
 import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.event.detector.YuniEventDetector;
 
 /**
  * @Title: MessageDetector

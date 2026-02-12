@@ -1,7 +1,7 @@
 package com.yuier.yuni.event.detector.meta;
 
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
-import com.yuier.yuni.event.detector.message.YuniEventDetector;
+import com.yuier.yuni.event.detector.YuniEventDetector;
 
 /**
  * @Title: YuniMetaDetector

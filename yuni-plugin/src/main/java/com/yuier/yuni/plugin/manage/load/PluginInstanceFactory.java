@@ -2,7 +2,7 @@ package com.yuier.yuni.plugin.manage.load;
 
 import com.yuier.yuni.core.enums.YuniPluginType;
 import com.yuier.yuni.event.context.SpringYuniEvent;
-import com.yuier.yuni.event.detector.message.YuniEventDetector;
+import com.yuier.yuni.event.detector.YuniEventDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
 import com.yuier.yuni.plugin.model.YuniPlugin;

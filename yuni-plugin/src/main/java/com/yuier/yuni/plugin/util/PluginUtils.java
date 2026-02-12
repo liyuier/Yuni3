@@ -108,19 +108,6 @@ public class PluginUtils {
         return SpringContextUtil.getBean(beanName);
     }
 
-    /**
-     * 获取插件目录在 app 下的相对路径
-     * @return 插件目录
-     */
-    public static String getPluginRootPath(YuniPlugin plugin) {
-        // 先根据 plugin 获取 plugin id
-        PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
-        String pluginFullId = container.getPluginFullIdByPluginClass(plugin.getClass());
-        // 再根据插件 ID 获取模块
-        PluginModuleInstance moduleByPluginFullId = container.getPluginModuleByPluginFullId(pluginFullId);
-        return moduleByPluginFullId.getJarFileParentPath();
-    }
-
     public static String getPluginRootPath(Class<? extends YuniPlugin> pluginClazz) {
         // 先根据 plugin 获取 plugin id
         PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
@@ -161,26 +148,6 @@ public class PluginUtils {
             e.printStackTrace();
         }
         return text;
-    }
-
-    /**
-     * 从插件 jar 包中加载字体文件
-     * @param fontFilePath 字体文件路径
-     * @param fontSize 字体大小
-     * @return 字体对象
-     */
-    public static Font loadFontFromPlugin(YuniPlugin plugin, String fontFilePath, int fontSize) {
-        Font font = null;
-        try {
-            byte[] fontData = Files.readAllBytes(Paths.get(getPluginRootPath(plugin)).resolve(fontFilePath)); // 读取字节
-            try (InputStream is = new ByteArrayInputStream(fontData)) { // 包装为流
-                font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont((float) fontSize); // 加载字体
-            }
-        } catch (Exception e) {
-            log.error("从插件中加载字体文件失败");
-            e.printStackTrace();
-        }
-        return font;
     }
 
     public static Font loadFontFromPlugin(String fontFilePath, int fontSize, Class<? extends YuniPlugin> pluginClazz) {
