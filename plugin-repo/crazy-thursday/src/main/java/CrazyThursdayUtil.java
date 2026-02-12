@@ -38,7 +38,7 @@ public class CrazyThursdayUtil {
             Long groupId = groupListElement.getGroupId();
             PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
             // 判断该群组是否启用当前功能
-            if (!processor.isPluginEnabled(plugin, groupId)) {
+            if (!processor.isPluginEnabled(groupId, CrazyThursday.class)) {
                 continue;
             }
             // 发送文案

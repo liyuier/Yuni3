@@ -79,6 +79,11 @@ public class PluginEnableProcessor {
         enablePlugin(eventContext.getGroupId(), pluginId);
     }
 
+    public void enablePlugin(YuniNoticeEvent eventContext, Class<? extends YuniPlugin> pluginClazz) {
+        String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
+        enablePlugin(eventContext.getRawNoticeEvent().getGroupId(), pluginId);
+    }
+
     public void enablePlugin(Long groupId, String pluginId) {
         groupPluginAbilityService.enablePlugin(groupId, pluginId);
         // 刷新缓存
@@ -89,29 +94,18 @@ public class PluginEnableProcessor {
         disablePlugin(eventContext.getGroupId(), pluginId);
     }
 
+    public void disablePlugin(YuniNoticeEvent eventContext, Class<? extends YuniPlugin> pluginClazz) {
+        String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
+        disablePlugin(eventContext.getRawNoticeEvent().getGroupId(), pluginId);
+    }
+
     private void disablePlugin(Long groupId, String pluginId) {
         groupPluginAbilityService.disablePlugin(groupId, pluginId);
         // 刷新缓存
         pluginEnableMap.put(assemblePluginEnableKey(groupId, pluginId), false);
     }
 
-    /**
-     * 获取插件是否使能
-     * @param plugin 插件
-     * @param groupId 群组ID
-     * @return 是否使能
-     */
-    public Boolean isPluginEnabled(YuniPlugin plugin, Long groupId) {
-        String pluginId = pluginContainer.getPluginFullIdByPluginClass(plugin.getClass());
-        PluginInstance pluginInstance = pluginContainer.getPluginInstanceByFullId(pluginId);
-        Boolean pluginEnabledException = getPluginEnabledException(groupId, pluginInstance.getPluginFullId());
-        if (pluginEnabledException != null) {
-            return pluginEnabledException;
-        }
-        return getPluginDefaultEnabled(pluginInstance);
-    }
-
-    public Boolean isPluginEnabled(Long groupId, Class<YuniPlugin> pluginClazz) {
+    public Boolean isPluginEnabled(Long groupId, Class<? extends YuniPlugin> pluginClazz) {
         String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
         PluginInstance pluginInstance = pluginContainer.getPluginInstanceByFullId(pluginId);
         Boolean pluginEnabledException = getPluginEnabledException(groupId, pluginInstance.getPluginFullId());
