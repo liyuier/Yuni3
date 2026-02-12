@@ -4,6 +4,7 @@ import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +18,13 @@ import java.util.List;
  * @description: CrazyThursdayUtil
  */
 
+@Slf4j
 public class CrazyThursdayUtil {
 
     public static void 发送疯狂星期四文案(YuniPlugin plugin) {
         // 每个时间点按照 0.8 的概率判断是否发送
         if (!PluginUtils.checkHitProbability(0.8f)) {
+            log.info("[CrazyThursdayUtil] 未命中概率，本次不发送消息");
             return;
         }
         // 挑选文案

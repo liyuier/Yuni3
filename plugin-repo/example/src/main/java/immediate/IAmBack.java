@@ -8,6 +8,7 @@ import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Title: IAmBack
@@ -17,12 +18,20 @@ import com.yuier.yuni.plugin.util.PluginUtils;
  * @description: 我是后背
  */
 
+@Slf4j
 public class IAmBack extends ImmediatePlugin {
     @Override
     public Action getAction() {
         return () -> {
+            TargetGroupConfig targetGroupConfig = PluginUtils.loadJsonConfigFromPlugin("i_m_back.json", TargetGroupConfig.class, this);
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-            SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(876900675, new MessageChain("我是后背"));
+            targetGroupConfig.getTargetGroups().forEach(groupId -> {
+                try {
+                    oneBotAdapter.sendGroupMessage(groupId, new MessageChain("我是后背"));
+                } catch (Exception e) {
+                    log.warn("[IAmBack] 向 {} 发送群消息失败.", groupId);
+                }
+            });
         };
     }
 

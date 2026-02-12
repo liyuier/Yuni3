@@ -5,6 +5,7 @@ import com.yuier.yuni.plugin.model.active.Action;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
 import entity.RedisCache;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.List;
  * @description: 如果在周四重启了怎么办
  */
 
+@Slf4j
 public class StartAtThursday extends ImmediatePlugin {
     @Override
     public void enable(PluginEnableEvent event) {
@@ -45,6 +47,7 @@ public class StartAtThursday extends ImmediatePlugin {
             for (Long 间隔 : 发送文案的间隔时间) {
                 try {
                     // 等待间隔
+                    log.info("[StartAtThursday] 开始等待间隔：{} 毫秒", 间隔);
                     Thread.sleep(间隔);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
