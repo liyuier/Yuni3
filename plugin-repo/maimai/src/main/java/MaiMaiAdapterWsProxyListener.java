@@ -63,7 +63,7 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
 
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-        log.info("[MaiMaiAdapterWsProxyListener.onMessage]到 MaiBot-Napcat-Adapter 的连接收到消息: {}", text);
+        log.debug("[MaiMaiAdapterWsProxyListener.onMessage]到 MaiBot-Napcat-Adapter 的连接收到消息: {}", text);
         handlerRegistry.handleMessage(text);
     }
 
@@ -99,7 +99,7 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
      */
     private void startHeartbeat() {
         // 创建任务
-        MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromPlugin("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, maiMaiAdapterBooter);
+        MaiMaiAdapterConfig config = PluginUtils.loadJsonConfigFromPlugin("maimai_napcat_adapter_config.json", MaiMaiAdapterConfig.class, maiMaiAdapterBooter.getClass());
         Long heartbeatInterval = config.getHeartbeatInterval();
         Runnable task = () -> {
             HeartbeatStatus heartbeatStatus = new HeartbeatStatus(true, true);

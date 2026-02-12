@@ -121,7 +121,7 @@ public class PluginUtils {
         return moduleByPluginFullId.getJarFileParentPath();
     }
 
-    public static String getPluginRootPath(Class<YuniPlugin> pluginClazz) {
+    public static String getPluginRootPath(Class<? extends YuniPlugin> pluginClazz) {
         // 先根据 plugin 获取 plugin id
         PluginContainer container = SpringContextUtil.getBean(PluginContainer.class);
         String pluginFullId = container.getPluginFullIdByPluginClass(pluginClazz);
@@ -130,28 +130,7 @@ public class PluginUtils {
         return moduleByPluginFullId.getJarFileParentPath();
     }
 
-    /**
-     * 加载配置 json 文件为 bean
-     * @param configFilePath 配置文件路径
-     * @param clazz bean 的类型
-     * @param <T> bean 的类型
-     * @return bean
-     */
-    public static <T> T loadJsonConfigFromPlugin(String configFilePath, Class<T> clazz, YuniPlugin plugin) {
-        if (!isJsonFile(configFilePath)) {
-            throw new RuntimeException("传入的文件路径不是 json 文件！");
-        }
-
-        String json = loadConfigJsonToString(configFilePath, plugin);
-        OneBotDeserializer serialization = SpringContextUtil.getBean(OneBotDeserializer.class);
-        try {
-            return serialization.deserialize(json, clazz);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static <T> T loadJsonConfigFromPlugin(String configFilePath, Class<T> clazz, Class<YuniPlugin> pluginClazz) {
+    public static <T> T loadJsonConfigFromPlugin(String configFilePath, Class<T> clazz, Class<? extends YuniPlugin> pluginClazz) {
         if (!isJsonFile(configFilePath)) {
             throw new RuntimeException("传入的文件路径不是 json 文件！");
         }
@@ -165,20 +144,7 @@ public class PluginUtils {
         }
     }
 
-    /**
-     * 加载配置 json 文件为字符串
-     * @param configFilePath 配置文件路径
-     * @return 配置文件内容
-     */
-    private static String loadConfigJsonToString(String configFilePath, YuniPlugin plugin) {
-        if (!isJsonFile(configFilePath)) {
-            throw new RuntimeException("传入的文件路径不是 json 文件！");
-        }
-
-        return loadTextFromPluginFolder(plugin, configFilePath);
-    }
-
-    private static String loadConfigJsonToString(String configFilePath, Class<YuniPlugin> pluginClazz) {
+    private static String loadConfigJsonToString(String configFilePath, Class<? extends YuniPlugin> pluginClazz) {
         if (!isJsonFile(configFilePath)) {
             throw new RuntimeException("传入的文件路径不是 json 文件！");
         }
@@ -186,24 +152,7 @@ public class PluginUtils {
         return loadTextFromPluginFolder(configFilePath, pluginClazz);
     }
 
-    /**
-     * 从插件 jar 包中加载文本文件内容字符串
-     * @param plugin 插件
-     * @param resourcePath 文件在 jar 包内路径
-     * @return 配置文件内容
-     */
-    public static String loadTextFromPluginFolder(YuniPlugin plugin, String resourcePath) {
-        String text = "";
-        try {
-            text = Files.readString(Paths.get(getPluginRootPath(plugin), resourcePath));
-        } catch (Exception e) {
-            log.error("从插件包中加载文本文件内容字符串失败！请检查插件目录下文件路径是否正确！");
-            e.printStackTrace();
-        }
-        return text;
-    }
-
-    public static String loadTextFromPluginFolder(String resourcePath, Class<YuniPlugin> pluginClazz) {
+    public static String loadTextFromPluginFolder(String resourcePath, Class<? extends YuniPlugin> pluginClazz) {
         String text = "";
         try {
             text = Files.readString(Paths.get(getPluginRootPath(pluginClazz), resourcePath));
@@ -234,7 +183,7 @@ public class PluginUtils {
         return font;
     }
 
-    public static Font loadFontFromPlugin(String fontFilePath, int fontSize, Class<YuniPlugin> pluginClazz) {
+    public static Font loadFontFromPlugin(String fontFilePath, int fontSize, Class<? extends YuniPlugin> pluginClazz) {
         Font font = null;
         try {
             byte[] fontData = Files.readAllBytes(Paths.get(getPluginRootPath(pluginClazz)).resolve(fontFilePath)); // 读取字节

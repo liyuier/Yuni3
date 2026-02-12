@@ -23,7 +23,7 @@ public class IAmBack extends ImmediatePlugin {
     @Override
     public Action getAction() {
         return () -> {
-            TargetGroupConfig targetGroupConfig = PluginUtils.loadJsonConfigFromPlugin("i_m_back.json", TargetGroupConfig.class, this);
+            TargetGroupConfig targetGroupConfig = PluginUtils.loadJsonConfigFromPlugin("i_m_back.json", TargetGroupConfig.class, this.getClass());
             OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
             targetGroupConfig.getTargetGroups().forEach(groupId -> {
                 try {

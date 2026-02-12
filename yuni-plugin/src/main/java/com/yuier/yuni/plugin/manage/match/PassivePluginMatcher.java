@@ -163,7 +163,7 @@ public class PassivePluginMatcher {
                     log.info(yuniNoticeEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     try {
-                        ((PassivePlugin) instance.getPlugin()).execute(event);
+                        ((PassivePlugin) instance.getPlugin()).execute(yuniNoticeEvent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -205,7 +205,7 @@ public class PassivePluginMatcher {
                     log.info(yuniRequestEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
                     try {
-                        ((PassivePlugin) instance.getPlugin()).execute(event);
+                        ((PassivePlugin) instance.getPlugin()).execute(yuniRequestEvent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -236,7 +236,7 @@ public class PassivePluginMatcher {
                     log.debug("匹配到插件: {}", instance.getPluginMetadata().getName());
                     // 跑一下
                     try {
-                        ((PassivePlugin) instance.getPlugin()).execute(event);
+                        ((PassivePlugin) instance.getPlugin()).execute(yuniMetaEvent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

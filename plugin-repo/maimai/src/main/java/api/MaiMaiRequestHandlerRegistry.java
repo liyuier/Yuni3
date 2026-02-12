@@ -45,7 +45,7 @@ public class MaiMaiRequestHandlerRegistry {
      */
     public void handleMessage(String message) {
         try {
-            log.info("[MaiMaiRequestHandlerRegistry.handleMessage]收到消息: {}", message);
+            log.debug("[MaiMaiRequestHandlerRegistry.handleMessage]收到消息: {}", message);
             ObjectMapper mapper = new ObjectMapper();
             OneBotPostModel oneBotPostModel = mapper.readValue(message, OneBotPostModel.class);
             String requestRouter = oneBotPostModel.getAction();
@@ -54,9 +54,9 @@ public class MaiMaiRequestHandlerRegistry {
                 Method method = maiMaiRequestHandlerMethod.getMethod();
                 Object targetObject = maiMaiRequestHandlerMethod.getTargetObject();
                 method.invoke(targetObject, oneBotPostModel);
-                log.info("[MaiMaiRequestHandlerRegistry.handleMessage]处理消息 {} 成功。", requestRouter);
+                log.debug("[MaiMaiRequestHandlerRegistry.handleMessage]处理消息 {} 成功。", requestRouter);
             } else {
-                log.info("未注册请求的处理方法。");
+                log.info("未注册请求的处理方法: {} ", requestRouter);
             }
         } catch (Exception e) {
             e.printStackTrace();

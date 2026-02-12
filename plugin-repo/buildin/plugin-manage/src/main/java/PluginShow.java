@@ -60,7 +60,7 @@ public class PluginShow {
         PluginManageUtil.savePluginListHashCodeCache(eventContext, currPluginListHashCode);
         // 获取模板字符串
         String templateFilePath = "templates/plugin-list.html";
-        String templateStr = PluginUtils.loadTextFromPluginFolder(pluginManage, templateFilePath);
+        String templateStr = PluginUtils.loadTextFromPluginFolder(templateFilePath, pluginManage.getClass());
         Context context = new Context();
         // 组装数据
         List<PluginListElement> pluginListElements = assemblerPluginListData(eventContext);
@@ -164,7 +164,7 @@ public class PluginShow {
         PluginManageUtil.savePluginDetailHashCodeCache(eventContext, pluginFullId, currentPluginHash);
         // 获取模板字符串
         String templateFilePath = "templates/plugin-detail.html";
-        String templateStr = PluginUtils.loadTextFromPluginFolder(pluginManage, templateFilePath);
+        String templateStr = PluginUtils.loadTextFromPluginFolder(templateFilePath, pluginManage.getClass());
         // 组装数据
         Context context = new Context();
         PluginEnableProcessor enableProcessor = PluginUtils.getBean(PluginEnableProcessor.class);

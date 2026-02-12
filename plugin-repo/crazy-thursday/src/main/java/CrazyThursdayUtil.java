@@ -28,7 +28,7 @@ public class CrazyThursdayUtil {
             return;
         }
         // 挑选文案
-        String[] 候选文案 = PluginUtils.loadJsonConfigFromPlugin("sentences.json", String[].class, plugin);
+        String[] 候选文案 = PluginUtils.loadJsonConfigFromPlugin("sentences.json", String[].class, plugin.getClass());
         String 本次要发送的文案 = PluginUtils.getRandomElement(Arrays.asList(候选文案));
         // 获取群列表
         OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
