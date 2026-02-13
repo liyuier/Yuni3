@@ -1,5 +1,6 @@
 import com.yuier.yuni.core.util.CronExpressionBuilder;
 import com.yuier.yuni.core.util.RedisUtil;
+import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
@@ -22,12 +23,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CrazyThursday extends ScheduledPlugin {
     @Override
     public void enable(PluginEnableEvent event) {
-
+        PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
+        processor.enablePlugin(event, StartAtThursday.class);
     }
 
     @Override
     public void disable(PluginDisableEvent event) {
-
+        PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
+        processor.disablePlugin(event, StartAtThursday.class);
     }
 
     @Override

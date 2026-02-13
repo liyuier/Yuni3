@@ -3,6 +3,8 @@ package com.yuier.yuni.plugin.manage.enable;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.plugin.manage.PluginContainer;
+import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
+import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.passive.PassivePluginInstance;
@@ -79,9 +81,9 @@ public class PluginEnableProcessor {
         enablePlugin(eventContext.getGroupId(), pluginId);
     }
 
-    public void enablePlugin(YuniNoticeEvent eventContext, Class<? extends YuniPlugin> pluginClazz) {
+    public void enablePlugin(PluginEnableEvent eventContext, Class<? extends YuniPlugin> pluginClazz) {
         String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
-        enablePlugin(eventContext.getRawNoticeEvent().getGroupId(), pluginId);
+        enablePlugin(eventContext.getGroupId(), pluginId);
     }
 
     public void enablePlugin(Long groupId, String pluginId) {
@@ -94,9 +96,9 @@ public class PluginEnableProcessor {
         disablePlugin(eventContext.getGroupId(), pluginId);
     }
 
-    public void disablePlugin(YuniNoticeEvent eventContext, Class<? extends YuniPlugin> pluginClazz) {
+    public void disablePlugin(PluginDisableEvent eventContext, Class<? extends YuniPlugin> pluginClazz) {
         String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
-        disablePlugin(eventContext.getRawNoticeEvent().getGroupId(), pluginId);
+        disablePlugin(eventContext.getGroupId(), pluginId);
     }
 
     private void disablePlugin(Long groupId, String pluginId) {

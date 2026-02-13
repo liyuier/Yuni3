@@ -1,4 +1,5 @@
 import com.yuier.yuni.core.util.RedisUtil;
+import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
@@ -23,12 +24,14 @@ import java.util.List;
 public class StartAtThursday extends ImmediatePlugin {
     @Override
     public void enable(PluginEnableEvent event) {
-
+        PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
+        processor.enablePlugin(event, CrazyThursday.class);
     }
 
     @Override
     public void disable(PluginDisableEvent event) {
-
+        PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
+        processor.disablePlugin(event, CrazyThursday.class);
     }
 
     @Override
