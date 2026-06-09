@@ -1,14 +1,14 @@
 package api;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.yuier.yuni.core.api.group.GroupInfo;
-import com.yuier.yuni.core.api.group.GroupMemberInfo;
-import com.yuier.yuni.core.api.message.GetMessage;
-import com.yuier.yuni.core.api.message.GetRecord;
-import com.yuier.yuni.core.api.message.SendGroupMessage;
-import com.yuier.yuni.core.api.message.SendPrivateMessage;
-import com.yuier.yuni.core.api.system.LoginInfo;
-import com.yuier.yuni.core.api.user.GetStrangerInfo;
+import com.yuier.yuni.adapter.onebot.api.group.GroupInfo;
+import com.yuier.yuni.adapter.onebot.api.group.GroupMemberInfo;
+import com.yuier.yuni.adapter.onebot.api.message.GetMessage;
+import com.yuier.yuni.adapter.onebot.api.message.GetRecord;
+import com.yuier.yuni.adapter.onebot.api.message.SendGroupMessage;
+import com.yuier.yuni.adapter.onebot.api.message.SendPrivateMessage;
+import com.yuier.yuni.adapter.onebot.api.system.LoginInfo;
+import com.yuier.yuni.adapter.onebot.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.core.bot.MessageTarget;
 import com.yuier.yuni.core.bot.YuniBot;
