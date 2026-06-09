@@ -76,7 +76,6 @@ public class PluginManager {
         } catch (Exception e) {
             log.error("加载 jar 包失败: {}", jarFile.getName(), e);
         }
-        log.info("{} 加载完毕", LogStringUtil.buildYellowLog(jarFile.getName()));
     }
 
     /**
