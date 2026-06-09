@@ -6,6 +6,7 @@ import com.yuier.yuni.core.event.meta.YuniMetaEvent;
 import com.yuier.yuni.core.event.notice.YuniNoticeEvent;
 import com.yuier.yuni.core.event.request.YuniRequestEvent;
 import com.yuier.yuni.event.persistence.YuniEventSaver;
+import com.yuier.yuni.event.util.EventLogUtil;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +32,14 @@ public class YuniEventDispatcher {
 
     @EventListener
     public void messageEventHandler(YuniMessageEvent event) {
-        log.info(event.toLogString());
+        log.info(EventLogUtil.toLog(event));
         eventSaver.saveEvent(event);
         pluginManager.handleMessageEvent(event);
     }
 
     @EventListener
     public void messageSentEventHandler(YuniMessageSentEvent event) {
-        log.info(event.toLogString());
+        log.info(EventLogUtil.toLog(event));
         eventSaver.saveEvent(event);
         pluginManager.handleMessageSentEvent(event);
     }
