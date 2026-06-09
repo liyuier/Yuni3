@@ -1,7 +1,7 @@
 import api.MaiMaiRequestHandlerRegistry;
 import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
-import com.yuier.yuni.core.util.OneBotSerialization;
+import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.event.meta.HeartbeatEvent;
 import com.yuier.yuni.event.meta.HeartbeatStatus;
 import com.yuier.yuni.event.meta.LifeCycle;
@@ -35,11 +35,11 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
     // 持有一下插件，方便后面获取配置
     private MaiMaiAdapterBooter maiMaiAdapterBooter;
 
-    OneBotSerialization serialization;
+    JsonCodec jsonCodec;
     MaiMaiRequestHandlerRegistry handlerRegistry;
 
-    public MaiMaiAdapterWsProxyListener(OneBotSerialization serialization) {
-        this.serialization = serialization;
+    public MaiMaiAdapterWsProxyListener(JsonCodec jsonCodec) {
+        this.jsonCodec = jsonCodec;
         this.handlerRegistry = new MaiMaiRequestHandlerRegistry();
     }
 
@@ -83,9 +83,8 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
                 "lifecycle",
                 "connect"
         );
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
         try {
-            String connectLifeCycleJson = serialization.serialize(connectLifeCycle);
+            String connectLifeCycleJson = jsonCodec.toJson(connectLifeCycle);
             connector.send(connectLifeCycleJson);
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +111,7 @@ public class MaiMaiAdapterWsProxyListener implements YuniBusinessProxyListener {
                     heartbeatInterval
             );
             try {
-                String heartBeatJson = serialization.serialize(heartbeatEvent);
+                String heartBeatJson = jsonCodec.toJson(heartbeatEvent);
                 connector.send(heartBeatJson);
             } catch (Exception e) {
                 e.printStackTrace();

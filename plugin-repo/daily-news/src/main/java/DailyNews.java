@@ -1,5 +1,5 @@
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.api.group.GroupListElement;
+import com.yuier.yuni.core.bot.YuniBot;
+import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.segment.ImageSegment;
 import com.yuier.yuni.core.util.CronExpressionBuilder;
@@ -40,10 +40,10 @@ public class DailyNews extends ScheduledPlugin {
             }
             MessageChain dailyNewsMessageChain = new MessageChain(new ImageSegment().setFile(dailyNewsResponse.getImageUrl()));
             // 先获取群列表
-            OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-            List<GroupListElement> groupList = oneBotAdapter.getGroupList();
+            YuniBot bot  = PluginUtils.getYuniBot();
+            List<GroupInfo> groupList = bot.getGroupList().orElse(List.of());
             List<Long> groupIdList = groupList.stream()
-                    .map(GroupListElement::getGroupId)
+                    .map(GroupInfo::getGroupId)
                     .toList();
             // 再根据策略发送
             DailyNewsStrategyConfig strategyConfig = PluginUtils.loadJsonConfigFromPlugin("daily_news_strategy.json", DailyNewsStrategyConfig.class, this.getClass());

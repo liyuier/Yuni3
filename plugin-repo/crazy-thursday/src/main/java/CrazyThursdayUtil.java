@@ -1,5 +1,6 @@
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.api.group.GroupListElement;
+import com.yuier.yuni.core.bot.YuniBot;
+import com.yuier.yuni.core.bot.MessageTarget;
+import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.YuniPlugin;
@@ -31,10 +32,10 @@ public class CrazyThursdayUtil {
         String[] 候选文案 = PluginUtils.loadJsonConfigFromPlugin("sentences.json", String[].class, plugin.getClass());
         String 本次要发送的文案 = PluginUtils.getRandomElement(Arrays.asList(候选文案));
         // 获取群列表
-        OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-        List<GroupListElement> groupList = oneBotAdapter.getGroupList();
+        YuniBot bot  = PluginUtils.getYuniBot();
+        List<GroupInfo> groupList = bot.getGroupList().orElse(List.of());
         // 获取群列表中的群组
-        for (GroupListElement groupListElement : groupList) {
+        for (GroupInfo groupListElement : groupList) {
             Long groupId = groupListElement.getGroupId();
             PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
             // 判断该群组是否启用当前功能
@@ -42,7 +43,7 @@ public class CrazyThursdayUtil {
                 continue;
             }
             // 发送文案
-            oneBotAdapter.sendGroupMessage(groupId, new MessageChain(本次要发送的文案));
+            bot.sendMessage(MessageTarget.group(groupId), new MessageChain(本次要发送的文案));
         }
     }
 

@@ -1,7 +1,7 @@
 package schedule;
 
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.api.message.SendPrivateMessage;
+import com.yuier.yuni.core.bot.YuniBot;
+import com.yuier.yuni.core.bot.MessageTarget;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.CronExpressionBuilder;
 import com.yuier.yuni.core.util.SpringContextUtil;
@@ -29,13 +29,13 @@ public class OhaYo extends ScheduledPlugin {
     }
 
     /* WARNING: 由于作者没琢磨明白怎么控制主动插件的行为，因此无法对主动插件实行类似被动插件的以群组为粒度的开启/关闭的管理
-    *           所以务必谨慎评估主动插件的行为，避免引入一些影响全局的严重后果 */
+     *           所以务必谨慎评估主动插件的行为，避免引入一些影响全局的严重后果 */
 
     @Override
     public Action getAction() {
         return () -> {
-            OneBotAdapter adapter = SpringContextUtil.getBean(OneBotAdapter.class);
-            SendPrivateMessage sendPrivateMessage = adapter.sendPrivateMessage(PluginUtils.getBotMasterId(), new MessageChain("偶哈哟，欧尼酱！"));
+            YuniBot bot = SpringContextUtil.getBean(YuniBot.class);
+            bot.sendMessage(MessageTarget.privateChat(PluginUtils.getBotMasterId()), new MessageChain("偶哈哟，欧尼酱！"));
         };
     }
 

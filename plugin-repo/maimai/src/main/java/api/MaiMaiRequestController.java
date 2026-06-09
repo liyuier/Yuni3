@@ -1,7 +1,6 @@
 package api;
 
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.adapter.qq.http.OneBotResponse;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.message.GetMessage;
@@ -10,12 +9,14 @@ import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.api.message.SendPrivateMessage;
 import com.yuier.yuni.core.api.system.LoginInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
+import com.yuier.yuni.core.bot.JsonCodec;
+import com.yuier.yuni.core.bot.MessageTarget;
+import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
-import com.yuier.yuni.core.util.OneBotDeserializer;
-import com.yuier.yuni.core.util.OneBotSerialization;
 import com.yuier.yuni.plugin.util.PluginUtils;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.OneBotPostModel;
@@ -37,58 +38,69 @@ import java.util.Map;
 public class MaiMaiRequestController {
 
     private static YuniWebSocketConnector connector;
-    private static OneBotAdapter oneBotAdapter;
+    private static YuniBot bot;
 
     public MaiMaiRequestController(YuniWebSocketConnector connector) {
         MaiMaiRequestController.connector = connector;
-        oneBotAdapter = PluginUtils.getOneBotAdapter();
+        bot = PluginUtils.getYuniBot();
     }
 
     @MaiMaiRequestHandler(value = "get_group_info")
     public void getGroupInfo(OneBotPostModel model) {
-        GroupInfo groupInfo = oneBotAdapter.getGroupInfo(parseGroupIdFromModel(model.getParams()), true);
+        GroupInfo groupInfo = bot.getGroupInfo(String.valueOf(parseGroupIdFromModel(model.getParams()))).orElse(null);
         quickSendOneBotResponse(groupInfo, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "get_group_member_info")
     public void getGroupMemberInfo(OneBotPostModel model) {
-        GroupMemberInfo groupMemberInfo = oneBotAdapter.getGroupMemberInfo(parseGroupIdFromModel(model.getParams()), parseUserIdFromModel(model.getParams()),true);
+        GroupMemberInfo groupMemberInfo = bot.getGroupMemberInfo(
+                String.valueOf(parseGroupIdFromModel(model.getParams())),
+                String.valueOf(parseUserIdFromModel(model.getParams()))).orElse(null);
         quickSendOneBotResponse(groupMemberInfo, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "get_login_info")
     public void getLoginInfo(OneBotPostModel model) {
-        LoginInfo loginInfo = oneBotAdapter.getLoginInfo();
+        LoginInfo loginInfo = new LoginInfo();
+        loginInfo.setUserId(Long.parseLong(bot.getBotId()));
         quickSendOneBotResponse(loginInfo, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "get_stranger_info")
     public void getStrangerInfo(OneBotPostModel model) {
-        GetStrangerInfo getStrangerInfo = oneBotAdapter.getStrangerInfo(parseUserIdFromModel(model.getParams()), true);
+        GetStrangerInfo getStrangerInfo = bot.getUserInfo(String.valueOf(parseUserIdFromModel(model.getParams()))).orElse(null);
         quickSendOneBotResponse(getStrangerInfo, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "get_msg")
     public void getMsg(OneBotPostModel model) {
-        GetMessage getMessage = oneBotAdapter.getMsg(parseMessageIdFromModel(model.getParams()));
+        GetMessage getMessage = bot.getMessage(String.valueOf(parseMessageIdFromModel(model.getParams()))).orElse(null);
         quickSendOneBotResponse(getMessage, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "get_record")
     public void getRecord(OneBotPostModel model) {
-        GetRecord getRecord = oneBotAdapter.getRecord(parseFileFromModel(model.getParams()), parseOutFormatFromModel(model.getParams()));
+        GetRecord getRecord = new GetRecord();
         quickSendOneBotResponse(getRecord, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "send_group_msg")
     public void sendGroupMsg(OneBotPostModel model) {
-        SendGroupMessage sendGroupMessage = oneBotAdapter.sendGroupMessage(parseGroupIdFromModel(model.getParams()), parseMessageSegmentToChain(model.getParams()));
+        SendGroupMessage sendGroupMessage = new SendGroupMessage();
+        var result = bot.sendMessage(
+                MessageTarget.group(parseGroupIdFromModel(model.getParams())),
+                parseMessageSegmentToChain(model.getParams()));
+        sendGroupMessage.setMessageId(Long.parseLong(result.getMessageId()));
         quickSendOneBotResponse(sendGroupMessage, model.getEcho());
     }
 
     @MaiMaiRequestHandler(value = "send_private_msg")
     public void sendPrivateMsg(OneBotPostModel model) {
-        SendPrivateMessage sendPrivateMessage = oneBotAdapter.sendPrivateMessage(parseUserIdFromModel(model.getParams()), parseMessageSegmentToChain(model.getParams()));
+        SendPrivateMessage sendPrivateMessage = new SendPrivateMessage();
+        var result = bot.sendMessage(
+                MessageTarget.privateChat(parseUserIdFromModel(model.getParams())),
+                parseMessageSegmentToChain(model.getParams()));
+        sendPrivateMessage.setMessageId(Long.parseLong(result.getMessageId()));
         quickSendOneBotResponse(sendPrivateMessage, model.getEcho());
     }
 
@@ -115,13 +127,12 @@ public class MaiMaiRequestController {
     private static MessageChain parseMessageSegmentToChain(Map<String, Object> model) {
         MessageChain messageChain = new MessageChain();
         List<MessageSegment> messageSegmentList = new ArrayList<>();
-        OneBotDeserializer deserializer = PluginUtils.getBean(OneBotDeserializer.class);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
+        JsonCodec jsonCodec = PluginUtils.getBean(JsonCodec.class);
         List<Object> message = (List<Object>) model.get("message");
         for (Object messageItem : message) {
             try {
-                String messageSegmentJson = serialization.serialize(messageItem);
-                MessageSegment messageSegment = deserializer.deserialize(messageSegmentJson, MessageSegment.class);
+                String messageSegmentJson = jsonCodec.toJson(messageItem);
+                MessageSegment messageSegment = jsonCodec.fromJson(messageSegmentJson, MessageSegment.class);
                 messageSegmentList.add(messageSegment);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -131,17 +142,27 @@ public class MaiMaiRequestController {
     }
 
     private static <T> void quickSendOneBotResponse(T responseBody, String echoId) {
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
+        JsonCodec jsonCodec = PluginUtils.getBean(JsonCodec.class);
         OneBotResponse response = new OneBotResponse();
         response.setStatus("ok");
         response.setRetcode(0);
         response.setEcho(echoId);
         response.setData(responseBody);
         try {
-            String responseJson = serialization.serialize(response);
+            String responseJson = jsonCodec.toJson(response);
             connector.send(responseJson);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)  // 忽略未知字段
+    public static class OneBotResponse {
+        private String status;
+        private Integer retcode;
+        private Object data;
+        private String echo;
     }
 }

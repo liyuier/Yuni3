@@ -1,7 +1,7 @@
 import api.MaiMaiRequestController;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
-import com.yuier.yuni.core.util.OneBotSerialization;
+import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;
 import com.yuier.yuni.plugin.model.active.Action;
@@ -31,8 +31,8 @@ public class MaiMaiAdapterBooter extends ImmediatePlugin {
                     .url(config.getServerUrl())
                     .addHeader("Authorization", "Bearer " + config.getToken())
                     .build();
-            OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
-            MaiMaiAdapterWsProxyListener maiMaiAdapterWsProxyListener = new MaiMaiAdapterWsProxyListener(serialization);
+            JsonCodec jsonCodec = PluginUtils.getBean(JsonCodec.class);
+            MaiMaiAdapterWsProxyListener maiMaiAdapterWsProxyListener = new MaiMaiAdapterWsProxyListener(jsonCodec);
             // 创建连接器
             YuniWebSocketConnector maimaiAdapterConnector = new YuniWebSocketConnector(request, maiMaiAdapterWsProxyListener);
             maiMaiAdapterWsProxyListener.setConnector(maimaiAdapterConnector);

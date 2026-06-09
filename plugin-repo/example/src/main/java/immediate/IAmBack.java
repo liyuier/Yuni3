@@ -1,7 +1,8 @@
 package immediate;
 
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.api.group.GroupListElement;
+import com.yuier.yuni.core.bot.YuniBot;
+import com.yuier.yuni.core.bot.MessageTarget;
+import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
@@ -27,14 +28,14 @@ public class IAmBack extends ImmediatePlugin {
     public Action getAction() {
         return () -> {
             TargetGroupConfig targetGroupConfig = PluginUtils.loadJsonConfigFromPlugin("i_m_back.json", TargetGroupConfig.class, this.getClass());
-            OneBotAdapter oneBotAdapter = PluginUtils.getOneBotAdapter();
-            List<GroupListElement> groupList = oneBotAdapter.getGroupList();
+            YuniBot bot  = PluginUtils.getYuniBot();
+            List<GroupInfo> groupList = bot.getGroupList().orElse(List.of());
             targetGroupConfig.getTargetGroups().forEach(groupId -> {
                 // 只向存在的群组发送
-                for (GroupListElement groupListElement : groupList) {
+                for (GroupInfo groupListElement : groupList) {
                     if (groupListElement.getGroupId().equals(groupId)) {
                         try {
-                            oneBotAdapter.sendGroupMessage(groupId, new MessageChain("我是后背"));
+                            bot.sendMessage(MessageTarget.group(groupId), new MessageChain("我是后背"));
                         } catch (Exception e) {
                             log.warn("[IAmBack] 向 {} 发送群消息失败.", groupId);
                         }
