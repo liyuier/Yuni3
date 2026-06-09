@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.model.passive.request;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.event.context.request.YuniRequestEvent;
+import com.yuier.yuni.core.event.request.YuniRequestEvent;
 import com.yuier.yuni.event.detector.request.DefaultYuniRequestDetector;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;

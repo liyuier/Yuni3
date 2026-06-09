@@ -11,8 +11,8 @@ import com.yuier.yuni.core.api.message.SendPrivateMessage;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.bot.*;
 import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.event.context.BotEventCallback;
-import com.yuier.yuni.event.context.SpringYuniEvent;
+import com.yuier.yuni.core.event.BotEventCallback;
+import com.yuier.yuni.core.event.SpringYuniEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

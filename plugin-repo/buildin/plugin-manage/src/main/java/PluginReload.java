@@ -1,6 +1,6 @@
 import com.yuier.yuni.core.model.message.segment.TextSegment;
-import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
+import com.yuier.yuni.core.event.YuniMessageEvent;
+import com.yuier.yuni.core.event.matched.CommandMatched;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;

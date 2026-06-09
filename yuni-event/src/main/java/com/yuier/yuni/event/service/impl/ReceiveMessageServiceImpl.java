@@ -2,7 +2,7 @@ package com.yuier.yuni.event.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.mapper.ReceiveMessageMapper;
 import com.yuier.yuni.event.service.ReceiveMessageService;
 import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;

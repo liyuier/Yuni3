@@ -1,10 +1,10 @@
 package com.yuier.yuni.event.detector.message.command;
 
 import com.yuier.yuni.core.enums.MessageType;
-import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.MessageDetector;
 import com.yuier.yuni.event.detector.message.command.model.CommandModel;
-import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
+import com.yuier.yuni.core.event.matched.CommandMatched;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

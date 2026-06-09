@@ -15,9 +15,9 @@ import com.yuier.yuni.event.detector.message.command.model.MessageChainForComman
 import com.yuier.yuni.event.detector.message.command.model.CommandArg;
 import com.yuier.yuni.event.detector.message.command.model.CommandModel;
 import com.yuier.yuni.event.detector.message.command.model.CommandOption;
-import com.yuier.yuni.event.detector.message.command.model.matched.CommandArgMatched;
-import com.yuier.yuni.event.detector.message.command.model.matched.CommandMatched;
-import com.yuier.yuni.event.detector.message.command.model.matched.CommandOptionMatched;
+import com.yuier.yuni.core.event.matched.CommandArgMatched;
+import com.yuier.yuni.core.event.matched.CommandMatched;
+import com.yuier.yuni.core.event.matched.CommandOptionMatched;
 import lombok.NoArgsConstructor;
 
 import java.net.MalformedURLException;

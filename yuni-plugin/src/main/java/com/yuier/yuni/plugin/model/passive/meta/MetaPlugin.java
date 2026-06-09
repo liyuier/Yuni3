@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.model.passive.meta;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.event.context.meta.YuniMetaEvent;
+import com.yuier.yuni.core.event.meta.YuniMetaEvent;
 import com.yuier.yuni.event.detector.meta.DefaultYuniMetaDetector;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;

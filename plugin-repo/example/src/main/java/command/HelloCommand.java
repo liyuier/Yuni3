@@ -1,7 +1,8 @@
 package command;
 
 import com.yuier.yuni.core.api.message.SendMessage;
-import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.core.bot.MessageSentResult;
+import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.command.model.CommandBuilder;
 import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
@@ -18,7 +19,7 @@ public class HelloCommand extends CommandPlugin {
 
     @Override
     public void execute(YuniMessageEvent eventContext) {
-        SendMessage response = eventContext.getChatSession().response("Hello Command!");
+        MessageSentResult response = eventContext.getChatSession().response("Hello Command!");
     }
 
     @Override

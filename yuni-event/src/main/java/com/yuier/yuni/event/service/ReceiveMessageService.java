@@ -1,7 +1,7 @@
 package com.yuier.yuni.event.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;
 
 /**

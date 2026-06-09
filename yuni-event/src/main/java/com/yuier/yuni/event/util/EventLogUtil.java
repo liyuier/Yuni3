@@ -7,8 +7,8 @@ import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
-import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.event.context.YuniMessageSentEvent;
+import com.yuier.yuni.core.event.YuniMessageEvent;
+import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import org.springframework.stereotype.Component;
 
 

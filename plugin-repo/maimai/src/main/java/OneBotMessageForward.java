@@ -1,7 +1,6 @@
+import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
-import com.yuier.yuni.core.util.OneBotSerialization;
-import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.passive.message.PatternPlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
@@ -26,7 +25,6 @@ public class OneBotMessageForward extends PatternPlugin {
         }
         YuniWebSocketManager yuniManager = PluginUtils.getBean(YuniWebSocketManager.class);
         YuniWebSocketConnector maimaiAdapterConnector = yuniManager.getWebSocket(WS_CONNECT_TO_MAIMAI_ADAPTER);
-        OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
         // 转发消息
         try {
             String messageEventJson = eventContext.getRawJson();

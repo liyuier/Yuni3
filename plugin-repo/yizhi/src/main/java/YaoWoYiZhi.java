@@ -4,7 +4,7 @@ import com.madgag.gif.fmsware.GifDecoder;
 import com.yuier.yuni.core.enums.CommandArgRequireType;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.segment.ImageSegment;
-import com.yuier.yuni.event.context.YuniMessageEvent;
+import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.command.model.CommandBuilder;
 import com.yuier.yuni.plugin.model.YuniPlugin;

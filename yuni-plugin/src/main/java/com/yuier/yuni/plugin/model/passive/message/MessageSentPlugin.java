@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.model.passive.message;
 
 import com.yuier.yuni.core.enums.UserPermission;
-import com.yuier.yuni.event.context.YuniMessageSentEvent;
+import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import com.yuier.yuni.event.detector.message.sent.MessageSentDetector;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;

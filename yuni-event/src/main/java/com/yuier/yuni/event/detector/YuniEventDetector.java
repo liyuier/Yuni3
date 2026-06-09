@@ -1,6 +1,6 @@
 package com.yuier.yuni.event.detector;
 
-import com.yuier.yuni.event.context.SpringYuniEvent;
+import com.yuier.yuni.core.event.SpringYuniEvent;
 
 /**
  * @Title: YuniEventDetector

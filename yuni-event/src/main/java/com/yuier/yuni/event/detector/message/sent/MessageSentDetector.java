@@ -1,6 +1,6 @@
 package com.yuier.yuni.event.detector.message.sent;
 
-import com.yuier.yuni.event.context.YuniMessageSentEvent;
+import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import com.yuier.yuni.event.detector.YuniEventDetector;
 
 /**

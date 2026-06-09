@@ -1,7 +1,7 @@
 package com.yuier.yuni.engine.event;
 
-import com.yuier.yuni.event.context.BotEventCallback;
-import com.yuier.yuni.event.context.SpringYuniEvent;
+import com.yuier.yuni.core.event.BotEventCallback;
+import com.yuier.yuni.core.event.SpringYuniEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

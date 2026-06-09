@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.manage.enable;
 
-import com.yuier.yuni.event.context.YuniMessageEvent;
-import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
+import com.yuier.yuni.core.event.YuniMessageEvent;
+import com.yuier.yuni.core.event.notice.YuniNoticeEvent;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.enable.event.PluginDisableEvent;
 import com.yuier.yuni.plugin.manage.enable.event.PluginEnableEvent;

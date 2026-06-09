@@ -1,9 +1,8 @@
 package notice;
 
-import com.yuier.yuni.adapter.onebot.model.NoticeEvent;
+import com.yuier.yuni.core.event.notice.PokeEvent;
+import com.yuier.yuni.core.event.notice.YuniNoticeEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.event.context.notice.PokeEvent;
-import com.yuier.yuni.event.context.notice.YuniNoticeEvent;
 import com.yuier.yuni.event.detector.notice.DefaultYuniNoticeDetector;
 import com.yuier.yuni.plugin.model.passive.notice.NoticePlugin;
 import com.yuier.yuni.plugin.util.PluginUtils;
@@ -33,7 +32,7 @@ public class PokeNotice extends NoticePlugin {
     public DefaultYuniNoticeDetector getDetector() {
         return new DefaultYuniNoticeDetector(event -> {
             if ("notify".equals(event.getNoticeType())) {
-                NoticeEvent noticeEvent = PluginUtils.deserialize(event.getRawJson(), NoticeEvent.class);
+                PokeEvent noticeEvent = PluginUtils.deserialize(event.getRawJson(), PokeEvent.class);
                 assert noticeEvent != null;
                 if ("poke".equals(noticeEvent.getSubType())) {
                     return PluginUtils.deserialize(event.getRawJson(), PokeEvent.class);
