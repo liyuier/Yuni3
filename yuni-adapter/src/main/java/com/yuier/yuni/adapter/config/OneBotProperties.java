@@ -2,18 +2,17 @@ package com.yuier.yuni.adapter.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * @Title: OneBotProperties
  * @Author yuier
  * @Package com.yuier.yuni.adapter.config
  * @Date 2026/06/09
- * @description: OneBot 通信配置属性，使用 Spring Boot 类型安全绑定
+ * @description: OneBot 通信配置属性，使用 Spring Boot 类型安全绑定。
+ *               由 @EnableConfigurationProperties 注册，无需 @Component。
  */
 
 @Data
-@Component
 @ConfigurationProperties(prefix = "yuni.protocol.onebot")
 public class OneBotProperties {
 
