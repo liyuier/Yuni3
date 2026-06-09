@@ -23,8 +23,8 @@ RUN mvn clean package -pl yuni-application -am -DskipTests -q
 # ===== Stage 2: Runtime =====
 FROM eclipse-temurin:21-jre-alpine
 
-# 安装 Redis 和 supervisor
-RUN apk add --no-cache redis supervisor bash
+# 安装 Redis、supervisor、sqlite
+RUN apk add --no-cache redis supervisor sqlite bash
 
 WORKDIR /app
 
@@ -33,6 +33,9 @@ RUN mkdir -p /app/config /app/data /app/logs /app/plugins /app/log
 
 # 复制构建产物
 COPY --from=builder /build/yuni-application/target/yuni-app.jar /app/yuni-app.jar
+
+# 复制建表 SQL 脚本
+COPY sql/ /app/sql/
 
 # Redis 配置 — 监听 11452 端口
 RUN echo 'port 11452'           > /etc/redis.conf \
@@ -48,6 +51,25 @@ RUN printf '[supervisord]\nnodaemon=true\nlogfile=/app/logs/supervisord.log\nuse
  && printf '[program:redis]\ncommand=redis-server /etc/redis.conf\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n\n' >> /etc/supervisord.conf \
  && printf '[program:yuni]\ncommand=java -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n' >> /etc/supervisord.conf
 
+# 数据库初始化 + 启动脚本
+RUN printf '#!/bin/bash\n\
+set -e\n\
+DB_FILE=/app/data/yuni3.db\n\
+echo "[init] 检查数据库文件..."\n\
+if [ ! -f "$DB_FILE" ]; then\n\
+  echo "[init] 创建数据库文件..."\n\
+  touch "$DB_FILE"\n\
+fi\n\
+echo "[init] 执行建表 SQL..."\n\
+for sql in /app/sql/*.sql; do\n\
+  echo "[init]   $(basename $sql)"\n\
+  sqlite3 "$DB_FILE" < "$sql"\n\
+done\n\
+echo "[init] 数据库初始化完成"\n\
+echo "[init] 启动服务..."\n\
+exec supervisord -c /etc/supervisord.conf\n\
+' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
 EXPOSE 11451 11452
 
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+ENTRYPOINT ["/app/entrypoint.sh"]
