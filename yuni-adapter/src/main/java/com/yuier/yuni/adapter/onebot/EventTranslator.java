@@ -2,10 +2,10 @@ package com.yuier.yuni.adapter.onebot;
 
 import com.yuier.yuni.adapter.onebot.model.*;
 import com.yuier.yuni.core.constants.OneBotPostType;
+import com.yuier.yuni.core.event.YuniEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.BeanCopyUtils;
 import com.yuier.yuni.core.event.ChatSession;
-import com.yuier.yuni.core.event.SpringYuniEvent;
 import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import com.yuier.yuni.core.event.meta.YuniMetaEvent;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  * @Date 2026/06/09
  * @description: OneBot 协议事件 → 应用内部事件翻译器。
  *               在适配器内部完成协议模型到业务模型的转换，
- *               确保传递给业务层的是已装配完成的 SpringYuniEvent。
+ *               确保传递给业务层的是已装配完成的 YuniEvent。
  */
 
 @Slf4j
@@ -34,10 +34,10 @@ public class EventTranslator {
     }
 
     /**
-     * 将 OneBot 事件翻译为 SpringYuniEvent
+     * 将 OneBot 事件翻译为 YuniEvent
      */
-    public SpringYuniEvent translate(OneBotEvent event) {
-        SpringYuniEvent yuniEvent;
+    public YuniEvent translate(OneBotEvent event) {
+        YuniEvent yuniEvent;
         switch (event.getPostType()) {
             case OneBotPostType.MESSAGE:
                 yuniEvent = buildYuniMessageEvent(event);
@@ -56,7 +56,7 @@ public class EventTranslator {
                 break;
             default:
                 log.info("不支持的 OneBot 事件类型：{}", event.getPostType());
-                yuniEvent = new SpringYuniEvent() {
+                yuniEvent = new YuniEvent() {
                     @Override
                     public String toLogString() {
                         return "";

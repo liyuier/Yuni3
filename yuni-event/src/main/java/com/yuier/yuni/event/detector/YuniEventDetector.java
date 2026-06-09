@@ -1,6 +1,6 @@
 package com.yuier.yuni.event.detector;
 
-import com.yuier.yuni.core.event.SpringYuniEvent;
+import com.yuier.yuni.core.event.YuniEvent;
 
 /**
  * @Title: YuniEventDetector
@@ -10,7 +10,7 @@ import com.yuier.yuni.core.event.SpringYuniEvent;
  * @description: Yuni 事件探测器
  */
 
-public interface YuniEventDetector<T extends SpringYuniEvent> {
+public interface YuniEventDetector<T extends YuniEvent> {
 
     /**
      * @return  检查事件是否命中事件探测器

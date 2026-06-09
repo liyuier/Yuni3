@@ -1,6 +1,6 @@
 package com.yuier.yuni.core.event.meta;
 
-import com.yuier.yuni.core.event.SpringYuniEvent;
+import com.yuier.yuni.core.event.YuniEvent;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class YuniMetaEvent extends SpringYuniEvent {
+public class YuniMetaEvent extends YuniEvent {
 
     private String metaEventType;
 

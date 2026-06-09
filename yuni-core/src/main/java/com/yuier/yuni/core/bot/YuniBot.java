@@ -50,7 +50,7 @@ public interface YuniBot {
     /**
      * 注册业务层事件回调。适配器收到平台事件推送并完成协议翻译后调用此回调。
      * 事件回调类型由各适配器实现与业务层约定：
-     * - OneBot 适配器约定回调实现 BotEventCallback（yuni-event 中定义），接收 SpringYuniEvent。
+     * - OneBot 适配器约定回调实现 BotEventCallback（yuni-event 中定义），接收 YuniEvent。
      * 平台不支持回调时默认空实现。
      * @param callback 事件回调对象，为 null 时取消注册
      */

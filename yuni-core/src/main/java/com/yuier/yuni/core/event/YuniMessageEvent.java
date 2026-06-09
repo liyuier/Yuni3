@@ -22,7 +22,7 @@ import static com.yuier.yuni.core.constants.SystemConstants.UNKNOWN;
  */
 
 @Data
-public class YuniMessageEvent extends SpringYuniEvent {
+public class YuniMessageEvent extends YuniEvent {
 
     /**
      * 消息类型。

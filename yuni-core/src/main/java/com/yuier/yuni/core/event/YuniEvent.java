@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @Title: SpringYuniEvent
+ * @Title: YuniEvent
  * @Author yuier
  * @Package com.yuier.yuni.adapter.onebot.model.spring
  * @Date 2025/12/22 17:14
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class SpringYuniEvent {
+public abstract class YuniEvent {
 
     // 事件发生的时间戳
     private Long time;

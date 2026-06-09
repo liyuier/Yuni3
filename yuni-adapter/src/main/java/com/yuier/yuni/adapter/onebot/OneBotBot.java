@@ -10,9 +10,9 @@ import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.api.message.SendPrivateMessage;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.bot.*;
+import com.yuier.yuni.core.event.YuniEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.event.BotEventCallback;
-import com.yuier.yuni.core.event.SpringYuniEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -24,8 +24,8 @@ import java.util.concurrent.CompletableFuture;
  * @Package com.yuier.yuni.adapter.onebot
  * @Date 2026/06/09
  * @description: YuniBot 的 OneBot 实现。
- *               在适配器内部完成: raw JSON → OneBotEvent → SpringYuniEvent，
- *               然后通过 BotEventCallback 将装配好的 SpringYuniEvent 传递给业务层。
+ *               在适配器内部完成: raw JSON → OneBotEvent → YuniEvent，
+ *               然后通过 BotEventCallback 将装配好的 YuniEvent 传递给业务层。
  */
 
 @Slf4j
@@ -75,12 +75,12 @@ public class OneBotBot implements YuniBot {
     @Override
     public CompletableFuture<Void> connect() {
         status = BotStatus.CONNECTING;
-        // 传输层收到原始 JSON 后：反序列化为 OneBotEvent → 翻译为 SpringYuniEvent → 回调业务层
+        // 传输层收到原始 JSON 后：反序列化为 OneBotEvent → 翻译为 YuniEvent → 回调业务层
         transport.setEventCallback(rawJson -> {
             try {
                 OneBotEvent oneBotEvent = protocolHandler.deserializeEvent(rawJson);
                 oneBotEvent.setRawJson(rawJson);
-                SpringYuniEvent yuniEvent = eventTranslator.translate(oneBotEvent);
+                YuniEvent yuniEvent = eventTranslator.translate(oneBotEvent);
                 if (eventCallback != null) {
                     eventCallback.onEvent(yuniEvent);
                 }

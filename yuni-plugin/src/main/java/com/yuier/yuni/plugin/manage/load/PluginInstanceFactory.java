@@ -1,7 +1,7 @@
 package com.yuier.yuni.plugin.manage.load;
 
 import com.yuier.yuni.core.enums.YuniPluginType;
-import com.yuier.yuni.core.event.SpringYuniEvent;
+import com.yuier.yuni.core.event.YuniEvent;
 import com.yuier.yuni.event.detector.YuniEventDetector;
 import com.yuier.yuni.plugin.model.PluginInstance;
 import com.yuier.yuni.plugin.model.PluginMetadata;
@@ -119,7 +119,7 @@ public class PluginInstanceFactory {
 
         // 提取执行方法
         try {
-            Method executeMethod = passivePlugin.getClass().getMethod("execute", SpringYuniEvent.class);
+            Method executeMethod = passivePlugin.getClass().getMethod("execute", YuniEvent.class);
             passivePluginInstance.setExecuteMethod(executeMethod);
         } catch (NoSuchMethodException e) {
             log.error("插件 {} 没有执行方法！", passivePlugin.getClass().getName());
