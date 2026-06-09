@@ -32,7 +32,7 @@ WORKDIR /app
 RUN mkdir -p /app/config /app/data /app/logs /app/plugins /app/log
 
 # 复制构建产物
-COPY --from=builder /build/yuni-application/target/yuni3.jar /app/yuni-app.jar
+COPY --from=builder /build/yuni-application/target/yuni-app.jar /app/yuni-app.jar
 
 # Redis 配置 — 监听 11452 端口
 RUN echo 'port 11452'           > /etc/redis.conf \
@@ -41,10 +41,10 @@ RUN echo 'port 11452'           > /etc/redis.conf \
  && echo 'daemonize no'         >> /etc/redis.conf \
  && echo 'loglevel notice'      >> /etc/redis.conf
 
-# supervisord 配置
-RUN printf '[supervisord]\nnodaemon=true\nlogfile=/app/logs/supervisord.log\n\n'                 > /etc/supervisord.conf \
- && printf '[program:redis]\ncommand=redis-server /etc/redis.conf\nstdout_logfile=/app/logs/redis.log\nstderr_logfile=/app/logs/redis.log\n\n' >> /etc/supervisord.conf \
- && printf '[program:yuni]\ncommand=java -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml\nstdout_logfile=/app/logs/yuni.log\nstderr_logfile=/app/logs/yuni.log\n' >> /etc/supervisord.conf
+# supervisord 配置 — 所有输出到 stdout/stderr，通过 docker logs 查看
+RUN printf '[supervisord]\nnodaemon=true\nlogfile=/dev/stdout\n\n'                                 > /etc/supervisord.conf \
+ && printf '[program:redis]\ncommand=redis-server /etc/redis.conf\nstdout_logfile=/dev/stdout\nstderr_logfile=/dev/stderr\n\n' >> /etc/supervisord.conf \
+ && printf '[program:yuni]\ncommand=java -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml\nstdout_logfile=/dev/stdout\nstderr_logfile=/dev/stderr\n' >> /etc/supervisord.conf
 
 EXPOSE 11451 11452
 
