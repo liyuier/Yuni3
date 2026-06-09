@@ -81,7 +81,7 @@ public class MessageChain {
     }
 
     public MessageChain addReply(String id) {
-        content.add(0, new ReplySegment(id));
+        content.addFirst(new ReplySegment(id));
         return this;
     }
 

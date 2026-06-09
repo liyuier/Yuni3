@@ -8,8 +8,7 @@ import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.message.MessageChain;
-import com.yuier.yuni.core.util.OneBotDeserializer;
-import com.yuier.yuni.core.util.OneBotSerialization;
+import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
@@ -124,12 +123,8 @@ public class PluginUtils {
         }
 
         String json = loadConfigJsonToString(configFilePath, pluginClazz);
-        OneBotDeserializer serialization = SpringContextUtil.getBean(OneBotDeserializer.class);
-        try {
-            return serialization.deserialize(json, clazz);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        JsonCodec jsonCodec = SpringContextUtil.getBean(JsonCodec.class);
+        return jsonCodec.fromJson(json, clazz);
     }
 
     private static String loadConfigJsonToString(String configFilePath, Class<? extends YuniPlugin> pluginClazz) {
@@ -177,24 +172,12 @@ public class PluginUtils {
 
     // 反序列化
     public static <T> T deserialize(String json, Class<T> clazz) {
-        OneBotDeserializer deserialization = SpringContextUtil.getBean(OneBotDeserializer.class);
-        try {
-            return deserialization.deserialize(json, clazz);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return SpringContextUtil.getBean(JsonCodec.class).fromJson(json, clazz);
     }
 
     // 序列化
     public static String serialize(Object obj) {
-        OneBotSerialization serialization = SpringContextUtil.getBean(OneBotSerialization.class);
-        try {
-            return serialization.serialize(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return SpringContextUtil.getBean(JsonCodec.class).toJson(obj);
     }
 
     // 发送群消息
