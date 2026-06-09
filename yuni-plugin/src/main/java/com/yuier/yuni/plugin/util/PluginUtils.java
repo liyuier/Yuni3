@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.core.bot.MessageTarget;
 import com.yuier.yuni.core.bot.YuniBot;
-import com.yuier.yuni.core.api.group.GroupMemberInfo;
+import com.yuier.yuni.core.bot.BotGroupMemberInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.message.MessageChain;
@@ -228,7 +228,7 @@ public class PluginUtils {
     }
 
     public static String getGroupMemberName(long groupId, long userId) {
-        GroupMemberInfo groupMemberInfo = getYuniBot().getGroupMemberInfo(String.valueOf(groupId), String.valueOf(userId)).orElse(null);
+        BotGroupMemberInfo groupMemberInfo = getYuniBot().getGroupMemberInfo(String.valueOf(groupId), String.valueOf(userId)).orElse(null);
         if (groupMemberInfo == null) return String.valueOf(userId);
         return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
     }

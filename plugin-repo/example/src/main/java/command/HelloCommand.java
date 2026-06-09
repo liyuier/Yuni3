@@ -1,6 +1,5 @@
 package command;
 
-import com.yuier.yuni.core.api.message.SendMessage;
 import com.yuier.yuni.core.bot.MessageSentResult;
 import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.detector.message.command.CommandDetector;

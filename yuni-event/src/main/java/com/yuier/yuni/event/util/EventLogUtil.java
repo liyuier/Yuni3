@@ -1,9 +1,9 @@
 package com.yuier.yuni.event.util;
 
+import com.yuier.yuni.core.bot.BotGroupInfo;
+import com.yuier.yuni.core.bot.BotGroupMemberInfo;
+import com.yuier.yuni.core.bot.BotUserInfo;
 import com.yuier.yuni.core.bot.YuniBot;
-import com.yuier.yuni.core.api.group.GroupInfo;
-import com.yuier.yuni.core.api.group.GroupMemberInfo;
-import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.util.LogStringUtil;
 import com.yuier.yuni.core.util.SpringContextUtil;
@@ -87,7 +87,7 @@ public class EventLogUtil {
      * @param userId 成员QQ号
      * @return 群成员信息
      */
-    public static GroupMemberInfo getGroupMemberInfo(Long groupId, Long userId) {
+    public static BotGroupMemberInfo getGroupMemberInfo(Long groupId, Long userId) {
         return getYuniBot().getGroupMemberInfo(String.valueOf(groupId), String.valueOf(userId)).orElse(null);
     }
 
@@ -98,16 +98,16 @@ public class EventLogUtil {
      * @return 成员名称
      */
     public static String getGroupMemberName(Long groupId, Long userId) {
-        GroupMemberInfo groupMemberInfo = getGroupMemberInfo(groupId, userId);
+        BotGroupMemberInfo groupMemberInfo = getGroupMemberInfo(groupId, userId);
         return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
     }
 
-    public static GroupInfo getGroupInfo(Long groupId) {
+    public static BotGroupInfo getGroupInfo(Long groupId) {
         return getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null);
     }
 
     public static String getGroupName(Long groupId) {
-        GroupInfo groupInfo = getGroupInfo(groupId);
+        BotGroupInfo groupInfo = getGroupInfo(groupId);
         return groupInfo.getGroupName();
     }
 
@@ -143,7 +143,7 @@ public class EventLogUtil {
         if (userId.equals(getBotId())) {
             return botNameAndIdLogString();
         }
-        GetStrangerInfo strangerInfo = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null);
+        BotUserInfo strangerInfo = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null);
         return "好友: " + strangerInfo.getNickname() + "(" + userId + ") ";
     }
 

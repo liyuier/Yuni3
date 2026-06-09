@@ -1,9 +1,5 @@
 package com.yuier.yuni.core.bot;
 
-import com.yuier.yuni.core.api.group.GroupInfo;
-import com.yuier.yuni.core.api.group.GroupMemberInfo;
-import com.yuier.yuni.core.api.message.GetMessage;
-import com.yuier.yuni.core.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.model.message.MessageChain;
 
 import java.util.List;
@@ -17,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
  * @Date 2026/06/09
  * @description: 聊天平台机器人账号抽象接口。
  *               适配器模块实现此接口，业务模块通过此接口与平台交互。
- *               参考 Koishi Bot 接口设计。
+ *               所有返回类型均为协议无关的 core 层 POJO。
  */
 
 public interface YuniBot {
@@ -55,7 +51,7 @@ public interface YuniBot {
      * @param callback 事件回调对象，为 null 时取消注册
      */
     default void setEventCallback(Object callback) {
-        // 默认空实现
+        // 默认空实现，具体适配器按约定类型处理
     }
 
     // ==================== 消息发送 ====================
@@ -80,14 +76,14 @@ public interface YuniBot {
      * 获取群列表
      * @return 群列表（平台不支持时返回 Optional.empty()）
      */
-    Optional<List<GroupInfo>> getGroupList();
+    Optional<List<BotGroupInfo>> getGroupList();
 
     /**
      * 获取群信息
      * @param groupId 群号
      * @return 群信息
      */
-    Optional<GroupInfo> getGroupInfo(String groupId);
+    Optional<BotGroupInfo> getGroupInfo(String groupId);
 
     /**
      * 获取群成员信息
@@ -95,21 +91,21 @@ public interface YuniBot {
      * @param userId 用户账号
      * @return 群成员信息
      */
-    Optional<GroupMemberInfo> getGroupMemberInfo(String groupId, String userId);
+    Optional<BotGroupMemberInfo> getGroupMemberInfo(String groupId, String userId);
 
     /**
      * 获取用户信息
      * @param userId 用户账号
      * @return 用户信息
      */
-    Optional<GetStrangerInfo> getUserInfo(String userId);
+    Optional<BotUserInfo> getUserInfo(String userId);
 
     /**
      * 获取历史消息
      * @param messageId 消息 ID
      * @return 消息内容
      */
-    Optional<GetMessage> getMessage(String messageId);
+    Optional<BotMessageInfo> getMessage(String messageId);
 
     // ==================== 群组管理 ====================
 

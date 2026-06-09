@@ -1,6 +1,6 @@
-import com.yuier.yuni.core.bot.YuniBot;
+import com.yuier.yuni.core.bot.BotGroupInfo;
 import com.yuier.yuni.core.bot.MessageTarget;
-import com.yuier.yuni.core.api.group.GroupInfo;
+import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.plugin.manage.enable.PluginEnableProcessor;
 import com.yuier.yuni.plugin.model.YuniPlugin;
@@ -33,9 +33,9 @@ public class CrazyThursdayUtil {
         String 本次要发送的文案 = PluginUtils.getRandomElement(Arrays.asList(候选文案));
         // 获取群列表
         YuniBot bot  = PluginUtils.getYuniBot();
-        List<GroupInfo> groupList = bot.getGroupList().orElse(List.of());
+        List<BotGroupInfo> groupList = bot.getGroupList().orElse(List.of());
         // 获取群列表中的群组
-        for (GroupInfo groupListElement : groupList) {
+        for (BotGroupInfo groupListElement : groupList) {
             Long groupId = groupListElement.getGroupId();
             PluginEnableProcessor processor = PluginUtils.getBean(PluginEnableProcessor.class);
             // 判断该群组是否启用当前功能

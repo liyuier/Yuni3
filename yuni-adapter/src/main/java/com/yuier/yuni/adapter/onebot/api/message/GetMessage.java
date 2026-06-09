@@ -1,4 +1,4 @@
-package com.yuier.yuni.core.api.message;
+package com.yuier.yuni.adapter.onebot.api.message;
 
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;

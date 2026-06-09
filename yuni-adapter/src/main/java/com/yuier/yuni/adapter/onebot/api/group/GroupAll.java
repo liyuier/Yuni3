@@ -1,4 +1,4 @@
-package com.yuier.yuni.core.api.group;
+package com.yuier.yuni.adapter.onebot.api.group;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

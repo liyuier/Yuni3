@@ -3,12 +3,12 @@ package com.yuier.yuni.adapter.onebot;
 import com.yuier.yuni.adapter.config.OneBotProperties;
 import com.yuier.yuni.adapter.onebot.model.OneBotEvent;
 import com.yuier.yuni.adapter.onebot.transport.OneBotTransport;
-import com.yuier.yuni.core.api.group.GroupInfo;
-import com.yuier.yuni.core.api.group.GroupMemberInfo;
-import com.yuier.yuni.core.api.message.GetMessage;
-import com.yuier.yuni.core.api.message.SendGroupMessage;
-import com.yuier.yuni.core.api.message.SendPrivateMessage;
-import com.yuier.yuni.core.api.user.GetStrangerInfo;
+import com.yuier.yuni.adapter.onebot.api.group.GroupInfo;
+import com.yuier.yuni.adapter.onebot.api.group.GroupMemberInfo;
+import com.yuier.yuni.adapter.onebot.api.message.GetMessage;
+import com.yuier.yuni.adapter.onebot.api.message.SendGroupMessage;
+import com.yuier.yuni.adapter.onebot.api.message.SendPrivateMessage;
+import com.yuier.yuni.adapter.onebot.api.user.GetStrangerInfo;
 import com.yuier.yuni.core.bot.*;
 import com.yuier.yuni.core.event.YuniEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @Title: OneBotBot
@@ -148,11 +149,12 @@ public class OneBotBot implements YuniBot {
     // ==================== 信息查询 ====================
 
     @Override
-    public Optional<List<GroupInfo>> getGroupList() {
+    public Optional<List<BotGroupInfo>> getGroupList() {
         try {
             String responseJson = transport.sendApiRequest("get_group_list", Map.of());
-            GroupInfo[] groups = extractResponseDataAsArray(responseJson, GroupInfo[].class);
-            return Optional.ofNullable(groups).map(Arrays::asList);
+            GroupInfo[] groups = extractResponseData(responseJson, GroupInfo[].class);
+            if (groups == null) return Optional.empty();
+            return Optional.of(Arrays.stream(groups).map(this::convert).collect(Collectors.toList()));
         } catch (Exception e) {
             log.error("[OneBotBot] 获取群列表失败", e);
             return Optional.empty();
@@ -160,13 +162,13 @@ public class OneBotBot implements YuniBot {
     }
 
     @Override
-    public Optional<GroupInfo> getGroupInfo(String groupId) {
+    public Optional<BotGroupInfo> getGroupInfo(String groupId) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("group_id", Long.parseLong(groupId));
             params.put("no_cache", true);
             String responseJson = transport.sendApiRequest("get_group_info", params);
-            return Optional.ofNullable(extractResponseData(responseJson, GroupInfo.class));
+            return Optional.ofNullable(convert(extractResponseData(responseJson, GroupInfo.class)));
         } catch (Exception e) {
             log.error("[OneBotBot] 获取群信息失败: groupId={}", groupId, e);
             return Optional.empty();
@@ -174,14 +176,14 @@ public class OneBotBot implements YuniBot {
     }
 
     @Override
-    public Optional<GroupMemberInfo> getGroupMemberInfo(String groupId, String userId) {
+    public Optional<BotGroupMemberInfo> getGroupMemberInfo(String groupId, String userId) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("group_id", Long.parseLong(groupId));
             params.put("user_id", Long.parseLong(userId));
             params.put("no_cache", true);
             String responseJson = transport.sendApiRequest("get_group_member_info", params);
-            return Optional.ofNullable(extractResponseData(responseJson, GroupMemberInfo.class));
+            return Optional.ofNullable(convert(extractResponseData(responseJson, GroupMemberInfo.class)));
         } catch (Exception e) {
             log.error("[OneBotBot] 获取群成员信息失败: groupId={} userId={}", groupId, userId, e);
             return Optional.empty();
@@ -189,13 +191,13 @@ public class OneBotBot implements YuniBot {
     }
 
     @Override
-    public Optional<GetStrangerInfo> getUserInfo(String userId) {
+    public Optional<BotUserInfo> getUserInfo(String userId) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("user_id", Long.parseLong(userId));
             params.put("no_cache", true);
             String responseJson = transport.sendApiRequest("get_stranger_info", params);
-            return Optional.ofNullable(extractResponseData(responseJson, GetStrangerInfo.class));
+            return Optional.ofNullable(convert(extractResponseData(responseJson, GetStrangerInfo.class)));
         } catch (Exception e) {
             log.error("[OneBotBot] 获取用户信息失败: userId={}", userId, e);
             return Optional.empty();
@@ -203,12 +205,12 @@ public class OneBotBot implements YuniBot {
     }
 
     @Override
-    public Optional<GetMessage> getMessage(String messageId) {
+    public Optional<BotMessageInfo> getMessage(String messageId) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("message_id", Long.parseLong(messageId));
             String responseJson = transport.sendApiRequest("get_msg", params);
-            return Optional.ofNullable(extractResponseData(responseJson, GetMessage.class));
+            return Optional.ofNullable(convert(extractResponseData(responseJson, GetMessage.class)));
         } catch (Exception e) {
             log.error("[OneBotBot] 获取消息失败: messageId={}", messageId, e);
             return Optional.empty();
@@ -233,6 +235,50 @@ public class OneBotBot implements YuniBot {
         params.put("user_id", Long.parseLong(userId));
         params.put("duration", durationSeconds);
         transport.sendApiRequest("set_group_ban", params);
+    }
+
+    // ==================== OneBot API 类型 → 核心类型转换 ====================
+
+    private BotGroupInfo convert(GroupInfo g) {
+        if (g == null) return null;
+        BotGroupInfo b = new BotGroupInfo();
+        b.setGroupId(g.getGroupId());
+        b.setGroupName(g.getGroupName());
+        b.setGroupMemo(g.getGroupMemo());
+        b.setMemberCount(g.getMemberCount());
+        b.setMaxMemberCount(g.getMaxMemberCount());
+        b.setGroupCreateTime(g.getGroupCreateTime());
+        return b;
+    }
+
+    private BotGroupMemberInfo convert(GroupMemberInfo m) {
+        if (m == null) return null;
+        BotGroupMemberInfo b = new BotGroupMemberInfo();
+        b.setGroupId(m.getGroupId());
+        b.setUserId(m.getUserId());
+        b.setNickname(m.getNickname());
+        b.setCard(m.getCard());
+        b.setRole(m.getRole());
+        b.setTitle(m.getTitle());
+        return b;
+    }
+
+    private BotUserInfo convert(GetStrangerInfo u) {
+        if (u == null) return null;
+        BotUserInfo b = new BotUserInfo();
+        b.setUserId(u.getUserId());
+        b.setNickname(u.getNickname());
+        return b;
+    }
+
+    private BotMessageInfo convert(GetMessage m) {
+        if (m == null) return null;
+        BotMessageInfo b = new BotMessageInfo();
+        b.setMessageId(m.getMessageId());
+        b.setUserId(m.getUserId());
+        b.setGroupId(m.getGroupId());
+        b.setMessageType(m.getMessageType());
+        return b;
     }
 
     // ==================== 响应解析 ====================

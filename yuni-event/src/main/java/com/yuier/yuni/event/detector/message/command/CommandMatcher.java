@@ -1,6 +1,6 @@
 package com.yuier.yuni.event.detector.message.command;
 
-import com.yuier.yuni.core.api.message.GetMessage;
+import com.yuier.yuni.core.bot.BotMessageInfo;
 import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.constants.MessageSegmentTypes;
 import com.yuier.yuni.core.enums.CommandArgRequireType;
@@ -484,7 +484,7 @@ public class CommandMatcher {
             // 将回复消息段拆下，存入 chainForCommand 的 replyData 字段中
             chainForCommand.setReplySegment((ReplySegment) chainForCommand.removeSegment(FIRST_INDEX));
             // 获取回复的目标消息的发送者的 ID, 以供后续删除对应的 @ 消息
-            GetMessage msg = getYuniBot().getMessage(chainForCommand.getReplySegment().getId()).orElse(null);
+            BotMessageInfo msg = getYuniBot().getMessage(chainForCommand.getReplySegment().getId()).orElse(null);
             Long userId = msg != null ? msg.getUserId() : 0L;
             // 遍历后续消息段
             for (MessageSegment messageSeg : chainForCommand.getContent()) {
