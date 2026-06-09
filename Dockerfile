@@ -41,10 +41,12 @@ RUN echo 'port 11452'           > /etc/redis.conf \
  && echo 'daemonize no'         >> /etc/redis.conf \
  && echo 'loglevel notice'      >> /etc/redis.conf
 
-# supervisord 配置 — 所有输出到 stdout/stderr，通过 docker logs 查看
-RUN printf '[supervisord]\nnodaemon=true\nlogfile=/dev/stdout\n\n'                                 > /etc/supervisord.conf \
- && printf '[program:redis]\ncommand=redis-server /etc/redis.conf\nstdout_logfile=/dev/stdout\nstderr_logfile=/dev/stderr\n\n' >> /etc/supervisord.conf \
- && printf '[program:yuni]\ncommand=java -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml\nstdout_logfile=/dev/stdout\nstderr_logfile=/dev/stderr\n' >> /etc/supervisord.conf
+# supervisord 配置
+# supervisord 自身日志写文件（/dev/stdout 无法 seek，supervisord 不支持）
+# 守护程序的 stdout/stderr 直接输出到 docker logs
+RUN printf '[supervisord]\nnodaemon=true\nlogfile=/app/logs/supervisord.log\nuser=root\n\n'       > /etc/supervisord.conf \
+ && printf '[program:redis]\ncommand=redis-server /etc/redis.conf\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n\n' >> /etc/supervisord.conf \
+ && printf '[program:yuni]\ncommand=java -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n' >> /etc/supervisord.conf
 
 EXPOSE 11451 11452
 
