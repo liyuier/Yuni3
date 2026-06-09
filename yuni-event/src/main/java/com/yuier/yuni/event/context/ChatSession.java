@@ -1,7 +1,8 @@
 package com.yuier.yuni.event.context;
 
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.api.message.SendMessage;
+import com.yuier.yuni.core.bot.MessageSentResult;
+import com.yuier.yuni.core.bot.MessageTarget;
+import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.enums.MessageType;
 import com.yuier.yuni.core.model.message.MessageChain;
 import lombok.AllArgsConstructor;
@@ -14,9 +15,9 @@ import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
 /**
  * @Title: ChatSession
  * @Author yuier
- * @Package com.yuier.yuni.core.model.message.session
+ * @Package com.yuier.yuni.event.context
  * @Date 2025/12/22 17:24
- * @description: 会话
+ * @description: 会话上下文，提供消息发送、回复等快捷方法
  */
 
 @Data
@@ -24,32 +25,17 @@ import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
 @AllArgsConstructor
 public class ChatSession {
 
-    // 收到消息的机器人 QQ 号
     private Long selfId;
-
-    // 发送消息的用户
     private Long userId;
-
-    // 发送消息的群组
     private Long groupId;
-
-    // 当前是否处于持续对话状态
     private boolean longSession;
-
-    // 当前消息是群消息还是私聊消息
     private MessageType messageType;
-
-    // 当前全局适配器
-    private OneBotAdapter adapter;
-
-    // 当前会话的 OneBot 侧基础 URL
+    private YuniBot bot;
     private String OneBotBaseUrl;
-
-    // 消息ID
     private Long messageId;
 
-    public ChatSession(OneBotAdapter adapter) {
-        this.adapter = adapter;
+    public ChatSession(YuniBot bot) {
+        this.bot = bot;
     }
 
     public void setMessageType(String messageType) {
@@ -62,24 +48,26 @@ public class ChatSession {
         }
     }
 
-    public SendMessage response(MessageChain chain) {
+    /** 发送消息到当前会话 */
+    public MessageSentResult response(MessageChain chain) {
         if (messageType.equals(MessageType.PRIVATE)) {
-            return adapter.sendPrivateMessage(selfId, chain);
+            return bot.sendMessage(MessageTarget.privateChat(userId), chain);
         } else {
-            return adapter.sendGroupMessage(groupId, chain);
+            return bot.sendMessage(MessageTarget.group(groupId), chain);
         }
     }
 
-    public SendMessage response(String text) {
+    public MessageSentResult response(String text) {
         return response(new MessageChain(text));
     }
 
-    public SendMessage reply(MessageChain chain) {
+    /** 回复当前消息（自动添加引用） */
+    public MessageSentResult reply(MessageChain chain) {
         chain.addReply(String.valueOf(messageId));
         return response(chain);
     }
 
-    public SendMessage reply(String text) {
+    public MessageSentResult reply(String text) {
         return reply(new MessageChain(text));
     }
 }

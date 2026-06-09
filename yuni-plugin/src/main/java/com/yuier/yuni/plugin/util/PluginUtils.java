@@ -2,7 +2,6 @@ package com.yuier.yuni.plugin.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.core.bot.MessageTarget;
 import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
@@ -44,16 +43,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 public class PluginUtils {
-
-    /**
-     * 获取 OneBotAdapter
-     * @return OneBotAdapter
-     * @deprecated 使用 {@link #getYuniBot()} 代替
-     */
-    @Deprecated
-    public static OneBotAdapter getOneBotAdapter() {
-        return SpringContextUtil.getBean(OneBotAdapter.class);
-    }
 
     /**
      * 获取 YuniBot 实例

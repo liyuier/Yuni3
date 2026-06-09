@@ -1,6 +1,6 @@
 package notice;
 
-import com.yuier.yuni.core.model.event.NoticeEvent;
+import com.yuier.yuni.adapter.onebot.model.NoticeEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.event.context.notice.PokeEvent;
 import com.yuier.yuni.event.context.notice.YuniNoticeEvent;

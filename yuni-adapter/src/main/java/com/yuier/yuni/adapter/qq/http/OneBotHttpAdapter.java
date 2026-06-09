@@ -10,7 +10,7 @@ import com.yuier.yuni.core.api.message.SendGroupMessage;
 import com.yuier.yuni.core.api.message.SendPrivateMessage;
 import com.yuier.yuni.core.api.system.LoginInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
-import com.yuier.yuni.core.model.event.OneBotEvent;
+import com.yuier.yuni.adapter.onebot.model.OneBotEvent;
 import com.yuier.yuni.core.util.OneBotDeserializer;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.util.OneBotSerialization;
@@ -50,7 +50,7 @@ public class OneBotHttpAdapter implements OneBotAdapter {
     @Override
     public OneBotEvent handleReportJson(String json) {
         try {
-            return deserializer.deserializeEvent(json);
+            return deserializer.deserialize(json, OneBotEvent.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

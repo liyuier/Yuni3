@@ -17,7 +17,7 @@ import static com.yuier.yuni.core.constants.SystemConstants.UNKNOWN;
 /**
  * @Title: YuniMessageEvent
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event.spring
+ * @Package com.yuier.yuni.adapter.onebot.model.spring
  * @Date 2025/12/22 17:19
  * @description: Yuni 机器人内部定义的消息事件
  */

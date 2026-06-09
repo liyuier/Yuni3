@@ -1,9 +1,9 @@
-package com.yuier.yuni.core.model.event;
+package com.yuier.yuni.adapter.onebot.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.yuier.yuni.core.anno.PolymorphicSubType;
-import com.yuier.yuni.core.model.event.model.GroupUploadFile;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 /**
  * @Title: NoticeEvent
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event
+ * @Package com.yuier.yuni.adapter.onebot.model
  * @Date 2025/12/29 17:02
  * @description: 通知事件
  */

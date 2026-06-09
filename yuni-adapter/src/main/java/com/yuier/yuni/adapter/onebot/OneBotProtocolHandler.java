@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.http.OneBotResponse;
 import com.yuier.yuni.adapter.qq.websocket.module.WsRequest;
 import com.yuier.yuni.core.bot.JsonCodec;
-import com.yuier.yuni.core.model.event.OneBotEvent;
+import com.yuier.yuni.adapter.onebot.model.OneBotEvent;
 
 import java.util.HashMap;
 import java.util.Map;

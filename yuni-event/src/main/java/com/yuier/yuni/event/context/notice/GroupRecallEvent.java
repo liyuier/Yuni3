@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @Title: GroupRecallEvent
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event
+ * @Package com.yuier.yuni.adapter.onebot.model
  * @Date 2025/12/30 1:04
  * @description:
  */

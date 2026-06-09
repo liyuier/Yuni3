@@ -7,7 +7,7 @@ import lombok.Setter;
 /**
  * @Title: SpringYuniEvent
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event.spring
+ * @Package com.yuier.yuni.adapter.onebot.model.spring
  * @Date 2025/12/22 17:14
  * @description: Spring 内的 event 模型
  */

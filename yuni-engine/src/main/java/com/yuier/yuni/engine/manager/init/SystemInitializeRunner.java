@@ -22,28 +22,27 @@ import org.springframework.stereotype.Component;
 public class SystemInitializeRunner implements ApplicationRunner {
 
     @Autowired
-    PluginManager pluginManager;
-
+    private PluginManager pluginManager;
     @Autowired
-    SystemInitializeProcessor systemInitializeProcessor;
-
+    private SystemInitializeProcessor systemInitializeProcessor;
     @Autowired
-    UserPermissionManager userPermissionManager;
+    private UserPermissionManager userPermissionManager;
     @Autowired
-    EventManager eventManager;
-
+    private EventManager eventManager;
+    @Autowired
+    private BotManager botManager;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("检查数据库文件");
         systemInitializeProcessor.checkDatabaseFile();
-        log.info("开始初始化插件系统...");
-        pluginManager.initializePlugins();
         log.info("初始化权限系统");
         userPermissionManager.initUserPermission();
         log.info("初始化事件系统");
         eventManager.init();
-        log.info("开始对接 OneBot 事件推送");
-        systemInitializeProcessor.startOneBotEventSession();
+        log.info("开始对接聊天前端事件推送");
+        botManager.startBot();
+        log.info("开始初始化插件系统...");
+        pluginManager.initializePlugins();
     }
 }

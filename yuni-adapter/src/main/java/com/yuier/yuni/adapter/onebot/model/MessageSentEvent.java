@@ -1,4 +1,4 @@
-package com.yuier.yuni.core.model.event;
+package com.yuier.yuni.adapter.onebot.model;
 
 import com.yuier.yuni.core.anno.PolymorphicSubType;
 import com.yuier.yuni.core.model.message.MessageSegment;
@@ -11,19 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Title: MessageEvent
+ * @Title: MessageSentEvent
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event
- * @Date 2025/12/22 5:01
- * @description: OneBot 上报消息事件实体类
+ * @Package com.yuier.yuni.adapter.onebot.model
+ * @Date 2025/12/24 19:52
+ * @description: 发出消息事件建模
  */
 
 @Getter
 @Setter
 @NoArgsConstructor
-@PolymorphicSubType
-public class MessageEvent extends OneBotEvent {
-
+@PolymorphicSubType("message_sent")
+public class MessageSentEvent extends OneBotEvent{
     /**
      * 消息类型。
      * - private 私聊消息

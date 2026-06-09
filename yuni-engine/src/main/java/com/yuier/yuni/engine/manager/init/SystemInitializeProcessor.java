@@ -1,8 +1,6 @@
 package com.yuier.yuni.engine.manager.init;
 
-import com.yuier.yuni.engine.event.EventBridge;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,13 +21,9 @@ public class SystemInitializeProcessor {
 
     @Value("${bot.app.sqlite-db-file}")
     private String sqliteDbFile;
-    @Autowired
-    private EventBridge eventBridge;
 
     public void checkDatabaseFile() throws IOException {
-        // 检查数据库文件是否存在
         File dbFile = new File(sqliteDbFile);
-        // 创建数据库文件
         if (!dbFile.exists()) {
             log.debug("数据库文件不存在，正在创建...");
             if (dbFile.createNewFile()) {
@@ -38,16 +32,5 @@ public class SystemInitializeProcessor {
                 log.error("未找到数据库文件，且创建失败: " + dbFile.getAbsolutePath());
             }
         }
-    }
-
-    /**
-     * 启动 OneBot WS 事件接收
-     * @deprecated WS 事件接收已移至 adapter 模块的 OneBotWsTransport。
-     *             请使用 OneBotBot.connect() 代替。
-     */
-    @Deprecated
-    public void startOneBotEventSession() {
-        // WS 事件接收已由 OneBotWsTransport 自动管理
-        // 此方法保留为空以确保向后兼容
     }
 }

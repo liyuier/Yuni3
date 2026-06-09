@@ -3,7 +3,6 @@ package com.yuier.yuni.core.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.yuier.yuni.core.anno.PolymorphicSubType;
-import com.yuier.yuni.core.model.event.OneBotEvent;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -24,8 +23,8 @@ public class PolymorphicRegistrationProcessor {
     private volatile boolean initialized = false;
 
     public PolymorphicRegistrationProcessor() {
-        // 预注册基类
-        registerPolymorphicBaseClass(OneBotEvent.class);
+        // 预注册已知基类
+        // OneBotEvent 基类在扫描 adapter 模块子类时自动发现
         registerPolymorphicBaseClass(MessageSegment.class);
     }
 
@@ -78,8 +77,8 @@ public class PolymorphicRegistrationProcessor {
         // 规定扫描对象为携带了 @PolymorphicSubType 注解的类
         scanner.addIncludeFilter(new AnnotationTypeFilter(PolymorphicSubType.class));
 
-        // 扫描路径
-        String packageToScan = "com.yuier.yuni.core";
+        // 扫描路径 — 覆盖所有模块以自动发现多态子类型
+        String packageToScan = "com.yuier.yuni";
         // 执行扫描
         java.util.Set<org.springframework.beans.factory.config.BeanDefinition> candidates =
                 scanner.findCandidateComponents(packageToScan);

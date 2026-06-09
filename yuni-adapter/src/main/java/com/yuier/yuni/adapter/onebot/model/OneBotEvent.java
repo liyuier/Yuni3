@@ -1,4 +1,4 @@
-package com.yuier.yuni.core.model.event;
+package com.yuier.yuni.adapter.onebot.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -9,7 +9,7 @@ import lombok.Setter;
 /**
  * @Title: OneBotEvent
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event
+ * @Package com.yuier.yuni.adapter.onebot.model
  * @Date 2025/12/22 4:52
  * @description: OneBot 上报事件抽象类
  */

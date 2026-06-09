@@ -1,4 +1,4 @@
-package com.yuier.yuni.core.model.event.model;
+package com.yuier.yuni.adapter.onebot.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @Title: GroupUploadFile
  * @Author yuier
- * @Package com.yuier.yuni.core.model.event.model
+ * @Package com.yuier.yuni.adapter.onebot.model
  * @Date 2025/12/29 23:44
  * @description:
  */

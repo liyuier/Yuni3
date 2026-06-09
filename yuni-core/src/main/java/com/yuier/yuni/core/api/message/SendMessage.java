@@ -11,16 +11,4 @@ package com.yuier.yuni.core.api.message;
 public abstract class SendMessage {
 
     public abstract Long getMessageId();
-
-    /**
-     * 创建一个占位实例，供向后兼容使用
-     */
-    public static SendMessage dummy() {
-        return new SendMessage() {
-            @Override
-            public Long getMessageId() {
-                return 0L;
-            }
-        };
-    }
 }
