@@ -1,3 +1,6 @@
 [submodule "plugin-repo/fortune"]
 	path = plugin-repo/fortune
 	url = git@github.com:liyuier/yuni-fortune.git
+[submodule "plugin-repo/maimai"]
+	path = plugin-repo/maimai
+	url = git@github.com:liyuier/yuni-maimai.git
