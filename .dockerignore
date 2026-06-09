@@ -1,0 +1,14 @@
+target/
+*.class
+*.jar
+!.mvn/
+.git/
+.idea/
+logs/
+data/
+plugins/
+tmp/
+plugin-repo/
+docs/
+sql/
+*.iml
