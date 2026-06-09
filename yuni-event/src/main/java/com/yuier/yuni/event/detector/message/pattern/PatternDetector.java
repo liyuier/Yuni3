@@ -6,8 +6,8 @@ import com.yuier.yuni.core.event.YuniMessageEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
-import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
+import static com.yuier.yuni.core.constants.YuniMessageType.GROUP_MESSAGE;
+import static com.yuier.yuni.core.constants.YuniMessageType.PRIVATE_MESSAGE;
 
 /**
  * @Title: PatternDetector

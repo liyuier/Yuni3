@@ -9,8 +9,8 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
-import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
+import static com.yuier.yuni.core.constants.YuniMessageType.GROUP_MESSAGE;
+import static com.yuier.yuni.core.constants.YuniMessageType.PRIVATE_MESSAGE;
 import static com.yuier.yuni.core.constants.SystemConstants.UNKNOWN;
 
 /**

@@ -1,4 +1,4 @@
-package com.yuier.yuni.adapter.qq.websocket.module;
+package com.yuier.yuni.adapter.onebot.transport.ws;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

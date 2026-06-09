@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.yuier.yuni.core.constants.OneBotMessageType.GROUP_MESSAGE;
-import static com.yuier.yuni.core.constants.OneBotMessageType.PRIVATE_MESSAGE;
+import static com.yuier.yuni.core.constants.YuniMessageType.GROUP_MESSAGE;
+import static com.yuier.yuni.core.constants.YuniMessageType.PRIVATE_MESSAGE;
 
 /**
  * @Title: ChatSession
@@ -31,7 +31,6 @@ public class ChatSession {
     private boolean longSession;
     private MessageType messageType;
     private YuniBot bot;
-    private String OneBotBaseUrl;
     private Long messageId;
 
     public ChatSession(YuniBot bot) {

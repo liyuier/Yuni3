@@ -9,7 +9,7 @@ import lombok.Setter;
  * @Author yuier
  * @Package com.yuier.yuni.core.model.user
  * @Date 2025/12/22 5:06
- * @description: OneBot 协议中消息事件携带的 sender 字段实体类
+ * @description: 消息事件携带的 sender 字段实体类
  */
 
 @Getter

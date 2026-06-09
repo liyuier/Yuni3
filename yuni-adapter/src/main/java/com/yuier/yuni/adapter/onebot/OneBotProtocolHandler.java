@@ -1,8 +1,7 @@
 package com.yuier.yuni.adapter.onebot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yuier.yuni.adapter.qq.http.OneBotResponse;
-import com.yuier.yuni.adapter.qq.websocket.module.WsRequest;
+import com.yuier.yuni.adapter.onebot.transport.ws.WsRequest;
 import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.adapter.onebot.model.OneBotEvent;
 

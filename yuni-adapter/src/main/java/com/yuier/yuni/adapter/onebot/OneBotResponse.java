@@ -1,4 +1,4 @@
-package com.yuier.yuni.adapter.qq.http;
+package com.yuier.yuni.adapter.onebot;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
