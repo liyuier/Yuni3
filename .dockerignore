@@ -10,5 +10,4 @@ plugins/
 tmp/
 plugin-repo/
 docs/
-sql/
 *.iml
