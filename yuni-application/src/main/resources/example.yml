@@ -44,17 +44,6 @@ mybatis-plus:
 logging:
   config: classpath:log4j2.yml  # 日志配置文件，详见其中内容
 
-onebot:
-  communication:
-    mode: ws  # 与 OneBot 的通信方式，允许 ws（WebSocket）和 http（HTTP），目前对 ws 适配比较完善，建议使用
-    token:
-    ws:
-      url: ws://localhost:3001  #  WebSocket 的连接地址
-      heartbeat-interval: 30000  # 单位毫秒
-      timeout: 3000  # 单位毫秒
-    http:
-      url: http://localhost:3000 #  HTTP 请求的连接地址
-
 bot:
   qq: 123456789  # 机器人的 QQ 号
   nickname: xcw  # 机器人的昵称
@@ -69,3 +58,14 @@ yuni:  # 用于 banner.txt
   name: Yuni
   version: v3.0.0
   description: 基于 Spring Boot 开发的一款聊天机器人
+  protocol:
+    type: onebot           # 协议/平台类型；目前仅支持 onebot。OneBot 协议对接 QQ 平台
+    onebot:
+      mode: ws             # 与 OneBot 前端的通信方式: ws (WebSocket) 或 http
+      token:               # Access Token，需要与 OneBot 前端配置一致
+      ws:
+        url: ws://localhost:3001      # WebSocket 连接地址
+        heartbeat-interval: 30000     # 心跳间隔，单位毫秒
+        timeout: 3000                 # 请求超时，单位毫秒
+      http:
+        url: http://localhost:3000    # HTTP API 地址
