@@ -22,7 +22,7 @@ public class DefaultYuniMetaDetector implements YuniMetaDetector {
     @Override
     public Boolean match(YuniMetaEvent event) {
         yuniMetaEvent = matcher.match(event);
-        event.setYuniMetaEvent(yuniMetaEvent);
+        event.setMatchedEvent(yuniMetaEvent);
         return yuniMetaEvent != null;
     }
 

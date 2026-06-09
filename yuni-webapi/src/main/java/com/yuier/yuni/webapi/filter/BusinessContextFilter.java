@@ -1,9 +1,7 @@
 package com.yuier.yuni.webapi.filter;
 
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +20,6 @@ import java.io.IOException;
 @Slf4j
 public class BusinessContextFilter implements Filter {
 
-    @Autowired
-    OneBotAdapter adapter;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

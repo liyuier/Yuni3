@@ -53,7 +53,7 @@ public class UserPermissionManager {
     }
 
     public UserPermission getUserPermission(YuniNoticeEvent event, String pluginId) {
-        UserPermission userPermissionException = getUserPermissionException(event.getRawNoticeEvent().getGroupId(), pluginId, event.getRawNoticeEvent().getUserId());
+        UserPermission userPermissionException = getUserPermissionException(event.getGroupId(), pluginId, event.getUserId());
         return userPermissionException != null ? userPermissionException : UserPermission.USER;
     }
 

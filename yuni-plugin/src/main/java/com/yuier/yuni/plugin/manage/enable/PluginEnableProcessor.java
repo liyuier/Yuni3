@@ -43,7 +43,7 @@ public class PluginEnableProcessor {
     }
 
     public boolean isPluginEnabled(YuniNoticeEvent event, PassivePluginInstance instance) {
-        Boolean pluginEnabledException = getPluginEnabledException(event.getRawNoticeEvent().getGroupId(), instance.getPluginFullId());
+        Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginFullId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }

@@ -1,6 +1,5 @@
 package com.yuier.yuni.event.context.meta;
 
-import com.yuier.yuni.core.model.event.MetaEvent;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,12 +16,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class YuniMetaEvent extends SpringYuniEvent {
 
-    private MetaEvent rawMetaEvent;
-    private YuniMetaEvent yuniMetaEvent;
-
     private String metaEventType;
 
     private String subType;
+
+    /** 匹配到的具体元事件子类型（由 detector 设置） */
+    private YuniMetaEvent matchedEvent;
 
     @Override
     public String toLogString() {

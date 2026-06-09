@@ -1,6 +1,5 @@
 package com.yuier.yuni.event.context.request;
 
-import com.yuier.yuni.core.model.event.RequestEvent;
 import com.yuier.yuni.event.context.SpringYuniEvent;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class YuniRequestEvent extends SpringYuniEvent {
 
-    private RequestEvent rawRequestEvent;
-    private YuniRequestEvent yuniRequestEvent;
-
-
     /**
      * 请求类型
      *   - friend 添加好友请求
@@ -36,6 +31,12 @@ public class YuniRequestEvent extends SpringYuniEvent {
 
     // 请求 flag，在调用处理请求的 API 时需要
     private String flag;
+
+    // 群号（加群请求时）
+    private Long groupId;
+
+    /** 匹配到的具体请求事件子类型（由 detector 设置） */
+    private YuniRequestEvent matchedEvent;
 
     @Override
     public String toLogString() {

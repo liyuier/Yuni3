@@ -1,20 +1,13 @@
 package com.yuier.yuni.engine.manager.init;
 
-import com.yuier.yuni.adapter.config.OneBotCommunicate;
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
-import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
-import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.engine.event.EventBridge;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-
-import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBOT_EVENT_SOCKET_ID;
 
 /**
  * @Title: SystemInitializeProcessor
@@ -30,14 +23,6 @@ public class SystemInitializeProcessor {
 
     @Value("${bot.app.sqlite-db-file}")
     private String sqliteDbFile;
-    @Value("${onebot.communication.mode}")
-    private String mode;
-    @Autowired
-    private OneBotCommunicate config;
-    @Autowired
-    private YuniWebSocketManager manager;
-    @Autowired
-    OneBotAdapter adapter;
     @Autowired
     private EventBridge eventBridge;
 
@@ -55,23 +40,14 @@ public class SystemInitializeProcessor {
         }
     }
 
+    /**
+     * 启动 OneBot WS 事件接收
+     * @deprecated WS 事件接收已移至 adapter 模块的 OneBotWsTransport。
+     *             请使用 OneBotBot.connect() 代替。
+     */
+    @Deprecated
     public void startOneBotEventSession() {
-        if ("ws".equals(mode)) {
-            // 建立到 /event 的连接
-            Request eventRequest = new Request.Builder()
-                    .url(config.getWsUrl() + "/event")
-                    .addHeader("Authorization", "Bearer " + config.getToken())
-                    .build();
-            OneBotEventWsProxyListener eventProxyListener = new OneBotEventWsProxyListener(
-                    adapter,
-                    eventBridge,
-                    config,
-                    manager
-            );
-            YuniWebSocketConnector eventConnector = new YuniWebSocketConnector(eventRequest, eventProxyListener);
-            eventConnector.setTimeOutInterval(config.getWsTimeout());
-            eventConnector.setHeartBeatInterval(config.getWsHeartbeatInterval());
-            manager.startNewConnection(ONEBOT_EVENT_SOCKET_ID, eventConnector);
-        }
+        // WS 事件接收已由 OneBotWsTransport 自动管理
+        // 此方法保留为空以确保向后兼容
     }
 }

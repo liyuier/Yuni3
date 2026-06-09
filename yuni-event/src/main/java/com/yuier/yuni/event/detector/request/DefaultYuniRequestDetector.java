@@ -21,7 +21,7 @@ public class DefaultYuniRequestDetector implements YuniRequestDetector {
     @Override
     public Boolean match(YuniRequestEvent event) {
         yuniRequestMatcher = matcher.match(event);
-        event.setYuniRequestEvent(yuniRequestMatcher);
+        event.setMatchedEvent(yuniRequestMatcher);
         return null;
     }
 

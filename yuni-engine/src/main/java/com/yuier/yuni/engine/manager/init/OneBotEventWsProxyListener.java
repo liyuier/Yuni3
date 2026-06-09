@@ -22,7 +22,10 @@ import static com.yuier.yuni.adapter.qq.websocket.OneBotSessionIdConstance.ONEBO
  * @Package com.yuier.yuni.engine.manager.init
  * @Date 2025/12/31 8:07
  * @description: 事件监听器代理
+ * @deprecated 已由 adapter 模块的 OneBotWsTransport 内部 EventWsListener 替代。
+ *             WS 事件接收逻辑不再散落在 engine 模块。
  */
+@Deprecated
 
 @Slf4j
 @Data

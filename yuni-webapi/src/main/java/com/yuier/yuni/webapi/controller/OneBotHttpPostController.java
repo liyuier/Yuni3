@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @Package com.yuier.yuni.webapi.controller
  * @Date 2025/12/22 2:06
  * @description: OneBot 采用 HTTP POST 上报方式的接收处
+ * @deprecated 已由 adapter 模块中的 OneBotHttpEventController 替代。
+ *             新 Controller 直接通过 OneBotHttpTransport 将事件推入 OneBotBot 回调链，
+ *             无需经过 engine 的 EventBridge 转发。
  */
-
+@Deprecated
 @RestController
 @RequestMapping("/")
 public class OneBotHttpPostController {

@@ -29,7 +29,7 @@ public class OneBotMessageForward extends PatternPlugin {
         OneBotSerialization serialization = PluginUtils.getBean(OneBotSerialization.class);
         // 转发消息
         try {
-            String messageEventJson = serialization.serialize(eventContext.getMessageEvent());
+            String messageEventJson = eventContext.getRawJson();
             maimaiAdapterConnector.send(messageEventJson);
         } catch (Exception e) {
             throw new RuntimeException(e);

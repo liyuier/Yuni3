@@ -1,7 +1,5 @@
 package com.yuier.yuni.engine.event;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
 import com.yuier.yuni.event.context.YuniMessageEvent;
 import com.yuier.yuni.event.context.YuniMessageSentEvent;
 import com.yuier.yuni.event.context.meta.YuniMetaEvent;
@@ -26,10 +24,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class YuniEventDispatcher {
 
-    @Autowired
-    OneBotAdapter adapter;
-    @Autowired
-    ObjectMapper mapper;
     @Autowired
     PluginManager pluginManager;
     @Autowired

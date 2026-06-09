@@ -1,6 +1,6 @@
 package com.yuier.yuni.event.util;
 
-import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.api.group.GroupInfo;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.api.user.GetStrangerInfo;
@@ -40,7 +40,7 @@ public class EventLogUtil {
             receiveDescription = LogStringUtil.buildPurpleLog("群->收");
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
+            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
             groupInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]";
             String card = event.getSender().getCard();
             senderName = card != null && !card.isEmpty() ? card : senderName;
@@ -64,7 +64,7 @@ public class EventLogUtil {
             receiveDescription = "群->收";
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
+            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
             groupInfoLog = "[" + groupName + "(" + groupIdStr + ")]";
             String card = event.getSender().getCard();
             senderName = card != null && !card.isEmpty() ? card : senderName;
@@ -77,8 +77,8 @@ public class EventLogUtil {
         return LogStringUtil.escapeString(logStr);
     }
 
-    private static OneBotAdapter getOneBotAdapter() {
-        return SpringContextUtil.getBean(OneBotAdapter.class);
+    private static YuniBot getYuniBot() {
+        return SpringContextUtil.getBean(YuniBot.class);
     }
 
     /**
@@ -88,7 +88,7 @@ public class EventLogUtil {
      * @return 群成员信息
      */
     public static GroupMemberInfo getGroupMemberInfo(Long groupId, Long userId) {
-        return getOneBotAdapter().getGroupMemberInfo(groupId, userId, true);
+        return getYuniBot().getGroupMemberInfo(String.valueOf(groupId), String.valueOf(userId)).orElse(null);
     }
 
     /**
@@ -103,7 +103,7 @@ public class EventLogUtil {
     }
 
     public static GroupInfo getGroupInfo(Long groupId) {
-        return getOneBotAdapter().getGroupInfo(groupId, true);
+        return getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null);
     }
 
     public static String getGroupName(Long groupId) {
@@ -143,7 +143,7 @@ public class EventLogUtil {
         if (userId.equals(getBotId())) {
             return botNameAndIdLogString();
         }
-        GetStrangerInfo strangerInfo = getOneBotAdapter().getStrangerInfo(userId, true);
+        GetStrangerInfo strangerInfo = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null);
         return "好友: " + strangerInfo.getNickname() + "(" + userId + ") ";
     }
 
@@ -169,13 +169,13 @@ public class EventLogUtil {
             sendDescription = LogStringUtil.buildPurpleLog("发->群");
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
+            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
             targetInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]: ";
         } else if (event.isPrivate()) {
             sendDescription = LogStringUtil.buildPurpleLog("发->私");
             Long userId = event.getUserId();
             String userIdStr = String.valueOf(userId);
-            String userName = getOneBotAdapter().getStrangerInfo(userId, true).getNickname();
+            String userName = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null).getNickname();
             targetInfoLog = "[" + LogStringUtil.buildBrightRedLog(userName) + "(" + userIdStr + ")]: ";
         }
         messageLog = LogStringUtil.buildBrightBlueLog(event.getMessageChain().toString());
@@ -192,13 +192,13 @@ public class EventLogUtil {
             sendDescription = "发->群";
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getOneBotAdapter().getGroupInfo(groupId, true).getGroupName();
+            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
             targetInfoLog = "[" + groupName + "(" + groupIdStr + ")]: ";
         } else if (event.isPrivate()) {
             sendDescription = "发->私";
             Long userId = event.getUserId();
             String userIdStr = String.valueOf(userId);
-            String userName = getOneBotAdapter().getStrangerInfo(userId, true).getNickname();
+            String userName = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null).getNickname();
             targetInfoLog = "[" + userName + "(" + userIdStr + ")]: ";
         }
         messageLog = event.getMessageChain().toString();

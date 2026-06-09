@@ -158,7 +158,7 @@ public class PassivePluginMatcher {
                 CompletableFuture.runAsync(() -> {
                     // 感觉有点屎山，但是没办法了，先这样吧
                     // 匹配后的 event 中保存了实际的通知事件类型
-                    YuniNoticeEvent yuniNoticeEvent = event.getYuniNoticeEvent();
+                    YuniNoticeEvent yuniNoticeEvent = event.getMatchedEvent();
                     // 打个日志先
                     log.info(yuniNoticeEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
@@ -200,7 +200,7 @@ public class PassivePluginMatcher {
                 matched.set(true);
                 // 跑一下
                 CompletableFuture.runAsync(() -> {
-                    YuniRequestEvent yuniRequestEvent = event.getYuniRequestEvent();
+                    YuniRequestEvent yuniRequestEvent = event.getMatchedEvent();
                     // 打个日志先
                     log.info(yuniRequestEvent.toLogString());
                     log.info("匹配到插件: {}", instance.getPluginMetadata().getName());
@@ -230,7 +230,7 @@ public class PassivePluginMatcher {
             if (detector.match(event)) {
                 matched.set(true);
                 CompletableFuture.runAsync(() -> {
-                    YuniMetaEvent yuniMetaEvent = event.getYuniMetaEvent();
+                    YuniMetaEvent yuniMetaEvent = event.getMatchedEvent();
                     // 打个日志先
                     log.debug(yuniMetaEvent.toLogString());
                     log.debug("匹配到插件: {}", instance.getPluginMetadata().getName());

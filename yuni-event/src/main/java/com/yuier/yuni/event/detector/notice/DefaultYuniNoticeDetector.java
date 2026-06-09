@@ -22,7 +22,7 @@ public class DefaultYuniNoticeDetector implements YuniNoticeDetector {
     @Override
     public Boolean match(YuniNoticeEvent event) {
         yuniNoticeMatcher = matcher.match(event);
-        event.setYuniNoticeEvent(yuniNoticeMatcher);
+        event.setMatchedEvent(yuniNoticeMatcher);
         return yuniNoticeMatcher != null;
     }
 

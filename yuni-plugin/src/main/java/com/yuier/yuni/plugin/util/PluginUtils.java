@@ -3,6 +3,8 @@ package com.yuier.yuni.plugin.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.adapter.qq.OneBotAdapter;
+import com.yuier.yuni.core.bot.MessageTarget;
+import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.api.group.GroupMemberInfo;
 import com.yuier.yuni.core.model.bot.Bot;
 import com.yuier.yuni.core.model.bot.BotApp;
@@ -46,9 +48,19 @@ public class PluginUtils {
     /**
      * 获取 OneBotAdapter
      * @return OneBotAdapter
+     * @deprecated 使用 {@link #getYuniBot()} 代替
      */
+    @Deprecated
     public static OneBotAdapter getOneBotAdapter() {
         return SpringContextUtil.getBean(OneBotAdapter.class);
+    }
+
+    /**
+     * 获取 YuniBot 实例
+     * @return YuniBot
+     */
+    public static YuniBot getYuniBot() {
+        return SpringContextUtil.getBean(YuniBot.class);
     }
 
     /**
@@ -198,12 +210,12 @@ public class PluginUtils {
 
     // 发送群消息
     public static void sendGroupMessage(long groupId, MessageChain message) {
-        getOneBotAdapter().sendGroupMessage(groupId, message);
+        getYuniBot().sendMessage(MessageTarget.group(groupId), message);
     }
 
     // 发送私聊消息
     public static void sendPrivateMessage(long userId, MessageChain message) {
-        getOneBotAdapter().sendPrivateMessage(userId, message);
+        getYuniBot().sendMessage(MessageTarget.privateChat(userId), message);
     }
 
     // 获取数据库连接 URL
@@ -244,7 +256,8 @@ public class PluginUtils {
     }
 
     public static String getGroupMemberName(long groupId, long userId) {
-        GroupMemberInfo groupMemberInfo = getOneBotAdapter().getGroupMemberInfo(groupId, userId, true);
+        GroupMemberInfo groupMemberInfo = getYuniBot().getGroupMemberInfo(String.valueOf(groupId), String.valueOf(userId)).orElse(null);
+        if (groupMemberInfo == null) return String.valueOf(userId);
         return groupMemberInfo.getCard() != null && !groupMemberInfo.getCard().isEmpty() ? groupMemberInfo.getCard() : groupMemberInfo.getNickname();
     }
 

@@ -1,7 +1,5 @@
 package com.yuier.yuni.event.context;
 
-import com.yuier.yuni.core.model.event.MessageEvent;
-import com.yuier.yuni.core.model.event.MessageSentEvent;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;
@@ -94,8 +92,6 @@ public class YuniMessageSentEvent extends SpringYuniEvent{
 
     // 命令匹配结果
     private CommandMatched commandMatched;
-
-    private MessageSentEvent messageSentEvent;
 
     /**
      * 纯日志字符串
