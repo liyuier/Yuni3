@@ -27,6 +27,9 @@ public class YuniWebSocketListener extends WebSocketListener {
 
     private YuniBusinessProxyListener proxyListener;
 
+    /** 关联的 connector，用于同步连接健康状态。可为 null（兼容旧代码）。 */
+    private YuniWebSocketConnector connector;
+
     /**
      * WebSocket 连接完全关闭
      * @param webSocket  已关闭的 WebSocket 连接对象。
@@ -35,6 +38,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
+        if (connector != null) connector.onConnectionFailed();
         log.debug("[YuniWebSocketListener.onClosed]连接已关闭，状态码: {}, 原因: {}", code, reason);
         proxyListener.onClosed(webSocket, code, reason);
     }
@@ -59,6 +63,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
+        if (connector != null) connector.onConnectionFailed();
         log.debug("[YuniWebSocketListener.onFailure]连接发生错误，服务器响应: {}, 错误堆栈: ", response);
         t.printStackTrace();
         proxyListener.onFailure(webSocket, t, response);
@@ -93,6 +98,7 @@ public class YuniWebSocketListener extends WebSocketListener {
      */
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
+        if (connector != null) connector.onConnectionOpened();
         log.debug("[YuniWebSocketListener.onOpen]连接成功，服务器响应: {}", response);
         proxyListener.onOpen(webSocket, response);
     }

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @Title: YuniWebSocketConnector
@@ -36,10 +37,27 @@ public class YuniWebSocketConnector {
     private int timeOutInterval = 3000;  // 默认超时时间为 3 秒
     private int heartBeatInterval = 30000;  // 默认心跳间隔为 30 秒
 
+    /** 连接健康标志，由 YuniWebSocketListener 在 onOpen/onClosed/onFailure 中更新 */
+    private final AtomicBoolean connectionHealthy = new AtomicBoolean(false);
+
     public YuniWebSocketConnector(Request request, YuniBusinessProxyListener proxyListener) {
         this.client = new OkHttpClient();
         this.request = request;
-        this.listener = new YuniWebSocketListener(proxyListener);
+        this.listener = new YuniWebSocketListener(proxyListener, this);
+    }
+
+    /**
+     * 由 YuniWebSocketListener 在 onOpen 回调，标记连接健康。
+     */
+    public void onConnectionOpened() {
+        connectionHealthy.set(true);
+    }
+
+    /**
+     * 由 YuniWebSocketListener 在 onClosed / onFailure 回调，标记连接不健康。
+     */
+    public void onConnectionFailed() {
+        connectionHealthy.set(false);
     }
 
     public WebSocket startConnection() {
@@ -98,6 +116,10 @@ public class YuniWebSocketConnector {
             if (cause instanceof ConnectionLostException) {
                 throw (ConnectionLostException) cause;
             }
+            // 二次检查连接健康：覆盖 onFailure 在超时和此 catch 之间的窄窗口
+            if (!connectionHealthy.get()) {
+                throw new ConnectionLostException("连接已断开: " + cause.getMessage());
+            }
             return "";
         }
     }
@@ -109,8 +131,15 @@ public class YuniWebSocketConnector {
                 if (wsRequestModel.getFuture().isDone()){  // 这玩意会在 listener 里处理
                     return;
                 }
-                // 如果到心跳间隔时间发现 future 没有完成，则认为请求超时，抛出异常，移除该 future
-                wsRequestModel.getFuture().completeExceptionally(new RuntimeException("一条请求超时，请求内容为: " + wsRequestModel.getMessage()));
+                // 连接不健康时抛 ConnectionLostException，触发上层重连重试；
+                // 连接健康时抛普通 RuntimeException，由调用方自行处理
+                if (!connectionHealthy.get()) {
+                    wsRequestModel.getFuture().completeExceptionally(
+                            new ConnectionLostException("连接已断开，请求超时: " + wsRequestModel.getMessage()));
+                } else {
+                    wsRequestModel.getFuture().completeExceptionally(
+                            new RuntimeException("一条请求超时，请求内容为: " + wsRequestModel.getMessage()));
+                }
                 requestModelMap.remove(echoFlag);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

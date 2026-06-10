@@ -106,24 +106,77 @@ public class OneBotWsTransport implements OneBotTransport {
         String requestJson = buildRequestJson(action, params);
         String echo = extractEcho(requestJson);
         try {
-            return apiConnector.sendAndReceive(requestJson, echo);
-        } catch (ConnectionLostException e) {
-            log.warn("[OneBotWsTransport] 请求因断联失败，等待重连后重试: action={}", action);
-            try {
-                // 等待重连完成（超时时间从配置读取）
-                int waitSeconds = properties.getWsReconnectWaitSeconds();
-                if (reconnectLatch.await(waitSeconds, TimeUnit.SECONDS)) {
-                    log.info("[OneBotWsTransport] 重连完成，重试请求: action={}", action);
-                    // 重新构建请求（新 echo，避免与旧请求的 echo 冲突）
-                    requestJson = buildRequestJson(action, params);
-                    echo = extractEcho(requestJson);
-                    return apiConnector.sendAndReceive(requestJson, echo);
-                }
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
+            String result = apiConnector.sendAndReceive(requestJson, echo);
+            if (result != null && !result.isEmpty()) {
+                return result;
             }
-            throw new RuntimeException("重连超时或中断，请求失败: action=" + action, e);
+            // 空响应：超时总是先于 onFailure 到达，无法在 sendAndReceive 层区分
+            //   A. 连接已断但 onFailure 尚未触发
+            //   B. 连接正常但服务端响应慢
+            // 短暂等待 onFailure 信号来区分这两种情况
+            log.warn("[OneBotWsTransport] 请求返回空响应，等待连接状态明确: action={}", action);
+            return handleEmptyResponse(action, params);
+        } catch (ConnectionLostException e) {
+            // onFailure 先于超时到达（理想路径，保留）
+            log.warn("[OneBotWsTransport] 请求因断联失败，等待重连后重试: action={}", action);
+            return waitForReconnectAndRetry(action, params);
         }
+    }
+
+    /**
+     * 处理空响应：短暂等待 onFailure 信号来区分真断联和真超时。
+     * <p>
+     * 等待一个短窗口（500ms）让 onFailure 有机会设置 reconnectLatch：
+     * - 窗口内重连完成 → 立即重试
+     * - 窗口内 onFailure 触发但重连未完成 → 继续等待
+     * - 窗口内无事发生且连接标记为健康 → 真正的服务端超时，抛异常让业务层重试
+     */
+    private String handleEmptyResponse(String action, Map<String, Object> params) {
+        try {
+            // 短窗口：给 onFailure 触发 + onOpen 重连的机会
+            if (reconnectLatch.await(500, TimeUnit.MILLISECONDS)) {
+                log.info("[OneBotWsTransport] 重连已完成，重试请求: action={}", action);
+                return buildAndSend(action, params);
+            }
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("等待重连被中断: action=" + action, ie);
+        }
+
+        // 500ms 后检查是否至少已触发 onFailure
+        if (reconnectLatch.getCount() > 0) {
+            log.info("[OneBotWsTransport] 重连进行中，等待完成: action={}", action);
+            return waitForReconnectAndRetry(action, params);
+        }
+
+        if (!apiConnected.get()) {
+            log.warn("[OneBotWsTransport] 连接已断开，等待重连: action={}", action);
+            return waitForReconnectAndRetry(action, params);
+        }
+
+        // 连接正常 → 真正的服务端超时，抛异常让业务层 executeWithRetry 处理
+        throw new RuntimeException("请求超时（连接正常）: action=" + action);
+    }
+
+    /** 构建请求并发送，不含重试逻辑 */
+    private String buildAndSend(String action, Map<String, Object> params) {
+        String requestJson = buildRequestJson(action, params);
+        String echo = extractEcho(requestJson);
+        return apiConnector.sendAndReceive(requestJson, echo);
+    }
+
+    /** 等待重连完成，然后重试请求 */
+    private String waitForReconnectAndRetry(String action, Map<String, Object> params) {
+        try {
+            int waitSeconds = properties.getWsReconnectWaitSeconds();
+            if (reconnectLatch.await(waitSeconds, TimeUnit.SECONDS)) {
+                log.info("[OneBotWsTransport] 重连完成，重试请求: action={}", action);
+                return buildAndSend(action, params);
+            }
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
+        throw new RuntimeException("重连超时或中断，请求失败: action=" + action);
     }
 
     @Override

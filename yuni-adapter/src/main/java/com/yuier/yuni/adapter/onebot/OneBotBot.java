@@ -335,6 +335,11 @@ public class OneBotBot implements YuniBot {
 
     @SuppressWarnings("unchecked")
     private <T> T extractResponseData(String responseJson, Class<T> clazz) {
+        // 防御：空响应不应进入 JSON 解析，避免无意义的 MismatchedInputException
+        if (responseJson == null || responseJson.isBlank()) {
+            log.warn("[OneBotBot] 响应为空，无法解析为: {}", clazz.getSimpleName());
+            return null;
+        }
         try {
             Map<String, Object> responseMap = jsonCodec.fromJson(responseJson, Map.class);
             Object data = responseMap.get("data");
@@ -348,6 +353,10 @@ public class OneBotBot implements YuniBot {
 
     @SuppressWarnings("unchecked")
     private <T> T extractResponseDataAsArray(String responseJson, Class<T> arrayClass) {
+        if (responseJson == null || responseJson.isBlank()) {
+            log.warn("[OneBotBot] 响应为空，无法解析为: {}", arrayClass.getSimpleName());
+            return null;
+        }
         try {
             Map<String, Object> responseMap = jsonCodec.fromJson(responseJson, Map.class);
             Object data = responseMap.get("data");
