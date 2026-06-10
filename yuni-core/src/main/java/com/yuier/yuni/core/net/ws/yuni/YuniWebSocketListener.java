@@ -64,8 +64,7 @@ public class YuniWebSocketListener extends WebSocketListener {
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
         if (connector != null) connector.onConnectionFailed();
-        log.debug("[YuniWebSocketListener.onFailure]连接发生错误，服务器响应: {}, 错误堆栈: ", response);
-        t.printStackTrace();
+        log.debug("[YuniWebSocketListener.onFailure] {}: {}", t.getClass().getSimpleName(), t.getMessage());
         proxyListener.onFailure(webSocket, t, response);
     }
 

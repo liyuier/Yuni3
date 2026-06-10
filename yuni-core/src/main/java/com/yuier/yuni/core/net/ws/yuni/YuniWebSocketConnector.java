@@ -111,7 +111,7 @@ public class YuniWebSocketConnector {
             return future.join();
         } catch (CompletionException e) {
             Throwable cause = e.getCause();
-            log.info("[YuniWebSocketConnector.sendAndReceive]请求失败，失败消息: {}", cause.getMessage());
+            log.debug("[YuniWebSocketConnector.sendAndReceive]请求失败，失败消息: {}", cause.getMessage());
             // ConnectionLostException 向上传播，让上层有机会重试
             if (cause instanceof ConnectionLostException) {
                 throw (ConnectionLostException) cause;

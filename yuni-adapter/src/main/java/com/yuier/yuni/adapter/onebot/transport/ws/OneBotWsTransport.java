@@ -297,8 +297,7 @@ public class OneBotWsTransport implements OneBotTransport {
 
         @Override
         public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-            log.error("[OneBotWsTransport] /api 连接错误: {}", t.getMessage());
-            t.printStackTrace();
+            log.error("[OneBotWsTransport] /api 连接错误: {}: {}", t.getClass().getSimpleName(), t.getMessage());
             apiConnected.set(false);
             // 立即失败所有等待中的请求，避免它们空等超时
             apiConnector.failAllPending("connection failure: " + t.getMessage());
@@ -346,8 +345,7 @@ public class OneBotWsTransport implements OneBotTransport {
 
         @Override
         public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-            log.error("[OneBotWsTransport] /event 连接错误: {}", t.getMessage());
-            t.printStackTrace();
+            log.warn("[OneBotWsTransport] /event 连接错误: {}: {}", t.getClass().getSimpleName(), t.getMessage());
             wsManager.restartConnection(EVENT_SOCKET_ID);
         }
     }
