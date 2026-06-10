@@ -114,11 +114,11 @@ public class OneBotWsTransport implements OneBotTransport {
             //   A. 连接已断但 onFailure 尚未触发
             //   B. 连接正常但服务端响应慢
             // 短暂等待 onFailure 信号来区分这两种情况
-            log.warn("[OneBotWsTransport] 请求返回空响应，等待连接状态明确: action={}", action);
+            log.debug("[OneBotWsTransport] 请求返回空响应，等待连接状态明确: action={}", action);
             return handleEmptyResponse(action, params);
         } catch (ConnectionLostException e) {
             // onFailure 先于超时到达（理想路径，保留）
-            log.warn("[OneBotWsTransport] 请求因断联失败，等待重连后重试: action={}", action);
+            log.debug("[OneBotWsTransport] 请求因断联失败，等待重连后重试: action={}", action);
             return waitForReconnectAndRetry(action, params);
         }
     }
@@ -135,7 +135,7 @@ public class OneBotWsTransport implements OneBotTransport {
         try {
             // 短窗口：给 onFailure 触发 + onOpen 重连的机会
             if (reconnectLatch.await(500, TimeUnit.MILLISECONDS)) {
-                log.info("[OneBotWsTransport] 重连已完成，重试请求: action={}", action);
+                log.debug("[OneBotWsTransport] 重连已完成，重试请求: action={}", action);
                 return buildAndSend(action, params);
             }
         } catch (InterruptedException ie) {
@@ -145,12 +145,12 @@ public class OneBotWsTransport implements OneBotTransport {
 
         // 500ms 后检查是否至少已触发 onFailure
         if (reconnectLatch.getCount() > 0) {
-            log.info("[OneBotWsTransport] 重连进行中，等待完成: action={}", action);
+            log.debug("[OneBotWsTransport] 重连进行中，等待完成: action={}", action);
             return waitForReconnectAndRetry(action, params);
         }
 
         if (!apiConnected.get()) {
-            log.warn("[OneBotWsTransport] 连接已断开，等待重连: action={}", action);
+            log.debug("[OneBotWsTransport] 连接已断开，等待重连: action={}", action);
             return waitForReconnectAndRetry(action, params);
         }
 
@@ -170,7 +170,7 @@ public class OneBotWsTransport implements OneBotTransport {
         try {
             int waitSeconds = properties.getWsReconnectWaitSeconds();
             if (reconnectLatch.await(waitSeconds, TimeUnit.SECONDS)) {
-                log.info("[OneBotWsTransport] 重连完成，重试请求: action={}", action);
+                log.debug("[OneBotWsTransport] 重连完成，重试请求: action={}", action);
                 return buildAndSend(action, params);
             }
         } catch (InterruptedException ie) {
