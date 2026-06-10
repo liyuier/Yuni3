@@ -86,6 +86,14 @@ public interface YuniBot {
     Optional<BotGroupInfo> getGroupInfo(String groupId);
 
     /**
+     * 获取群信息（可控制是否使用缓存）
+     * @param groupId 群号
+     * @param noCache true=穿透缓存获取最新数据, false=允许使用缓存
+     * @return 群信息
+     */
+    Optional<BotGroupInfo> getGroupInfo(String groupId, boolean noCache);
+
+    /**
      * 获取群成员信息
      * @param groupId 群号
      * @param userId 用户账号
@@ -94,11 +102,28 @@ public interface YuniBot {
     Optional<BotGroupMemberInfo> getGroupMemberInfo(String groupId, String userId);
 
     /**
+     * 获取群成员信息（可控制是否使用缓存）
+     * @param groupId 群号
+     * @param userId 用户账号
+     * @param noCache true=穿透缓存获取最新数据, false=允许使用缓存
+     * @return 群成员信息
+     */
+    Optional<BotGroupMemberInfo> getGroupMemberInfo(String groupId, String userId, boolean noCache);
+
+    /**
      * 获取用户信息
      * @param userId 用户账号
      * @return 用户信息
      */
     Optional<BotUserInfo> getUserInfo(String userId);
+
+    /**
+     * 获取用户信息（可控制是否使用缓存）
+     * @param userId 用户账号
+     * @param noCache true=穿透缓存获取最新数据, false=允许使用缓存
+     * @return 用户信息
+     */
+    Optional<BotUserInfo> getUserInfo(String userId, boolean noCache);
 
     /**
      * 获取历史消息

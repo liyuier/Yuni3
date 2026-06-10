@@ -30,14 +30,12 @@ public class OneBotHttpTransport implements OneBotTransport {
 
     private final OneBotProperties properties;
     private final RestTemplate restTemplate;
-    private final JsonCodec jsonCodec;
 
     /** 事件回调（由 OneBotBot 注入） */
     private Consumer<String> eventCallback;
 
-    public OneBotHttpTransport(OneBotProperties properties, JsonCodec jsonCodec) {
+    public OneBotHttpTransport(OneBotProperties properties) {
         this.properties = properties;
-        this.jsonCodec = jsonCodec;
         this.restTemplate = new RestTemplate();
     }
 

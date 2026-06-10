@@ -139,7 +139,6 @@ public class OneBotWsTransport implements OneBotTransport {
     // ==================== 连接管理 ====================
 
     private void startApiSession() {
-        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(properties.getWsUrl() + "/api")
                 .addHeader("Authorization", "Bearer " + properties.getToken())
@@ -153,7 +152,6 @@ public class OneBotWsTransport implements OneBotTransport {
     }
 
     private void startEventSession() {
-        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(properties.getWsUrl() + "/event")
                 .addHeader("Authorization", "Bearer " + properties.getToken())

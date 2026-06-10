@@ -42,8 +42,8 @@ public class OneBotAdapterAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "yuni.protocol.onebot.mode", havingValue = "http", matchIfMissing = true)
-    public OneBotHttpTransport oneBotHttpTransport(OneBotProperties properties, JsonCodec jsonCodec) {
-        return new OneBotHttpTransport(properties, jsonCodec);
+    public OneBotHttpTransport oneBotHttpTransport(OneBotProperties properties) {
+        return new OneBotHttpTransport(properties);
     }
 
     @Bean
