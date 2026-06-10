@@ -120,19 +120,21 @@ public class OneBotBot implements YuniBot {
     @Override
     public MessageSentResult sendMessage(MessageTarget target, MessageChain message) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("message", message.getContent());
-            if (target.getTargetType() == MessageTarget.TargetType.GROUP) {
-                params.put("group_id", target.getTargetId());
-                String responseJson = transport.sendApiRequest("send_group_msg", params);
-                SendGroupMessage result = extractResponseData(responseJson, SendGroupMessage.class);
-                return MessageSentResult.ok(String.valueOf(result.getMessageId()));
-            } else {
-                params.put("user_id", target.getTargetId());
-                String responseJson = transport.sendApiRequest("send_private_msg", params);
-                SendPrivateMessage result = extractResponseData(responseJson, SendPrivateMessage.class);
-                return MessageSentResult.ok(String.valueOf(result.getMessageId()));
-            }
+            return executeWithRetry(() -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("message", message.getContent());
+                if (target.getTargetType() == MessageTarget.TargetType.GROUP) {
+                    params.put("group_id", target.getTargetId());
+                    String responseJson = transport.sendApiRequest("send_group_msg", params);
+                    SendGroupMessage result = extractResponseData(responseJson, SendGroupMessage.class);
+                    return MessageSentResult.ok(String.valueOf(result.getMessageId()));
+                } else {
+                    params.put("user_id", target.getTargetId());
+                    String responseJson = transport.sendApiRequest("send_private_msg", params);
+                    SendPrivateMessage result = extractResponseData(responseJson, SendPrivateMessage.class);
+                    return MessageSentResult.ok(String.valueOf(result.getMessageId()));
+                }
+            }, "sendMessage", properties.getMaxRetries());
         } catch (Exception e) {
             log.error("[OneBotBot] 消息发送失败", e);
             return MessageSentResult.fail(e.getMessage());
@@ -279,6 +281,39 @@ public class OneBotBot implements YuniBot {
         b.setGroupId(m.getGroupId());
         b.setMessageType(m.getMessageType());
         return b;
+    }
+
+    // ==================== 重试工具 ====================
+
+    /**
+     * 对可能因断联/超时等瞬时故障失败的操作进行重试。
+     * 传输层（OneBotWsTransport）已处理一次断联重试；
+     * 此处作为业务层的兜底，处理剩余的瞬时失败。
+     */
+    private <T> T executeWithRetry(RetryableOperation<T> operation, String actionName, int maxRetries) {
+        for (int attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                return operation.execute();
+            } catch (Exception e) {
+                if (attempt == maxRetries) {
+                    log.error("[OneBotBot] {} 失败，已重试{}次: {}", actionName, maxRetries, e.getMessage());
+                    throw new RuntimeException("已到达最大重试次数: " + maxRetries, e);
+                }
+                log.warn("[OneBotBot] {} 失败，第{}/{}次重试: {}", actionName, attempt + 1, maxRetries, e.getMessage());
+                try {
+                    Thread.sleep((long) properties.getRetryBackoffBaseMs() * (attempt + 1));
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("重试被中断: " + actionName, e);
+                }
+            }
+        }
+        throw new RuntimeException("不可达: " + actionName); // 逻辑上不会到达
+    }
+
+    @FunctionalInterface
+    private interface RetryableOperation<T> {
+        T execute() throws Exception;
     }
 
     // ==================== 响应解析 ====================

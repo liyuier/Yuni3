@@ -36,12 +36,25 @@ public class OneBotProperties {
         private int heartbeatInterval = 30000;
         /** 超时时间（毫秒） */
         private int timeout = 3000;
+        /** 断联后等待重连的最大秒数 */
+        private int reconnectWaitSeconds = 10;
     }
 
     @Data
     public static class HttpConfig {
         /** HTTP 请求连接地址 */
         private String url = "http://localhost:3000";
+    }
+
+    /** 重试配置 */
+    private RetryConfig retry = new RetryConfig();
+
+    @Data
+    public static class RetryConfig {
+        /** 业务层最大重试次数（不含首次调用，0=不重试） */
+        private int maxRetries = 2;
+        /** 重试退避基数（毫秒），第 n 次重试等待 backoffBaseMs * n 毫秒 */
+        private int backoffBaseMs = 500;
     }
 
     // ---- 兼容旧代码的便捷方法 ----
@@ -68,5 +81,17 @@ public class OneBotProperties {
 
     public int getWsTimeout() {
         return ws.getTimeout();
+    }
+
+    public int getWsReconnectWaitSeconds() {
+        return ws.getReconnectWaitSeconds();
+    }
+
+    public int getMaxRetries() {
+        return retry.getMaxRetries();
+    }
+
+    public int getRetryBackoffBaseMs() {
+        return retry.getBackoffBaseMs();
     }
 }

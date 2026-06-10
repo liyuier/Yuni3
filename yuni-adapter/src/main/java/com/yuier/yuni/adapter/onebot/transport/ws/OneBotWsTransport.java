@@ -2,6 +2,7 @@ package com.yuier.yuni.adapter.onebot.transport.ws;
 
 import com.yuier.yuni.adapter.config.OneBotProperties;
 import com.yuier.yuni.adapter.onebot.transport.OneBotTransport;
+import com.yuier.yuni.core.net.ws.yuni.ConnectionLostException;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketConnector;
 import com.yuier.yuni.core.net.ws.yuni.YuniWebSocketManager;
 import com.yuier.yuni.core.net.ws.yuni.YuniBusinessProxyListener;
@@ -18,6 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -45,6 +49,15 @@ public class OneBotWsTransport implements OneBotTransport {
 
     private Consumer<String> eventCallback;
 
+    /** /api 连接是否已建立 */
+    private final AtomicBoolean apiConnected = new AtomicBoolean(false);
+
+    /**
+     * 重连信号锁。onOpen 时释放，sendApiRequest 在断联重试时等待它。
+     * 初始 count=0 表示尚未需要等待（首次连接由 connect() 保证）。
+     */
+    private volatile CountDownLatch reconnectLatch = new CountDownLatch(0);
+
     /** /api 连接的 connector */
     private YuniWebSocketConnector apiConnector;
 
@@ -62,6 +75,8 @@ public class OneBotWsTransport implements OneBotTransport {
     public CompletableFuture<Void> connect() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         try {
+            // 初始化重连锁（首次连接需等待 onOpen）
+            reconnectLatch = new CountDownLatch(1);
             startApiSession();
             startEventSession();
             log.info("[OneBotWsTransport] WS 传输层已启动");
@@ -90,7 +105,25 @@ public class OneBotWsTransport implements OneBotTransport {
     public String sendApiRequest(String action, Map<String, Object> params) {
         String requestJson = buildRequestJson(action, params);
         String echo = extractEcho(requestJson);
-        return apiConnector.sendAndReceive(requestJson, echo);
+        try {
+            return apiConnector.sendAndReceive(requestJson, echo);
+        } catch (ConnectionLostException e) {
+            log.warn("[OneBotWsTransport] 请求因断联失败，等待重连后重试: action={}", action);
+            try {
+                // 等待重连完成（超时时间从配置读取）
+                int waitSeconds = properties.getWsReconnectWaitSeconds();
+                if (reconnectLatch.await(waitSeconds, TimeUnit.SECONDS)) {
+                    log.info("[OneBotWsTransport] 重连完成，重试请求: action={}", action);
+                    // 重新构建请求（新 echo，避免与旧请求的 echo 冲突）
+                    requestJson = buildRequestJson(action, params);
+                    echo = extractEcho(requestJson);
+                    return apiConnector.sendAndReceive(requestJson, echo);
+                }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+            throw new RuntimeException("重连超时或中断，请求失败: action=" + action, e);
+        }
     }
 
     @Override
@@ -100,7 +133,7 @@ public class OneBotWsTransport implements OneBotTransport {
 
     @Override
     public boolean isConnected() {
-        return apiConnector != null;
+        return apiConnected.get();
     }
 
     // ==================== 连接管理 ====================
@@ -155,13 +188,18 @@ public class OneBotWsTransport implements OneBotTransport {
     // ==================== WebSocket 监听器 ====================
 
     /**
-     * /api 连接监听器：处理 API 响应，完成等待的 future
+     * /api 连接监听器：处理 API 响应，完成等待的 future。
+     * 断联时立即失败所有 pending 请求，避免调用方空等超时。
+     * 重连成功后释放信号锁，允许等待中的重试请求继续。
      */
     private class ApiWsListener implements YuniBusinessProxyListener {
 
         @Override
         public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
             log.info("[OneBotWsTransport] /api 连接建立成功");
+            apiConnected.set(true);
+            // 释放所有等待重连的 sendApiRequest 调用
+            reconnectLatch.countDown();
         }
 
         @Override
@@ -201,12 +239,20 @@ public class OneBotWsTransport implements OneBotTransport {
         @Override
         public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
             log.info("[OneBotWsTransport] /api 连接已关闭");
+            apiConnected.set(false);
+            // 立即失败所有等待中的请求
+            apiConnector.failAllPending("connection closed, code=" + code);
         }
 
         @Override
         public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
             log.error("[OneBotWsTransport] /api 连接错误: {}", t.getMessage());
             t.printStackTrace();
+            apiConnected.set(false);
+            // 立即失败所有等待中的请求，避免它们空等超时
+            apiConnector.failAllPending("connection failure: " + t.getMessage());
+            // 为下一轮重连准备新的锁
+            reconnectLatch = new CountDownLatch(1);
             wsManager.restartConnection(API_SOCKET_ID);
         }
     }

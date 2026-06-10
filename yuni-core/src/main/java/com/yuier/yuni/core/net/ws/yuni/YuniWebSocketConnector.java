@@ -1,6 +1,5 @@
 package com.yuier.yuni.core.net.ws.yuni;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,10 +49,27 @@ public class YuniWebSocketConnector {
     }
 
     public WebSocket restartConnection() {
+        // 先失败所有等待中的请求，避免它们无限等待超时
+        failAllPending("connection restarting");
         // 重新启动 WebSocket
         webSocket.close(1000, "重新连接");
         webSocket = client.newWebSocket(request, listener);
         return webSocket;
+    }
+
+    /**
+     * 立即失败所有等待响应的请求。
+     * 在连接断开或重启时调用，避免调用方空等超时。
+     * @param reason 失败原因描述
+     */
+    public void failAllPending(String reason) {
+        requestModelMap.forEach((echo, model) -> {
+            if (!model.getFuture().isDone()) {
+                model.getFuture().completeExceptionally(
+                        new ConnectionLostException("WebSocket 连接丢失: " + reason + ", echo=" + echo));
+            }
+        });
+        requestModelMap.clear();
     }
 
     public void send(String message) {
@@ -76,8 +92,12 @@ public class YuniWebSocketConnector {
         try {
             return future.join();
         } catch (CompletionException e) {
-            log.info("[YuniWebSocketConnector.sendAndReceive]请求失败，失败消息: {}", e.getCause().getMessage());
-            e.printStackTrace();
+            Throwable cause = e.getCause();
+            log.info("[YuniWebSocketConnector.sendAndReceive]请求失败，失败消息: {}", cause.getMessage());
+            // ConnectionLostException 向上传播，让上层有机会重试
+            if (cause instanceof ConnectionLostException) {
+                throw (ConnectionLostException) cause;
+            }
             return "";
         }
     }

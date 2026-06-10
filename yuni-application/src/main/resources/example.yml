@@ -67,5 +67,9 @@ yuni:  # 用于 banner.txt
         url: ws://localhost:3001      # WebSocket 连接地址
         heartbeat-interval: 30000     # 心跳间隔，单位毫秒
         timeout: 3000                 # 请求超时，单位毫秒
+        reconnect-wait-seconds: 10    # 断联后等待重连的最大秒数
       http:
         url: http://localhost:3000    # HTTP API 地址
+      retry:
+        max-retries: 2                # 业务层最大重试次数（不含首次调用，0=不重试）
+        backoff-base-ms: 500          # 重试退避基数（毫秒），第 n 次重试等待 backoff-base-ms * n
