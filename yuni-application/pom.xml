@@ -92,6 +92,13 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
         </dependency>
+
+        <!-- WebSocket 服务器 (maimai 插件依赖) -->
+        <dependency>
+            <groupId>org.java-websocket</groupId>
+            <artifactId>Java-WebSocket</artifactId>
+            <version>1.5.7</version>
+        </dependency>
     </dependencies>
 
     <!-- SpringBoot打包插件（生成可执行Jar） -->
