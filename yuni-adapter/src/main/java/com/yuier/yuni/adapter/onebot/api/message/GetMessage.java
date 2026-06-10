@@ -16,10 +16,13 @@ import java.util.List;
  * @Date 2025/12/24 20:09
  * @description: 获取消息接口响应类
  */
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GetMessage {
 
     /**
