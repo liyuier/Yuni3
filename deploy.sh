@@ -6,7 +6,8 @@
 set -euo pipefail
 
 DEPLOY_DIR="$(cd "$(dirname "$0")" && pwd)"
-IMAGE="${1:-ghcr.io/liyuier/yuni3:latest}"
+IMAGE="${1:-liyuier/yuni3:latest}"
+BACKUP_IMAGE="${2:-ghcr.io/liyuier/yuni3:latest}"
 PLUGINS_JSON="$DEPLOY_DIR/plugins.json"
 
 # GitHub 文件代理列表（按优先级尝试，腾讯云等国内服务器直连 GitHub 可能超时）
@@ -58,7 +59,11 @@ echo "[deploy] 插件下载完成"
 
 # ── 启动 / 更新容器 ──────────────────────────────────────────────────
 echo "[deploy] 拉取镜像 $IMAGE ..."
-docker pull "$IMAGE"
+if ! docker pull "$IMAGE"; then
+  echo "[deploy] Docker Hub 拉取失败，尝试备份镜像 $BACKUP_IMAGE ..."
+  docker pull "$BACKUP_IMAGE"
+  docker tag "$BACKUP_IMAGE" "$IMAGE"
+fi
 
 if docker ps -q -f name=yuni3 | grep -q .; then
   echo "[deploy] 停止旧容器..."
