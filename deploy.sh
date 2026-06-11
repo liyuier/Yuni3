@@ -21,14 +21,19 @@ command -v curl >/dev/null 2>&1 || { echo "需要安装 curl";                 e
 mkdir -p "$DEPLOY_DIR/plugins" "$DEPLOY_DIR/data" "$DEPLOY_DIR/logs" "$DEPLOY_DIR/config"
 chmod -R 755 "$DEPLOY_DIR/plugins"
 
-# ── 下载插件 JAR ─────────────────────────────────────────────────────
+# ── 下载插件 ─────────────────────────────────────────────────────────
 echo "[deploy] 下载插件..."
 jq -r '.packages[] | "\(.id) \(.repo)"' "$PLUGINS_JSON" | while read -r id repo; do
-  url="https://github.com/${repo}/releases/download/${id}/${id}.jar"
+  url="https://github.com/${repo}/releases/download/${id}/${id}.zip"
   dir="$DEPLOY_DIR/plugins/$id"
-  mkdir -p "$dir"
   echo "  $id <- $url"
-  curl -fsSL "$url" -o "$dir/${id}.jar" || echo "  [WARN] $id 下载失败，保留旧版本"
+  if curl -fsSL "$url" -o "/tmp/${id}.zip"; then
+    mkdir -p "$dir"
+    unzip -o "/tmp/${id}.zip" -d "$DEPLOY_DIR/plugins/" 2>&1 | sed 's/^/    /'
+    rm "/tmp/${id}.zip"
+  else
+    echo "  [WARN] $id 下载失败，保留旧版本"
+  fi
 done
 
 echo "[deploy] 插件下载完成"
