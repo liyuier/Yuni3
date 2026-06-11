@@ -7,10 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container:
-      image: maven:3.9-eclipse-temurin-21
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - name: Maven build
         run: mvn package -pl yuni-application -am -DskipTests -q
