@@ -8,8 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Maven build
-        run: mvn package -pl yuni-application -am -DskipTests -q
 
       - name: Docker build & push
         run: |
