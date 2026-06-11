@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: docker.io/liyuier/yuni3
+  IMAGE: docker.io/yuier/yuni3
   BACKUP_IMAGE: ghcr.io/liyuier/yuni3
 
 jobs:
