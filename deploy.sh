@@ -53,6 +53,8 @@ docker run -d \
   -v "$DEPLOY_DIR/data:/app/data" \
   -v "$DEPLOY_DIR/logs:/app/logs" \
   -v "$DEPLOY_DIR/plugins:/app/plugins" \
+  -v "/etc/localtime:/etc/localtime:ro" \
+  -v "/etc/timezone:/etc/timezone:ro" \
   "$IMAGE"
 
 echo "[deploy] 完成。日志: docker logs -f yuni3"
