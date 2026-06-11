@@ -25,17 +25,18 @@ chmod -R 755 "$DEPLOY_DIR/plugins"
 echo "[deploy] 下载插件..."
 jq -r '.packages[] | "\(.id) \(.repo)"' "$PLUGINS_JSON" | while read -r id repo; do
   url="https://github.com/${repo}/releases/download/${id}/${id}.zip"
-  dir="$DEPLOY_DIR/plugins/$id"
-  echo "  $id <- $url"
-  if curl -fsSL "$url" -o "/tmp/${id}.zip"; then
-    mkdir -p "$dir"
-    unzip -o "/tmp/${id}.zip" -d "$DEPLOY_DIR/plugins/" 2>&1 | sed 's/^/    /'
-    rm "/tmp/${id}.zip"
-  else
-    echo "  [WARN] $id 下载失败，保留旧版本"
-  fi
+  (
+    if curl -fsSL "$url" -o "/tmp/${id}.zip"; then
+      mkdir -p "$DEPLOY_DIR/plugins/$id"
+      unzip -o "/tmp/${id}.zip" -d "$DEPLOY_DIR/plugins/" >/dev/null 2>&1
+      rm "/tmp/${id}.zip"
+      echo "  $id OK"
+    else
+      echo "  $id FAIL"
+    fi
+  ) &
 done
-
+wait
 echo "[deploy] 插件下载完成"
 
 # ── 启动 / 更新容器 ──────────────────────────────────────────────────
