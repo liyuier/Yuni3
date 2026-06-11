@@ -57,9 +57,12 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Notify deploy
-        if: ${{ secrets.WEBHOOK_URL }}
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
+        if: env.WEBHOOK_URL != ''
         run: |
-          curl -X POST "${{ secrets.WEBHOOK_URL }}" \
-            -H "Authorization: Bearer ${{ secrets.WEBHOOK_TOKEN }}" \
+          curl -X POST "$WEBHOOK_URL" \
+            -H "Authorization: Bearer $WEBHOOK_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"image":"${{ env.IMAGE }}@${{ steps.meta.outputs.digest }}"}'
