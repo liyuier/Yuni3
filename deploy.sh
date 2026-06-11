@@ -9,6 +9,10 @@ DEPLOY_DIR="$(cd "$(dirname "$0")" && pwd)"
 IMAGE="${1:-ghcr.io/liyuier/yuni3:latest}"
 PLUGINS_JSON="$DEPLOY_DIR/plugins.json"
 
+# GitHub 文件代理（腾讯云等国内服务器使用）
+# 用法: GHPROXY=https://ghproxy.com/ ./deploy.sh
+GHPROXY="${GHPROXY:-}"
+
 # ── 可选: 更新 plugins.json ──────────────────────────────────────────
 # 如果需要每次部署都拉取最新的 plugins.json（推荐），解开下面这行：
 # curl -fsSL "https://raw.githubusercontent.com/liyuier/Yuni3/master/plugins.json" -o "$PLUGINS_JSON"
@@ -23,10 +27,13 @@ chmod -R 755 "$DEPLOY_DIR/plugins"
 
 # ── 下载插件 ─────────────────────────────────────────────────────────
 echo "[deploy] 下载插件..."
-jq -r '.packages[] | "\(.id) \(.repo)"' "$PLUGINS_JSON" | while read -r id repo; do
-  url="https://github.com/${repo}/releases/download/${id}/${id}.zip"
+# 写入临时文件避免管道中的 subshell 问题（& + wait 需要在同一 shell）
+jq -r '.packages[] | "\(.id) \(.repo)"' "$PLUGINS_JSON" > /tmp/plugin-list.txt
+
+while read -r id repo; do
+  url="${GHPROXY}https://github.com/${repo}/releases/download/${id}/${id}.zip"
   (
-    if curl -fsSL "$url" -o "/tmp/${id}.zip"; then
+    if curl -fsSL --connect-timeout 10 --max-time 120 "$url" -o "/tmp/${id}.zip"; then
       mkdir -p "$DEPLOY_DIR/plugins/$id"
       unzip -o "/tmp/${id}.zip" -d "$DEPLOY_DIR/plugins/" >/dev/null 2>&1
       rm "/tmp/${id}.zip"
@@ -35,8 +42,10 @@ jq -r '.packages[] | "\(.id) \(.repo)"' "$PLUGINS_JSON" | while read -r id repo;
       echo "  $id FAIL"
     fi
   ) &
-done
+done < /tmp/plugin-list.txt
+
 wait
+rm /tmp/plugin-list.txt
 echo "[deploy] 插件下载完成"
 
 # ── 启动 / 更新容器 ──────────────────────────────────────────────────
