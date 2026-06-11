@@ -58,13 +58,3 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Notify deploy
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
-        if: env.WEBHOOK_URL != ''
-        run: |
-          curl -X POST "$WEBHOOK_URL" \
-            -H "Authorization: Bearer $WEBHOOK_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"image":"${{ env.IMAGE }}@${{ steps.meta.outputs.digest }}"}'
