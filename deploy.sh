@@ -6,7 +6,7 @@
 set -euo pipefail
 
 DEPLOY_DIR="$(cd "$(dirname "$0")" && pwd)"
-IMAGE="${1:-liyuier/yuni3:latest}"
+IMAGE="${1:-yuier/yuni3:latest}"
 BACKUP_IMAGE="${2:-ghcr.io/liyuier/yuni3:latest}"
 PLUGINS_JSON="$DEPLOY_DIR/plugins.json"
 
