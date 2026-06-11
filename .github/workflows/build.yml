@@ -22,16 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: temurin
-          cache: maven
-
-      - name: Maven package
-        run: mvn package -pl yuni-application -am -DskipTests -q
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -53,8 +43,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Notify deploy
         env:
