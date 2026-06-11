@@ -1,0 +1,321 @@
+{
+  "version": 1,
+  "packages": [
+    {
+      "id": "maimai",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "maimai",
+      "description": "麦麦 AI 聊天适配器",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "maimai.MaiMaiAdapterBooter",
+          "name": "maimai-连接器",
+          "version": "0.0.1",
+          "description": "启动 WebSocket 服务器，接受 MaiBot-Napcat-Adapter 连接，实现 OneBot 协议核心动作",
+          "tips": ["NapCat ←→ Yuni ←→ maimai 双向中转"],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "maimai.OneBotMessageForward",
+          "name": "maimai-消息转发",
+          "version": "0.0.1",
+          "description": "将 QQ 群聊/私聊消息（非命令）转发给 maimai",
+          "tips": ["不转发命令消息，maimai 专注于群聊自然对话"],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "fortune",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "fortune",
+      "description": "每日运势",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "Fortune",
+          "name": "今日运势",
+          "version": "0.0.1",
+          "description": "少女祈祷中……",
+          "tips": [
+            "向群聊发送 `/运势` ，查看自己今天的运势",
+            "一天内重复查看，运势不变"
+          ],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "plugin-manage",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "buildin/plugin-manage",
+      "description": "插件管理模块",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "buildIn": true,
+      "plugins": [
+        {
+          "id": "PluginManage",
+          "name": "插件管理入口",
+          "version": "0.0.1",
+          "description": "插件管理命令的入口",
+          "tips": [
+            "向群聊发送 “/插件 查看” 可以查看当前群聊下插件列表",
+            "向群聊发送 “/插件 查看 {插件序号}” 可以查看对应插件详情",
+            "向群聊发送 “/插件 开启 {插件序号}” 可以启用对应插件",
+            "向群聊发送 “/插件 关闭 {插件序号}” 可以禁用对应插件",
+            "向群聊发送 “/插件 重载 {插件序号}” 可以重载对应插件",
+            "向群聊发送 “/插件 重载” 可以重载全部插件"
+          ],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "event-manage",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "buildin/eventmanage",
+      "description": "通用事件处理模块",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "buildIn": true,
+      "plugins": [
+        {
+          "id": "notice.PokeNotice",
+          "name": "戳一戳事件处理",
+          "version": "0.0.1",
+          "description": "戳一戳事件处理",
+          "tips": ["戳一戳 bot ，bot 会回复"],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "meta.HeartBeatEvent",
+          "name": "OneBot 心跳事件处理",
+          "version": "0.0.1",
+          "description": "OneBot 心跳事件处理",
+          "tips": ["接收心跳事件，简单打印一下"],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "buildin/help",
+      "description": "帮助信息模块",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "buildIn": true,
+      "plugins": [
+        {
+          "id": "HelpInfo",
+          "name": "帮助信息",
+          "version": "0.0.1",
+          "description": "输出帮助信息",
+          "tips": ["向群聊发送 “/帮助” 可以查看帮助信息"],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "crazy-thursday",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "crazy-thursday",
+      "description": "疯狂星期四文案",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "CrazyThursday",
+          "name": "疯狂星期四",
+          "version": "0.0.1",
+          "description": "每周四随机发送疯四文案",
+          "tips": [],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "StartAtThursday",
+          "name": "疯狂星期四-重启适配",
+          "version": "0.0.1",
+          "description": "适配在周四重启时的情况",
+          "tips": [],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "daily-news",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "daily-news",
+      "description": "每日早报",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "DailyNews",
+          "name": "每日早报",
+          "version": "0.0.1",
+          "description": "每天定时发送早报",
+          "tips": [],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "chieru",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "chieru",
+      "description": "切噜语 / 齁哦语转换",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "ChieruTrans",
+          "name": "切噜语转换",
+          "version": "0.0.1",
+          "description": "切噜语转换",
+          "tips": [
+            "向群聊发送 “/切噜 转换 {文本}” 可以将文本转换为切噜语",
+            "向群聊发送 “/切噜 还原 {切噜语文本} 可以将切噜语还原为原始文本”"
+          ],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "HooTrans",
+          "name": "齁哦语转换",
+          "version": "0.0.1",
+          "description": "齁哦语转换",
+          "tips": [
+            "向群聊发送 “/齁哦 转换 {文本}” 可以将文本转换为齁哦语",
+            "向群聊发送 “/齁哦 还原 {切噜语文本} 可以将齁哦语还原为原始文本”"
+          ],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "pig-today",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "pig-today",
+      "description": "今日猪猪",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "PigToday",
+          "name": "今日猪猪",
+          "version": "0.0.1",
+          "description": "今天你是什么猪？",
+          "tips": [
+            "向群聊发送 `/今日猪猪` ，查看自己今天是什么猪",
+            "向群聊发送 `/今日猪猪 {@someone}` ，查看群友今天是什么猪",
+            "一天内重复查看，猪设不变"
+          ],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "setu",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "setu",
+      "description": "色图模块",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "Setu",
+          "name": "涩涩",
+          "version": "0.0.1",
+          "description": "群友喜闻乐见的模块",
+          "tips": [
+            "向群聊发送 `/色图` ，bot 会向群聊发送一张色图",
+            "图片资源来自网络，如果群友觉得不够涩那也没办法了 (￣▽￣)"
+          ],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "anti-gbf",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "anti-gbf",
+      "description": "反 GBF",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "AntiGbf",
+          "name": "骑空士陷阱粉碎机",
+          "version": "0.0.1",
+          "description": "警惕骑空士的陷阱",
+          "tips": ["检测到消息中含有 `granbluefantasy.jp` 文本，自动警告骑空士的陷阱"],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "yizhi",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "yizhi",
+      "description": "要我一直 IMAGE 吗",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "YaoWoYiZhi",
+          "name": "要我一直 IMAGE 吗",
+          "version": "0.0.1",
+          "description": "一直.image",
+          "tips": ["向群聊发送 `/一直 {图片}` ，bot 会向群聊发送一张 “<大图> 要我一直<小图>吗” 的图片"],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    },
+    {
+      "id": "example",
+      "repo": "liyuier/Yuni3-plugin-repo",
+      "module": "example",
+      "description": "示例模块",
+      "author": "Yuier me@yuier.com",
+      "type": "builtin",
+      "plugins": [
+        {
+          "id": "schedule.OhaYo",
+          "name": "定时插件示例",
+          "version": "0.0.1",
+          "description": "定时任务插件示例",
+          "tips": ["每天早上会向 bot master 问好。"],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "command.HelloCommand",
+          "name": "指令插件示例",
+          "version": "0.0.1",
+          "description": "验证指令系统可用性",
+          "tips": ["在群聊内发送“/test”，bot 会响应 “Hello Command!”"],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "pattern.HelloPattern",
+          "name": "规则插件示例",
+          "version": "0.0.1",
+          "description": "验证模式匹配可用性",
+          "tips": ["在群聊内发送带有“你好”的消息，bot 会响应 “你好，我是 {bot 昵称} !”"],
+          "author": "Yuier me@yuier.com"
+        },
+        {
+          "id": "immediate.IAmBack",
+          "name": "即时插件示例",
+          "version": "0.0.1",
+          "description": "即时任务插件实例",
+          "tips": ["启动后会向特定群聊发送一条消息“我是后背”"],
+          "author": "Yuier me@yuier.com"
+        }
+      ]
+    }
+  ]
+}
