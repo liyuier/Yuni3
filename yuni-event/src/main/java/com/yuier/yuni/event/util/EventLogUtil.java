@@ -40,7 +40,7 @@ public class EventLogUtil {
             receiveDescription = LogStringUtil.buildPurpleLog("群->收");
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
+            String groupName = safeGroupName(groupId);
             groupInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]";
             String card = event.getSender().getCard();
             senderName = card != null && !card.isEmpty() ? card : senderName;
@@ -64,7 +64,7 @@ public class EventLogUtil {
             receiveDescription = "群->收";
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
+            String groupName = safeGroupName(groupId);
             groupInfoLog = "[" + groupName + "(" + groupIdStr + ")]";
             String card = event.getSender().getCard();
             senderName = card != null && !card.isEmpty() ? card : senderName;
@@ -109,6 +109,18 @@ public class EventLogUtil {
     public static String getGroupName(Long groupId) {
         BotGroupInfo groupInfo = getGroupInfo(groupId);
         return groupInfo.getGroupName();
+    }
+
+    /** null-safe：API 查询失败时回退到群号 */
+    private static String safeGroupName(Long groupId) {
+        BotGroupInfo gi = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null);
+        return gi != null ? gi.getGroupName() : String.valueOf(groupId);
+    }
+
+    /** null-safe：API 查询失败时回退到 QQ 号 */
+    private static String safeUserName(Long userId) {
+        BotUserInfo ui = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null);
+        return ui != null ? ui.getNickname() : String.valueOf(userId);
     }
 
     /**
@@ -169,13 +181,13 @@ public class EventLogUtil {
             sendDescription = LogStringUtil.buildPurpleLog("发->群");
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
+            String groupName = safeGroupName(groupId);
             targetInfoLog = "[" + LogStringUtil.buildBrightRedLog(groupName) + "(" + groupIdStr + ")]: ";
         } else if (event.isPrivate()) {
             sendDescription = LogStringUtil.buildPurpleLog("发->私");
             Long userId = event.getUserId();
             String userIdStr = String.valueOf(userId);
-            String userName = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null).getNickname();
+            String userName = safeUserName(userId);
             targetInfoLog = "[" + LogStringUtil.buildBrightRedLog(userName) + "(" + userIdStr + ")]: ";
         }
         messageLog = LogStringUtil.buildBrightBlueLog(event.getMessageChain().toString());
@@ -192,13 +204,13 @@ public class EventLogUtil {
             sendDescription = "发->群";
             Long groupId = event.getGroupId();
             String groupIdStr = String.valueOf(groupId);
-            String groupName = getYuniBot().getGroupInfo(String.valueOf(groupId)).orElse(null).getGroupName();
+            String groupName = safeGroupName(groupId);
             targetInfoLog = "[" + groupName + "(" + groupIdStr + ")]: ";
         } else if (event.isPrivate()) {
             sendDescription = "发->私";
             Long userId = event.getUserId();
             String userIdStr = String.valueOf(userId);
-            String userName = getYuniBot().getUserInfo(String.valueOf(userId)).orElse(null).getNickname();
+            String userName = safeUserName(userId);
             targetInfoLog = "[" + userName + "(" + userIdStr + ")]: ";
         }
         messageLog = event.getMessageChain().toString();

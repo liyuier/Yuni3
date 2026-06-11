@@ -1,11 +1,12 @@
 package com.yuier.yuni.core.net.ws.yuni;
 
+import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Title: YuniWebSocketManager
@@ -18,7 +19,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class YuniWebSocketManager {
 
+    /** 共享 OkHttpClient — 30s ping 防止 Docker 网络桥杀空闲连接 */
+    private final OkHttpClient sharedClient = new OkHttpClient().newBuilder()
+            .pingInterval(30, TimeUnit.SECONDS)
+            .build();
+
     private Map<String, YuniWebSocketConnector> webSocketConnectorMap = new ConcurrentHashMap<>();
+
+    public OkHttpClient getSharedClient() {
+        return sharedClient;
+    }
 
     /**
      * 启动新的连接

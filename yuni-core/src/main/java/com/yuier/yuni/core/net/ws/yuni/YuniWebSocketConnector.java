@@ -41,7 +41,12 @@ public class YuniWebSocketConnector {
     private final AtomicBoolean connectionHealthy = new AtomicBoolean(false);
 
     public YuniWebSocketConnector(Request request, YuniBusinessProxyListener proxyListener) {
-        this.client = new OkHttpClient();
+        this(request, proxyListener, new OkHttpClient());
+    }
+
+    /** 使用共享 OkHttpClient（推荐——带 ping 保活） */
+    public YuniWebSocketConnector(Request request, YuniBusinessProxyListener proxyListener, OkHttpClient sharedClient) {
+        this.client = sharedClient;
         this.request = request;
         this.listener = new YuniWebSocketListener(proxyListener, this);
     }

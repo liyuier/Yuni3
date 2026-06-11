@@ -153,10 +153,12 @@ public class OneBotBot implements YuniBot {
     @Override
     public Optional<List<BotGroupInfo>> getGroupList() {
         try {
-            String responseJson = transport.sendApiRequest("get_group_list", Map.of());
-            GroupInfo[] groups = extractResponseData(responseJson, GroupInfo[].class);
-            if (groups == null) return Optional.empty();
-            return Optional.of(Arrays.stream(groups).map(this::convert).collect(Collectors.toList()));
+            return executeWithRetry(() -> {
+                String responseJson = transport.sendApiRequest("get_group_list", Map.of());
+                GroupInfo[] groups = extractResponseData(responseJson, GroupInfo[].class);
+                if (groups == null) return Optional.<List<BotGroupInfo>>empty();
+                return Optional.of(Arrays.stream(groups).map(this::convert).collect(Collectors.toList()));
+            }, "getGroupList", properties.getMaxRetries());
         } catch (Exception e) {
             log.error("[OneBotBot] 获取群列表失败", e);
             return Optional.empty();
@@ -171,11 +173,13 @@ public class OneBotBot implements YuniBot {
     @Override
     public Optional<BotGroupInfo> getGroupInfo(String groupId, boolean noCache) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("group_id", Long.parseLong(groupId));
-            params.put("no_cache", noCache);
-            String responseJson = transport.sendApiRequest("get_group_info", params);
-            return Optional.ofNullable(convert(extractResponseData(responseJson, GroupInfo.class)));
+            return executeWithRetry(() -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("group_id", Long.parseLong(groupId));
+                params.put("no_cache", noCache);
+                String responseJson = transport.sendApiRequest("get_group_info", params);
+                return Optional.ofNullable(convert(extractResponseData(responseJson, GroupInfo.class)));
+            }, "getGroupInfo", properties.getMaxRetries());
         } catch (Exception e) {
             log.error("[OneBotBot] 获取群信息失败: groupId={}", groupId, e);
             return Optional.empty();
@@ -190,12 +194,14 @@ public class OneBotBot implements YuniBot {
     @Override
     public Optional<BotGroupMemberInfo> getGroupMemberInfo(String groupId, String userId, boolean noCache) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("group_id", Long.parseLong(groupId));
-            params.put("user_id", Long.parseLong(userId));
-            params.put("no_cache", noCache);
-            String responseJson = transport.sendApiRequest("get_group_member_info", params);
-            return Optional.ofNullable(convert(extractResponseData(responseJson, GroupMemberInfo.class)));
+            return executeWithRetry(() -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("group_id", Long.parseLong(groupId));
+                params.put("user_id", Long.parseLong(userId));
+                params.put("no_cache", noCache);
+                String responseJson = transport.sendApiRequest("get_group_member_info", params);
+                return Optional.ofNullable(convert(extractResponseData(responseJson, GroupMemberInfo.class)));
+            }, "getGroupMemberInfo", properties.getMaxRetries());
         } catch (Exception e) {
             log.error("[OneBotBot] 获取群成员信息失败: groupId={} userId={}", groupId, userId, e);
             return Optional.empty();
@@ -210,11 +216,13 @@ public class OneBotBot implements YuniBot {
     @Override
     public Optional<BotUserInfo> getUserInfo(String userId, boolean noCache) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("user_id", Long.parseLong(userId));
-            params.put("no_cache", noCache);
-            String responseJson = transport.sendApiRequest("get_stranger_info", params);
-            return Optional.ofNullable(convert(extractResponseData(responseJson, GetStrangerInfo.class)));
+            return executeWithRetry(() -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("user_id", Long.parseLong(userId));
+                params.put("no_cache", noCache);
+                String responseJson = transport.sendApiRequest("get_stranger_info", params);
+                return Optional.ofNullable(convert(extractResponseData(responseJson, GetStrangerInfo.class)));
+            }, "getUserInfo", properties.getMaxRetries());
         } catch (Exception e) {
             log.error("[OneBotBot] 获取用户信息失败: userId={}", userId, e);
             return Optional.empty();
@@ -224,10 +232,12 @@ public class OneBotBot implements YuniBot {
     @Override
     public Optional<BotMessageInfo> getMessage(String messageId) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("message_id", Long.parseLong(messageId));
-            String responseJson = transport.sendApiRequest("get_msg", params);
-            return Optional.ofNullable(convert(extractResponseData(responseJson, GetMessage.class)));
+            return executeWithRetry(() -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("message_id", Long.parseLong(messageId));
+                String responseJson = transport.sendApiRequest("get_msg", params);
+                return Optional.ofNullable(convert(extractResponseData(responseJson, GetMessage.class)));
+            }, "getMessage", properties.getMaxRetries());
         } catch (Exception e) {
             log.error("[OneBotBot] 获取消息失败: messageId={}", messageId, e);
             return Optional.empty();

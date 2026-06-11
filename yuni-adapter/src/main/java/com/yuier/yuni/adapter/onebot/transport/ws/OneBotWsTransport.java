@@ -198,7 +198,7 @@ public class OneBotWsTransport implements OneBotTransport {
                 .build();
 
         ApiWsListener listener = new ApiWsListener();
-        apiConnector = new YuniWebSocketConnector(request, listener);
+        apiConnector = new YuniWebSocketConnector(request, listener, wsManager.getSharedClient());
         apiConnector.setTimeOutInterval(properties.getWsTimeout());
         apiConnector.setHeartBeatInterval(properties.getWsHeartbeatInterval());
         wsManager.startNewConnection(API_SOCKET_ID, apiConnector);
@@ -211,7 +211,7 @@ public class OneBotWsTransport implements OneBotTransport {
                 .build();
 
         EventWsListener listener = new EventWsListener();
-        YuniWebSocketConnector eventConnector = new YuniWebSocketConnector(request, listener);
+        YuniWebSocketConnector eventConnector = new YuniWebSocketConnector(request, listener, wsManager.getSharedClient());
         eventConnector.setTimeOutInterval(properties.getWsTimeout());
         eventConnector.setHeartBeatInterval(properties.getWsHeartbeatInterval());
         wsManager.startNewConnection(EVENT_SOCKET_ID, eventConnector);
