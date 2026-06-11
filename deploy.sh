@@ -9,9 +9,12 @@ DEPLOY_DIR="$(cd "$(dirname "$0")" && pwd)"
 IMAGE="${1:-ghcr.io/liyuier/yuni3:latest}"
 PLUGINS_JSON="$DEPLOY_DIR/plugins.json"
 
-# GitHub 文件代理（腾讯云等国内服务器使用）
-# 用法: GHPROXY=https://ghproxy.com/ ./deploy.sh
-GHPROXY="${GHPROXY:-}"
+# GitHub 文件代理列表（按优先级尝试，腾讯云等国内服务器直连 GitHub 可能超时）
+GHPROXIES=(
+  "https://ghproxy.com/"
+  "https://mirror.ghproxy.com/"
+  ""
+)
 
 # ── 可选: 更新 plugins.json ──────────────────────────────────────────
 # 如果需要每次部署都拉取最新的 plugins.json（推荐），解开下面这行：
@@ -31,16 +34,21 @@ echo "[deploy] 下载插件..."
 jq -r '.packages[] | "\(.id) \(.repo)"' "$PLUGINS_JSON" > /tmp/plugin-list.txt
 
 while read -r id repo; do
-  url="${GHPROXY}https://github.com/${repo}/releases/download/${id}/${id}.zip"
   (
-    if curl -fsSL --connect-timeout 10 --max-time 120 "$url" -o "/tmp/${id}.zip"; then
-      mkdir -p "$DEPLOY_DIR/plugins/$id"
-      unzip -o "/tmp/${id}.zip" -d "$DEPLOY_DIR/plugins/" >/dev/null 2>&1
-      rm "/tmp/${id}.zip"
-      echo "  $id OK"
-    else
-      echo "  $id FAIL"
-    fi
+    base="https://github.com/${repo}/releases/download/${id}/${id}.zip"
+    ok=0
+    for proxy in "${GHPROXIES[@]}"; do
+      url="${proxy}${base}"
+      if curl -fsSL --connect-timeout 5 --max-time 120 "$url" -o "/tmp/${id}.zip"; then
+        mkdir -p "$DEPLOY_DIR/plugins/$id"
+        unzip -o "/tmp/${id}.zip" -d "$DEPLOY_DIR/plugins/" >/dev/null 2>&1
+        rm "/tmp/${id}.zip"
+        echo "  $id OK"
+        ok=1
+        break
+      fi
+    done
+    [ "$ok" -eq 0 ] && echo "  $id FAIL (所有代理均不可达)"
   ) &
 done < /tmp/plugin-list.txt
 
