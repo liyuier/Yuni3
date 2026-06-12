@@ -44,5 +44,6 @@ public class SystemInitializeRunner implements ApplicationRunner {
         botManager.startBot();
         log.info("开始初始化插件系统...");
         pluginManager.initializePlugins();
+        log.info("Yuni 启动完毕");
     }
 }
