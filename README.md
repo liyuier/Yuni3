@@ -7,14 +7,14 @@
 ├── docs               # 文档
 ├── plugin-repo        # 独立插件项目开发目录
 ├── sql                # 建表 SQL
-├── yuni-adapter       # OneBot HTTP 与 WS 通信适配器模块
+├── yuni-adapter       # OneBot 协议适配器（WS/HTTP 传输、OneBot 协议模型、协议→内部事件翻译）
 ├── yuni-application   # 启动类模块
-├── yuni-core          # 一些核心的模型、工具类定义 / 实现
+├── yuni-core          # 核心抽象与工具（YuniBot 接口、内部事件模型、消息链、通用工具）
 ├── yuni-dependency    # 统一依赖管理模块
 ├── yuni-engine        # 系统启动、事件分发、模块协调
-├── yuni-event         # 对 OneBot 事件模型的定义与实现
+├── yuni-event         # 事件匹配引擎（命令探测、正则匹配、通知/请求事件匹配）
 ├── yuni-permission    # 用户权限管理
-├── yuni-plugin        # 插件系统实现
+├── yuni-plugin        # 插件系统实现（热加载、启停管理）
 └── yuni-webapi        # 提供网络接口
 ```
 
@@ -26,23 +26,16 @@
   flowchart TB
 
     application[启动类]
-    webapi[事件入口]
     adapter[adapter 模块]
     engine[engine 模块]
     plugin[插件管理模块]
     permission[权限管理模块]
-    system[通用系统启动]
 
-    application --engine 模块基于 ApplicationRunner 代理系统启动--> engine
-    engine --数据库初始化--> system
-    engine --插件扫描、加载--> plugin
+    application --SystemInitializeRunner 代理启动--> engine
+    engine --数据库检查--> engine
     engine --用户权限加载--> permission
-    engine --建立到 OneBot 的 WebSocket 连接--> system
-
-    SpringBoot@{ shape: circle, label: "Start" }
-    application --SpringBoot原生启动--> SpringBoot
-    SpringBoot --注册 HTTP Controller--> webapi
-    SpringBoot --通过配置类注入 OneBot API 通信适配器--> adapter
+    engine --插件扫描、加载--> plugin
+    engine --BotManager 建立 OneBot 连接（注册事件回调 + 连接传输层）--> adapter
   ```
 
 * OneBot 事件处理
@@ -50,30 +43,27 @@
   ```mermaid
   flowchart TB
 
-    webapi[事件入口]
-    adapter[adapter 模块]
-    engine[engine 模块]
+    adapter[adapter 模块<br/>OneBotBot]
+    engine[engine 模块<br/>EventBridge]
+    event[event 模块<br/>事件匹配]
+    plugin[插件系统]
     permission[权限管理模块]
-    event[event 模块]
-    plugin[插件模块]
 
-    OneBotEvent@{shape: lean-r, label: OneBot 上报事件} --> webapi
-    webapi --原始请求交给engine包装为事件--> engine
-    engine --交给插件系统处理--> plugin
+    NapCat[NapCat 推送] --> adapter
+    adapter --OneBotEvent → YuniEvent 翻译<br/>→ BotEventCallback--> engine
+    engine --Spring Event 发布--> plugin
     subgraph pluginSystem[插件系统]
       permission --赋能用户权限检查--> plugin
       event --赋能事件-插件匹配--> plugin
     end
-    subgraph executePlugin[执行插件]
-      plugin --执行匹配到的插件--> execute@{ shape: lean-l, label: "执行插件" }
-      adapter --赋能与 OneBot 通信--> execute
-      ApplicationContext --赋能访问 SpringBoot Bean--> execute
+    subgraph handleEvents[处理事件]
+      plugin --执行匹配到的插件--> execute[执行插件]
+      adapter --YuniBot.sendMessage() 赋能通信--> execute
+      ApplicationContext --赋能访问 Spring Bean--> execute
     end
   ```
 
 ## 部署方式
-
-~~先暂时简单写写，详细的以后再补~~
 
 ### OneBot 前台
 
@@ -81,11 +71,7 @@
 
 ### 应用本体
 
-配置文件把 yuni-application 模块下的 example.yml 改成 application.yml 就行，具体配置什么含义都写了注释的
-
-本地部署直接~~点一下IDEA的绿色三角形~~用IDEA就行。要构建的话我自己写了个备忘录可以参考着看 https://yuier.com/posts/027-yuni-deploy
-
-插件 jar 包丢到 `根目录/plugins` 下
+见 [Docker 部署](https://yuni.yuier.com/guide/quickstart/deploy-by-docker.html)、[源码部署](https://yuni.yuier.com/guide/quickstart/deploy-by-sourcecode.html)
 
 ### 麦麦
 
@@ -97,8 +83,6 @@
 
 * 开发可视化管理界面
 
-* 优化适配层，提供更好的适配层开发体验
+* 插件市场的设计与实现
 
-* 事件、API 的适配。。。
-
-* 有趣插件的补充。。。
+* 更多插件开发。。。
