@@ -61,10 +61,10 @@ yuni:  # 用于 banner.txt
   protocol:
     type: onebot           # 协议/平台类型；目前仅支持 onebot。OneBot 协议对接 QQ 平台
     onebot:
-      mode: ws             # 与 OneBot 前端的通信方式: ws (WebSocket) 或 http
-      token:               # Access Token，需要与 OneBot 前端配置一致
+      mode: ws             # 与 OneBot 前端的通信方式: ws (WebSocket) 或 http（事实上现在只实现了 ws）
+      token: xxxxxxxxxxxxx            # Access Token，需要与 OneBot 前端配置一致
       ws:
-        url: ws://localhost:3001      # WebSocket 连接地址
+        url: ws://localhost:3001      # WebSocket 连接地址。假设 OneBot 前端采用的是 NapCat ，这里对应 NapCat 新建 WebSocket 服务器的地址
         heartbeat-interval: 30000     # 心跳间隔，单位毫秒
         timeout: 3000                 # 请求超时，单位毫秒
         reconnect-wait-seconds: 10    # 断联后等待重连的最大秒数
