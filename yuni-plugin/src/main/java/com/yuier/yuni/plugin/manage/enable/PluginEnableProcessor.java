@@ -35,18 +35,32 @@ public class PluginEnableProcessor {
 
     // 判断插件是否使能
     public Boolean isPluginEnabled(YuniMessageEvent event, PluginInstance instance) {
+        // ① 特定群例外设置（最高优先级）
         Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginFullId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }
+        // ② 全局例外设置（次优先级，groupId = null）
+        Boolean globalException = getPluginEnabledException(null, instance.getPluginFullId());
+        if (globalException != null) {
+            return globalException;
+        }
+        // ③ 最终兜底：插件元数据中的默认启停状态
         return getPluginDefaultEnabled(instance);
     }
 
     public boolean isPluginEnabled(YuniNoticeEvent event, PassivePluginInstance instance) {
+        // ① 特定群例外设置（最高优先级）
         Boolean pluginEnabledException = getPluginEnabledException(event.getGroupId(), instance.getPluginFullId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }
+        // ② 全局例外设置（次优先级，groupId = null）
+        Boolean globalException = getPluginEnabledException(null, instance.getPluginFullId());
+        if (globalException != null) {
+            return globalException;
+        }
+        // ③ 最终兜底：插件元数据中的默认启停状态
         return getPluginDefaultEnabled(instance);
     }
 
@@ -110,10 +124,17 @@ public class PluginEnableProcessor {
     public Boolean isPluginEnabled(Long groupId, Class<? extends YuniPlugin> pluginClazz) {
         String pluginId = pluginContainer.getPluginFullIdByPluginClass(pluginClazz);
         PluginInstance pluginInstance = pluginContainer.getPluginInstanceByFullId(pluginId);
+        // ① 特定群例外设置（最高优先级）
         Boolean pluginEnabledException = getPluginEnabledException(groupId, pluginInstance.getPluginFullId());
         if (pluginEnabledException != null) {
             return pluginEnabledException;
         }
+        // ② 全局例外设置（次优先级，groupId = null）
+        Boolean globalException = getPluginEnabledException(null, pluginInstance.getPluginFullId());
+        if (globalException != null) {
+            return globalException;
+        }
+        // ③ 最终兜底：插件元数据中的默认启停状态
         return getPluginDefaultEnabled(pluginInstance);
     }
 }
