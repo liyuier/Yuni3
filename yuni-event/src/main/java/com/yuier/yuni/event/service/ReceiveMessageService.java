@@ -15,5 +15,17 @@ public interface ReceiveMessageService extends IService<ReceiveMessageEntity> {
     void saveEvent(ReceiveMessageEntity receiveMessageEntity);
 
     void flagAsCommandEvent(YuniMessageEvent event);
+
+    /**
+     * 统计今日收/发消息总数。
+     * @return 消息总数
+     */
+    long countTodayMessages();
+
+    /**
+     * 统计今日有消息活动的群组数。
+     * @return 活跃群组数量
+     */
+    long countTodayActiveGroups();
 }
 

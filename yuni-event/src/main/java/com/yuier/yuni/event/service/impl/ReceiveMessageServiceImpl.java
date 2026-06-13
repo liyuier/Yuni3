@@ -8,6 +8,9 @@ import com.yuier.yuni.event.service.ReceiveMessageService;
 import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 /**
  * (ReceiveMessage)表服务实现类
  *
@@ -31,6 +34,26 @@ public class ReceiveMessageServiceImpl extends ServiceImpl<ReceiveMessageMapper,
         // 因为一定已经把消息保存下来了，所以这里直接修改
         receiveMessageEntity.setIsCommand(true);
         this.updateById(receiveMessageEntity);
+    }
+
+    @Override
+    public long countTodayMessages() {
+        LambdaQueryWrapper<ReceiveMessageEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.ge(ReceiveMessageEntity::getTimeStamp, todayStartSeconds());
+        return this.count(wrapper);
+    }
+
+    @Override
+    public long countTodayActiveGroups() {
+        return this.baseMapper.countDistinctGroupToday(todayStartSeconds());
+    }
+
+    /**
+     * 今天零点的时间戳（秒）。
+     */
+    private long todayStartSeconds() {
+        return LocalDate.now().atStartOfDay(ZoneId.systemDefault())
+                .toEpochSecond();
     }
 }
 
