@@ -1,5 +1,7 @@
 package com.yuier.yuni.webapi.service.group;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuier.yuni.core.bot.BotGroupInfo;
 import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.util.SpringContextUtil;
@@ -12,14 +14,18 @@ import com.yuier.yuni.webapi.dto.group.GroupMessageItem;
 import com.yuier.yuni.webapi.dto.group.GroupMessagesResp;
 import com.yuier.yuni.webapi.dto.group.GroupPluginStatusItem;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 群组管理服务。
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GroupService {
@@ -27,6 +33,7 @@ public class GroupService {
     private final ReceiveMessageService receiveMessageService;
     private final PluginContainer pluginContainer;
     private final PluginEnableProcessor pluginEnableProcessor;
+    private final ObjectMapper objectMapper;
 
     /**
      * 获取群组列表。
@@ -49,9 +56,11 @@ public class GroupService {
         List<GroupMessageItem> items = entities.stream()
                 .map(e -> new GroupMessageItem(
                         e.getSenderName(),
-                        e.getToLogStr() != null ? e.getToLogStr() : e.getRawMessage(),
+                        e.getRawMessage() != null ? e.getRawMessage() : "",
                         e.getFormatTime(),
-                        e.getIsSelfSent() != null && e.getIsSelfSent()
+                        e.getIsSelfSent() != null && e.getIsSelfSent(),
+                        e.getIsPlainText() != null && e.getIsPlainText(),
+                        parseSegments(e)
                 ))
                 .toList();
         long total = receiveMessageService.countMessagesByGroup(groupId);
@@ -63,6 +72,22 @@ public class GroupService {
      * @param groupId 群号
      * @return 插件启用状态列表
      */
+    /**
+     * 解析 rawJson 为消息段数组。解析失败返回空列表。
+     */
+    private List<Map<String, Object>> parseSegments(ReceiveMessageEntity e) {
+        String json = e.getMessageSegments();
+        if (json == null || json.isBlank()) {
+            return List.of();
+        }
+        try {
+            return objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+        } catch (Exception ex) {
+            log.debug("解析消息段失败: {}", e.getMessageId(), ex);
+            return List.of();
+        }
+    }
+
     public List<GroupPluginStatusItem> getPluginStatus(Long groupId) {
         List<GroupPluginStatusItem> result = new ArrayList<>();
         for (String fullId : pluginContainer.getPluginFullIds()) {

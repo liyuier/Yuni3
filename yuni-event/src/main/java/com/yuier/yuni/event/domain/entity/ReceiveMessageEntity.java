@@ -113,4 +113,10 @@ public class ReceiveMessageEntity {
      * 是否是命令，true 为真，否则为 null
      */
     private Boolean isCommand;
+
+    /**
+     * 消息段 JSON 数组，如 [{"type":"text","data":{"text":"hello"}}]。
+     * 序列化自 YuniMessageEvent.getMessage()。
+     */
+    private String messageSegments;
 }

@@ -38,7 +38,8 @@ CREATE TABLE "receive_message" (
   "real_id" INTEGER,
   "is_plain_text" integer,
   "is_self_sent" integer,
-  "is_command" integer
+  "is_command" integer,
+  "message_segments" TEXT
 );
 
 -- ----------------------------
