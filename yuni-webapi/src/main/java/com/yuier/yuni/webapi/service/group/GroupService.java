@@ -68,11 +68,6 @@ public class GroupService {
     }
 
     /**
-     * 获取指定群的插件启用状态。
-     * @param groupId 群号
-     * @return 插件启用状态列表
-     */
-    /**
      * 解析 rawJson 为消息段数组。解析失败返回空列表。
      */
     private List<Map<String, Object>> parseSegments(ReceiveMessageEntity e) {
@@ -81,13 +76,18 @@ public class GroupService {
             return List.of();
         }
         try {
-            return objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+            return objectMapper.readValue(json, new TypeReference<>() {});
         } catch (Exception ex) {
             log.debug("解析消息段失败: {}", e.getMessageId(), ex);
             return List.of();
         }
     }
 
+    /**
+     * 获取指定群的插件启用状态。
+     * @param groupId 群号
+     * @return 插件启用状态列表
+     */
     public List<GroupPluginStatusItem> getPluginStatus(Long groupId) {
         List<GroupPluginStatusItem> result = new ArrayList<>();
         for (String fullId : pluginContainer.getPluginFullIds()) {
