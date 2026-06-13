@@ -35,4 +35,13 @@ public class AdminDashboardController {
     public Result<?> stats() {
         return Result.ok(dashboardService.getStats());
     }
+
+    /**
+     * 获取系统资源信息
+     * @return 系统资源数据
+     */
+    @PostMapping("/system-info")
+    public Result<?> systemInfo() {
+        return Result.ok(dashboardService.getSystemInfo());
+    }
 }

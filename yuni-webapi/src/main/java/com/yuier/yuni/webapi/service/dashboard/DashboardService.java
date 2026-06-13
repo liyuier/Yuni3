@@ -7,9 +7,11 @@ import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.event.service.ReceiveMessageService;
 import com.yuier.yuni.webapi.dto.dashboard.BotStatusResp;
 import com.yuier.yuni.webapi.dto.dashboard.DashboardStatsResp;
+import com.yuier.yuni.webapi.dto.dashboard.SystemInfoResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 
 /**
@@ -52,6 +54,38 @@ public class DashboardService {
         );
     }
 
+    /**
+     * 获取系统资源信息。
+     * @return 系统资源数据
+     */
+    public SystemInfoResp getSystemInfo() {
+        // 物理内存
+        com.sun.management.OperatingSystemMXBean osBean =
+                (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        long totalRam = osBean.getTotalMemorySize();
+        long freeRam = osBean.getFreeMemorySize();
+        long usedRam = totalRam - freeRam;
+
+        // CPU
+        double cpuLoad = osBean.getCpuLoad();
+        String cpuStr = cpuLoad < 0 ? "--" : String.format("%.1f%%", cpuLoad * 100);
+
+        // 磁盘（取工作目录所在分区）
+        File workDir = new File("").getAbsoluteFile();
+        long diskTotal = workDir.getTotalSpace();
+        long diskFree = workDir.getFreeSpace();
+        long diskUsed = diskTotal - diskFree;
+
+        return new SystemInfoResp(
+                formatBytes(usedRam),
+                formatBytes(totalRam),
+                formatBytes(diskUsed),
+                formatBytes(diskTotal),
+                cpuStr,
+                "SQLite"
+        );
+    }
+
     // ==================== 私有辅助方法 ====================
 
     /**
@@ -86,6 +120,17 @@ public class DashboardService {
      * @param status 连接状态枚举
      * @return 中文状态文字
      */
+    /**
+     * 字节转可读格式。
+     */
+    private String formatBytes(long bytes) {
+        if (bytes < 1024) return bytes + "B";
+        if (bytes < 1024L * 1024) return String.format("%.0fK", bytes / 1024.0);
+        if (bytes < 1024L * 1024 * 1024) return String.format("%.0fM", bytes / (1024.0 * 1024));
+        if (bytes < 1024L * 1024 * 1024 * 1024) return String.format("%.1fG", bytes / (1024.0 * 1024 * 1024));
+        return String.format("%.1fT", bytes / (1024.0 * 1024 * 1024 * 1024));
+    }
+
     private String statusText(BotStatus status) {
         return switch (status) {
             case ONLINE -> "在线";
