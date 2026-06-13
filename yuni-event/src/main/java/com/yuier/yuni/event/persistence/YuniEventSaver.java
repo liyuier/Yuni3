@@ -5,6 +5,7 @@ import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import com.yuier.yuni.event.domain.entity.ReceiveMessageEntity;
 import com.yuier.yuni.event.service.ReceiveMessageService;
+import com.yuier.yuni.event.util.EventLogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class YuniEventSaver {
         receiveMessageEntity.setSenderId(event.getUserId());
         receiveMessageEntity.setSenderName(event.getSender().getNickname());
         receiveMessageEntity.setRole(event.getSender().getRole());
-        receiveMessageEntity.setToLogStr(event.toPlainLogString());
+        receiveMessageEntity.setToLogStr(EventLogUtil.toPlainLog(event));
         receiveMessageEntity.setRawMessage(event.getRawMessage());
         receiveMessageEntity.setRawJson(event.getRawJson());
         receiveMessageEntity.setGroupId(event.getGroupId());
@@ -55,7 +56,7 @@ public class YuniEventSaver {
         receiveMessageEntity.setSenderId(event.getUserId());
         receiveMessageEntity.setSenderName(event.getSender().getNickname());
         receiveMessageEntity.setRole(event.getSender().getRole());
-        receiveMessageEntity.setToLogStr(event.toPlainLogString());
+        receiveMessageEntity.setToLogStr(EventLogUtil.toPlainLog(event));
         receiveMessageEntity.setRawMessage(event.getRawMessage());
         receiveMessageEntity.setRawJson(event.getRawJson());
         receiveMessageEntity.setGroupId(event.getGroupId());
