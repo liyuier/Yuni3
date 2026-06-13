@@ -1,6 +1,7 @@
 package com.yuier.yuni.event.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.event.mapper.ReceiveMessageMapper;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 
 /**
  * (ReceiveMessage)表服务实现类
@@ -54,6 +56,22 @@ public class ReceiveMessageServiceImpl extends ServiceImpl<ReceiveMessageMapper,
     private long todayStartSeconds() {
         return LocalDate.now().atStartOfDay(ZoneId.systemDefault())
                 .toEpochSecond();
+    }
+
+    @Override
+    public List<ReceiveMessageEntity> listMessagesByGroup(Long groupId, int page, int size) {
+        LambdaQueryWrapper<ReceiveMessageEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ReceiveMessageEntity::getGroupId, groupId)
+                .orderByDesc(ReceiveMessageEntity::getTimeStamp);
+        Page<ReceiveMessageEntity> p = new Page<>(page, size);
+        return this.page(p, wrapper).getRecords();
+    }
+
+    @Override
+    public long countMessagesByGroup(Long groupId) {
+        LambdaQueryWrapper<ReceiveMessageEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ReceiveMessageEntity::getGroupId, groupId);
+        return this.count(wrapper);
     }
 }
 
