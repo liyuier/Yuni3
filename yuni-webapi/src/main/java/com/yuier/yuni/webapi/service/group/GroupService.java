@@ -34,6 +34,7 @@ public class GroupService {
     private final PluginContainer pluginContainer;
     private final PluginEnableProcessor pluginEnableProcessor;
     private final ObjectMapper objectMapper;
+    private final ImageRkeyService imageRkeyService;
 
     /**
      * 获取群组列表。
@@ -54,14 +55,18 @@ public class GroupService {
     public GroupMessagesResp getMessages(Long groupId, int page, int size) {
         List<ReceiveMessageEntity> entities = receiveMessageService.listMessagesByGroup(groupId, page, size);
         List<GroupMessageItem> items = entities.stream()
-                .map(e -> new GroupMessageItem(
-                        e.getSenderName(),
-                        e.getRawMessage() != null ? e.getRawMessage() : "",
-                        e.getFormatTime(),
-                        e.getIsSelfSent() != null && e.getIsSelfSent(),
-                        e.getIsPlainText() != null && e.getIsPlainText(),
-                        parseSegments(e)
-                ))
+                .map(e -> {
+                    List<Map<String, Object>> segments = parseSegments(e);
+                    imageRkeyService.refreshSegments(segments);
+                    return new GroupMessageItem(
+                            e.getSenderName(),
+                            e.getRawMessage() != null ? e.getRawMessage() : "",
+                            e.getFormatTime(),
+                            e.getIsSelfSent() != null && e.getIsSelfSent(),
+                            e.getIsPlainText() != null && e.getIsPlainText(),
+                            segments
+                    );
+                })
                 .toList();
         long total = receiveMessageService.countMessagesByGroup(groupId);
         return new GroupMessagesResp(items, total);

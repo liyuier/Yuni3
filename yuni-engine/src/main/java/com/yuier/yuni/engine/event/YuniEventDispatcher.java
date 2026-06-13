@@ -5,11 +5,13 @@ import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import com.yuier.yuni.core.event.meta.YuniMetaEvent;
 import com.yuier.yuni.core.event.notice.YuniNoticeEvent;
 import com.yuier.yuni.core.event.request.YuniRequestEvent;
+import com.yuier.yuni.core.event.ws.YuniMessagePushEvent;
 import com.yuier.yuni.event.persistence.YuniEventSaver;
 import com.yuier.yuni.event.util.EventLogUtil;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -29,12 +31,17 @@ public class YuniEventDispatcher {
     PluginManager pluginManager;
     @Autowired
     YuniEventSaver eventSaver;
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
 
     @EventListener
     public void messageEventHandler(YuniMessageEvent event) {
         log.info(EventLogUtil.toLog(event));
         eventSaver.saveEvent(event);
         pluginManager.handleMessageEvent(event);
+        if (event.isGroup()) {
+            eventPublisher.publishEvent(YuniMessagePushEvent.from(event));
+        }
     }
 
     @EventListener
@@ -42,6 +49,9 @@ public class YuniEventDispatcher {
         log.info(EventLogUtil.toLog(event));
         eventSaver.saveEvent(event);
         pluginManager.handleMessageSentEvent(event);
+        if (event.isGroup()) {
+            eventPublisher.publishEvent(YuniMessagePushEvent.from(event));
+        }
     }
 
     @EventListener
