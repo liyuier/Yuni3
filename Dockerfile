@@ -1,10 +1,8 @@
 # ===== Stage 1: Build Frontend =====
-FROM node:22-alpine AS frontend-builder
+FROM node:22 AS frontend-builder
 WORKDIR /frontend
-COPY Yuni-front/package.json Yuni-front/package-lock.json* ./
-RUN npm ci --silent
 COPY Yuni-front/ .
-RUN npm run build
+RUN npm ci && npm run build
 
 # ===== Stage 2: Build Backend =====
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
