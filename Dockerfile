@@ -4,7 +4,7 @@ WORKDIR /frontend
 COPY Yuni-front/package.json Yuni-front/package-lock.json* ./
 RUN npm ci --silent
 COPY Yuni-front/ .
-RUN npx vite build --outDir dist
+RUN npm run build
 
 # ===== Stage 2: Build Backend =====
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
