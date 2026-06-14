@@ -14,6 +14,10 @@ env:
   IMAGE: yuier/yuni3
   BACKUP_IMAGE: ghcr.io/liyuier/yuni3
 
+concurrency:
+  group: docker-build
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -6,6 +6,9 @@ on:
 
 jobs:
   deploy:
+    concurrency:
+      group: docker-build
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Yuni3
