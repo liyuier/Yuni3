@@ -90,15 +90,15 @@ set -e\n\
 DB_FILE=/app/data/yuni3.db\n\
 echo "[init] 检查数据库文件..."\n\
 if [ ! -f "$DB_FILE" ]; then\n\
-  echo "[init] 创建数据库文件..."\n\
+  echo "[init] 数据库不存在，执行建表 SQL..."\n\
   touch "$DB_FILE"\n\
+  for sql in /app/sql/*.sql; do\n\
+    echo "[init]   $(basename $sql)"\n\
+    sqlite3 "$DB_FILE" < "$sql"\n\
+  done\n\
+else\n\
+  echo "[init] 数据库已存在，跳过初始化"\n\
 fi\n\
-echo "[init] 执行建表 SQL..."\n\
-for sql in /app/sql/*.sql; do\n\
-  echo "[init]   $(basename $sql)"\n\
-  sqlite3 "$DB_FILE" < "$sql"\n\
-done\n\
-echo "[init] 数据库初始化完成"\n\
 echo "[init] 启动服务..."\n\
 exec supervisord -c /etc/supervisord.conf\n\
 ' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
