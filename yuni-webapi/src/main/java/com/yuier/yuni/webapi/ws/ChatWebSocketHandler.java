@@ -65,7 +65,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 if (sessions != null) sessions.remove(session);
             }
         }
-        log.info("WebSocket 断开: {}", session.getId());
+        log.debug("WebSocket 断开: {}", session.getId());
     }
 
     /**

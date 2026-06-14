@@ -75,7 +75,7 @@ echo "[deploy] 启动容器..."
 docker run -d \
   --name yuni3 \
   --restart unless-stopped \
-  -p 11451:11451 \
+  -p 11451:80 \
   -p 11452:11452 \
   -v "$DEPLOY_DIR/config:/app/config:ro" \
   -v "$DEPLOY_DIR/data:/app/data" \

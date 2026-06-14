@@ -8,9 +8,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Yuni3
         run: |
           git clone --depth 1 http://192.168.0.103:3000/yuier/Yuni3.git .
+
+      - name: Clone Yuni-front
+        run: |
+          git clone --depth 1 https://github.com/liyuier/Yuni-front.git Yuni-front
 
       - name: Docker build & push
         run: |
