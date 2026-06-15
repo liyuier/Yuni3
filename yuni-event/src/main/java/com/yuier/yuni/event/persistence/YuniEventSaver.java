@@ -43,7 +43,6 @@ public class YuniEventSaver {
         receiveMessageEntity.setRole(event.getSender().getRole());
         receiveMessageEntity.setToLogStr(EventLogUtil.toPlainLog(event));
         receiveMessageEntity.setRawMessage(event.getRawMessage());
-        receiveMessageEntity.setRawJson(event.getRawJson());
         receiveMessageEntity.setGroupId(event.getGroupId());
         receiveMessageEntity.setMessageFormat(event.getMessageFormat());
         receiveMessageEntity.setRealId(event.getRealId());
@@ -66,7 +65,6 @@ public class YuniEventSaver {
         receiveMessageEntity.setRole(event.getSender().getRole());
         receiveMessageEntity.setToLogStr(EventLogUtil.toPlainLog(event));
         receiveMessageEntity.setRawMessage(event.getRawMessage());
-        receiveMessageEntity.setRawJson(event.getRawJson());
         receiveMessageEntity.setGroupId(event.getGroupId());
         receiveMessageEntity.setMessageFormat(event.getMessageFormat());
         receiveMessageEntity.setRealId(event.getRealId());

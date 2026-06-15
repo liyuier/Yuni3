@@ -79,11 +79,6 @@ public class ReceiveMessageEntity {
     private String rawMessage;
 
     /**
-     * 原始请求 json
-     */
-    private String rawJson;
-
-    /**
      * 群聊 ID
      */
     private Long groupId;
