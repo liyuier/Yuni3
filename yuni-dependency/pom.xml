@@ -6,7 +6,32 @@
 
     <groupId>com.yuier.yuni</groupId>
     <artifactId>yuni-dependency</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
+
+    <name>yuni-dependency</name>
+    <description>Yuni3 dependency management BOM</description>
+    <url>https://github.com/liyuier/Yuni3</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/liyuier/Yuni3.git</connection>
+        <developerConnection>scm:git:ssh://github.com:liyuier/Yuni3.git</developerConnection>
+        <url>https://github.com/liyuier/Yuni3</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Yuier</name>
+            <email>me@yuier.com</email>
+            <url>https://github.com/liyuier</url>
+        </developer>
+    </developers>
 
     <properties>
         <!-- Spring Boot & Cloud 版本 -->
@@ -116,18 +141,23 @@
         </dependencies>
     </dependencyManagement>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>central</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <name>Sonatype Nexus Snapshots</name>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <plugins>
+            <!-- GPG 签名 -->
             <plugin>
-                <!-- deploy -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals><goal>sign</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- deploy -->
+            <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <version>0.9.0</version>

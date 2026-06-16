@@ -5,11 +5,34 @@
 
     <groupId>com.yuier.yuni</groupId>
     <artifactId>yuni3</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <name>yuni3</name>
     <description>Yuni3 chat-bot app framework</description>
+
+    <url>https://github.com/liyuier/Yuni3</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/liyuier/Yuni3.git</connection>
+        <developerConnection>scm:git:ssh://github.com:liyuier/Yuni3.git</developerConnection>
+        <url>https://github.com/liyuier/Yuni3</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Yuier</name>
+            <email>me@yuier.com</email>
+            <url>https://github.com/liyuier</url>
+        </developer>
+    </developers>
 
     <!-- 子模块 -->
     <modules>
@@ -43,7 +66,7 @@
             <dependency>
                 <groupId>com.yuier.yuni</groupId>
                 <artifactId>yuni-dependency</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>0.1.0</version>
                 <type>pom</type>  <!-- 依赖本身是个 pom -->
                 <scope>import</scope>
             </dependency>
@@ -95,6 +118,48 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <!-- 源码 jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals><goal>jar-no-fork</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals><goal>jar</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <quiet>true</quiet>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <!-- GPG 签名 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals><goal>sign</goal></goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

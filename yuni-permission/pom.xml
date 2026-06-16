@@ -8,12 +8,12 @@
 	<parent>
 		<groupId>com.yuier.yuni</groupId>
 		<artifactId>yuni3</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.0</version>
 	</parent>
 
 	<!-- 模块信息 -->
 	<artifactId>yuni-permission</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>yuni-permission</name>
 	<description>yuni-permission</description>
 
@@ -23,12 +23,12 @@
 		<dependency>
 			<groupId>com.yuier.yuni</groupId>
 			<artifactId>yuni-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.yuier.yuni</groupId>
 			<artifactId>yuni-event</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
 			<scope>compile</scope>
 		</dependency>
 
