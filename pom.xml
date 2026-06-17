@@ -148,7 +148,7 @@
                     <doclint>none</doclint>
                 </configuration>
             </plugin>
-            <!-- GPG 签名 -->
+            <!-- GPG 签名（仅 deploy 时生效，本地 install 跳过） -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -160,6 +160,9 @@
                         <goals><goal>sign</goal></goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -175,5 +178,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <gpg.skip>false</gpg.skip>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
