@@ -2,6 +2,7 @@ package com.yuier.yuni.plugin.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yuier.yuni.contact.manage.YuniContactManager;
 import com.yuier.yuni.core.bot.MessageTarget;
 import com.yuier.yuni.core.bot.YuniBot;
 import com.yuier.yuni.core.bot.BotGroupMemberInfo;
@@ -26,10 +27,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -263,5 +262,11 @@ public class PluginUtils {
         float randomValue = new Random().nextFloat();
         log.debug("[CrazyThursdayUtil] 随机数：{}, rate: {}", randomValue, rate);
         return randomValue < rate;
+    }
+
+    // 根据用户 ID 查找用户所在的群组
+    public static HashSet<Long> findUserGroups(Long userId) {
+        YuniContactManager contactManager = PluginUtils.getBean(YuniContactManager.class);
+        return contactManager.findUserGroupIdSet(userId);
     }
 }

@@ -8,8 +8,10 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -68,18 +70,29 @@ public class RedisUtil {
     }
 
     /**
-     * 获取 Redis 中的 String 类型数据，key 为字符串
+     * 获取 Redis 中的 String 类型数据。
      * @param key  key
-     * @return  value
+     * @return  value，不存在时返回 Optional.empty()
      */
-    public static Object get(String key) {
+    public static Optional<Object> get(String key) {
         try {
             ValueOperations<String, Object> valueOperations = staticRedisTemplate.opsForValue();
-            return valueOperations.get(key);
+            return Optional.ofNullable(valueOperations.get(key));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Redis获取缓存失败：" + e.getMessage());
         }
+    }
+
+    /**
+     * 获取 Redis 中的 String 类型数据并转换为指定类型。
+     * @param key   key
+     * @param clazz 目标类型
+     * @return value，不存在时返回 Optional.empty()
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> get(String key, Class<T> clazz) {
+        return get(key).map(v -> (T) v);
     }
 
     /* Hash类型静态方法 */
@@ -101,15 +114,29 @@ public class RedisUtil {
     }
 
     /**
-     * 获取 Redis 中的 Hash 类型数据的 value，key 为字符串，hashKey 为字符串
-     * @param key  key
-     * @param hashKey  hashKey
-     * @return  value
+     * 批量设置 Redis 中的 Hash 类型数据。
+     * @param key hash key
+     * @param map field → value
      */
-    public static Object hGet(String key, String hashKey) {
+    public static void hSetAll(String key, Map<String, ?> map) {
+        try {
+            staticRedisTemplate.boundHashOps(key).putAll(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Redis Hash批量设置值失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取 Redis 中的 Hash 类型数据的 value。
+     * @param key     hash key
+     * @param hashKey hash field
+     * @return value，不存在时返回 Optional.empty()
+     */
+    public static Optional<Object> hGet(String key, String hashKey) {
         try {
             BoundHashOperations<String, String, Object> hashOperations = staticRedisTemplate.boundHashOps(key);
-            return hashOperations.get(hashKey);
+            return Optional.ofNullable(hashOperations.get(hashKey));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Redis Hash获取值失败：" + e.getMessage());
@@ -117,17 +144,46 @@ public class RedisUtil {
     }
 
     /**
-     * 获取 Redis 中的 Hash 类型数据所有的 key 和 value，key 为字符串
-     * @param key  key
-     * @return  value
+     * 获取 Redis 中的 Hash 类型数据所有的 field 和 value。
+     * @param key hash key
+     * @return entries，不存在时返回空 Map，不抛异常时绝不返回 null
      */
     public static Map<String, Object> hGetAll(String key) {
         try {
             BoundHashOperations<String, String, Object> hashOperations = staticRedisTemplate.boundHashOps(key);
-            return hashOperations.entries();
+            Map<String, Object> entries = hashOperations.entries();
+            return entries != null ? entries : Collections.emptyMap();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Redis Hash获取所有值失败：" + e.getMessage());
+            return Collections.emptyMap();
+        }
+    }
+
+    /**
+     * 删除 Redis 中 Hash 类型数据的一个 field。
+     * @param key     hash key
+     * @param hashKey hash field
+     */
+    public static void hDelete(String key, String hashKey) {
+        try {
+            staticRedisTemplate.boundHashOps(key).delete(hashKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Redis Hash删除field失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 批量删除 Redis 中 Hash 类型数据的多个 field。
+     * @param key      hash key
+     * @param hashKeys hash fields
+     */
+    public static void hDelete(String key, Collection<String> hashKeys) {
+        try {
+            staticRedisTemplate.boundHashOps(key).delete(hashKeys.toArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Redis Hash批量删除field失败：" + e.getMessage());
         }
     }
 
@@ -168,8 +224,7 @@ public class RedisUtil {
         try {
             return Boolean.TRUE.equals(staticRedisTemplate.hasKey(key));
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Redis判断key是否存在失败：" + e.getMessage());
+            return false;
         }
     }
 

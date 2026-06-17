@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 /**
  * @Title: YuniContactManager
  * @Author yuier
@@ -70,5 +72,10 @@ public class YuniContactManager {
                 }
             });
         });
+    }
+
+    // 根据用户 ID 查找用户所在的群组
+    public HashSet<Long> findUserGroupIdSet(Long memberId) {
+        return yuniContactContainer.findUserGroupIdSet(memberId);
     }
 }

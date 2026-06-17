@@ -171,35 +171,35 @@ public class CronExpressionBuilder {
     }
 
     /**
-     * 每分钟执行
+     * 每分钟执行（第 0 秒触发）
      */
     public CronExpressionBuilder everyMinute() {
-        return minutes("*");
+        return seconds(0).minutes("*");
     }
 
     /**
-     * 每隔几分钟执行
+     * 每隔几分钟执行（第 0 秒触发）
      * @param interval 间隔分钟数
      */
     public CronExpressionBuilder everyMinutes(int interval) {
         validateRange(interval, 1, 59, "interval");
-        return minutes("0/" + interval);
+        return seconds(0).minutes("0/" + interval);
     }
 
     /**
-     * 每小时执行
+     * 每小时执行（第 0 分 0 秒触发）
      */
     public CronExpressionBuilder everyHour() {
-        return hours("*");
+        return seconds(0).minutes(0).hours("*");
     }
 
     /**
-     * 每隔几小时执行
+     * 每隔几小时执行（第 0 分 0 秒触发）
      * @param interval 间隔小时数
      */
     public CronExpressionBuilder everyHours(int interval) {
         validateRange(interval, 1, 23, "interval");
-        return hours("0/" + interval);
+        return seconds(0).minutes(0).hours("0/" + interval);
     }
 
     /**
