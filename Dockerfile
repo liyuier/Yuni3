@@ -18,6 +18,7 @@ COPY yuni-permission/pom.xml yuni-permission/
 COPY yuni-engine/pom.xml yuni-engine/
 COPY yuni-webapi/pom.xml yuni-webapi/
 COPY yuni-application/pom.xml yuni-application/
+COPY yuni-contact/pom.xml yuni-contact/
 
 RUN mvn dependency:go-offline -pl yuni-application -am -q
 
