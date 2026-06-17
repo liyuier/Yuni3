@@ -1,5 +1,6 @@
 package com.yuier.yuni.engine.manager.init;
 
+import com.yuier.yuni.contact.manage.YuniContactManager;
 import com.yuier.yuni.event.init.EventManager;
 import com.yuier.yuni.permission.manage.UserPermissionManager;
 import com.yuier.yuni.plugin.manage.PluginManager;
@@ -31,19 +32,24 @@ public class SystemInitializeRunner implements ApplicationRunner {
     private EventManager eventManager;
     @Autowired
     private BotManager botManager;
+    @Autowired
+    private YuniContactManager yuniContactManager;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("检查数据库文件");
+        log.info("检查数据库文件...");
         systemInitializeProcessor.checkDatabaseFile();
-        log.info("初始化权限系统");
+        log.info("初始化权限系统...");
         userPermissionManager.initUserPermission();
-        log.info("初始化事件系统");
+        log.info("初始化事件系统...");
         eventManager.init();
-        log.info("开始对接聊天前端事件推送");
+        log.info("拉起适配器...");
         botManager.startBot();
-        log.info("开始初始化插件系统...");
+        log.info("初始化联系人系统...");
+        yuniContactManager.init();
+        log.info("初始化插件系统...");
         pluginManager.initializePlugins();
-        log.info("Yuni 启动完毕");
+        log.info("""
+                Yuni 启动完毕 Ciallo～(∠・ω< )⌒★!""");
     }
 }

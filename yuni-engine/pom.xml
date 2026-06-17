@@ -46,6 +46,11 @@
             <artifactId>yuni-permission</artifactId>
             <version>0.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.yuier.yuni</groupId>
+            <artifactId>yuni-contact</artifactId>
+            <version>0.1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

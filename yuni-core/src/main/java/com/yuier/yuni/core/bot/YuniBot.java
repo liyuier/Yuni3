@@ -93,6 +93,9 @@ public interface YuniBot {
      */
     Optional<BotGroupInfo> getGroupInfo(String groupId, boolean noCache);
 
+    Optional<List<BotGroupMemberInfo>> getGroupMemberList(String groupId);
+    Optional<List<BotGroupMemberInfo>> getGroupMemberList(String groupId, boolean noCache);
+
     /**
      * 获取群成员信息
      * @param groupId 群号

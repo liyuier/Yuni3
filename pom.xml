@@ -45,6 +45,7 @@
         <module>yuni-permission</module>
         <module>yuni-core</module>
         <module>yuni-application</module>
+        <module>yuni-contact</module>
     </modules>
 
     <!-- 统一 Java 与 maven 属性 -->

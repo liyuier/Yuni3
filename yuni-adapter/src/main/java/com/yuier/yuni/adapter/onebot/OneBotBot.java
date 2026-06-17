@@ -187,6 +187,30 @@ public class OneBotBot implements YuniBot {
     }
 
     @Override
+    public Optional<List<BotGroupMemberInfo>> getGroupMemberList(String groupId) {
+        return getGroupMemberList(groupId, true);
+    }
+
+    @Override
+    public Optional<List<BotGroupMemberInfo>> getGroupMemberList(String groupId, boolean noCache) {
+        try {
+            return executeWithRetry(() -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("group_id", Long.parseLong(groupId));
+                params.put("no_cache", noCache);
+                String responseJson = transport.sendApiRequest("get_group_member_list", params);
+                GroupMemberInfo[] botGroupMemberInfos = extractResponseDataAsArray(responseJson, GroupMemberInfo[].class);
+                if (botGroupMemberInfos == null) return Optional.empty();
+                return Optional.of(Arrays.stream(botGroupMemberInfos).map(this::convert).collect(Collectors.toList()));
+            }, "getGroupMemberList", properties.getMaxRetries());
+        } catch (Exception e) {
+            log.error("[OneBotBot] 获取群成员列表失败: groupId={}", groupId, e);
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
     public Optional<BotGroupMemberInfo> getGroupMemberInfo(String groupId, String userId) {
         return getGroupMemberInfo(groupId, userId, true);
     }
