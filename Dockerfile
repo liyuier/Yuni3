@@ -83,7 +83,7 @@ RUN echo 'port 11452'           > /etc/redis.conf \
 RUN printf '[supervisord]\nnodaemon=true\nlogfile=/app/logs/supervisord.log\nuser=root\n\n'       > /etc/supervisord.conf \
  && printf '[program:redis]\ncommand=redis-server /etc/redis.conf\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n\n' >> /etc/supervisord.conf \
  && printf '[program:nginx]\ncommand=nginx -g "daemon off;"\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n\n' >> /etc/supervisord.conf \
- && printf '[program:yuni]\ncommand=java -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n' >> /etc/supervisord.conf
+ && printf '[program:yuni]\ncommand=bash -c '"'"'exec java $JAVA_OPTS -jar /app/yuni-app.jar --spring.profiles.active=prod --spring.config.location=./config/application-prod.yml'"'"'\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\n' >> /etc/supervisord.conf
 
 # ---- entrypoint ----
 RUN printf '#!/bin/bash\n\
