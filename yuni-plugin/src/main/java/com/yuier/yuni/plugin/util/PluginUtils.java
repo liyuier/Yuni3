@@ -11,6 +11,9 @@ import com.yuier.yuni.core.model.bot.BotApp;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.core.util.SpringContextUtil;
+import com.yuier.yuni.plugin.data.CrudRepository;
+import com.yuier.yuni.plugin.data.PluginDataService;
+import com.yuier.yuni.plugin.data.QueryBuilder;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
@@ -268,5 +271,60 @@ public class PluginUtils {
     public static HashSet<Long> findUserGroups(Long userId) {
         YuniContactManager contactManager = PluginUtils.getBean(YuniContactManager.class);
         return contactManager.findUserGroupIdSet(userId);
+    }
+
+    // ==================== 数据库访问 ====================
+
+    /**
+     * 注册实体类并自动建表。
+     * 建议在插件的 {@code initialize()} 中调用。
+     *
+     * <pre>{@code
+     * public void initialize() {
+     *     PluginUtils.registerEntity(UserSteamId.class);
+     * }
+     * }</pre>
+     */
+    public static void registerEntity(Class<?> entityClass) {
+        PluginDataService.getInstance().registerEntity(entityClass);
+    }
+
+    /**
+     * 获取实体的通用 CRUD 仓储。
+     *
+     * <pre>{@code
+     * PluginUtils.repo(UserSteamId.class).save(entity);
+     * PluginUtils.repo(UserSteamId.class).findByField("userId", 123L);
+     * }</pre>
+     */
+    public static <T> CrudRepository<T> repo(Class<T> entityClass) {
+        return PluginDataService.getInstance().getRepository(entityClass);
+    }
+
+    /**
+     * 获取实体的链式查询构造器。
+     *
+     * <pre>{@code
+     * List<UserSteamId> result = PluginUtils.query(UserSteamId.class)
+     *     .where("userId", 123L)
+     *     .orderBy("id", "DESC")
+     *     .limit(10)
+     *     .list();
+     * }</pre>
+     */
+    public static <T> QueryBuilder<T> query(Class<T> entityClass) {
+        return PluginDataService.getInstance().createQueryBuilder(entityClass);
+    }
+
+    /**
+     * 获取数据库访问入口，用于执行原始 SQL。
+     *
+     * <pre>{@code
+     * PluginUtils.db().rawQuery("SELECT * FROM t WHERE x = :v", Map.of("v", 1), MyPojo.class);
+     * PluginUtils.db().rawUpdate("DELETE FROM t WHERE x = :v", Map.of("v", 1));
+     * }</pre>
+     */
+    public static PluginDataService db() {
+        return PluginDataService.getInstance();
     }
 }
