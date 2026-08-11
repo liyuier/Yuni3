@@ -6,12 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * @deprecated 请使用 {@link CommandResult} 替代。所有子节点统一通过 CommandResult 表示。
+ *
  * @Title: CommandOptionMatched
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command.model.matched
  * @Date 2025/12/23 1:07
  * @description: 匹配出的命令选项
  */
+@Deprecated
 
 @Data
 @NoArgsConstructor

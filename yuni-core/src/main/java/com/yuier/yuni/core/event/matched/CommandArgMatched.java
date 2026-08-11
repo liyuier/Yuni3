@@ -7,12 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * @deprecated 请使用 {@link ArgResult} 替代。新结果类支持 asXxx()/asXxxList() 类型化取值。
+ *
  * @Title: CommandArgMatched
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command.model.matched
  * @Date 2025/12/23 1:06
  * @description: 匹配出的命令参数
  */
+@Deprecated
 
 @Data
 @NoArgsConstructor

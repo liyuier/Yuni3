@@ -31,12 +31,15 @@ import static com.yuier.yuni.core.constants.SystemConstants.BLANK_SPACE;
 import static com.yuier.yuni.core.constants.SystemConstants.FIRST_INDEX;
 
 /**
+ * @deprecated 请使用 {@link CommandNodeMatcher} 替代。新解析器支持回溯算法、变长参数和子命令嵌套。
+ *
  * @Title: CommandMatcher
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command
  * @Date 2025/12/23 1:17
  * @description: 命令匹配器
  */
+@Deprecated
 
 @NoArgsConstructor
 public class CommandMatcher {

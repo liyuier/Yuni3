@@ -5,8 +5,11 @@ import com.yuier.yuni.core.enums.UserPermission;
 
 
 /**
+ * @deprecated 请使用 {@link CommandNode.Builder} 替代。新 Builder 使用统一的 .child() / .arg() API。
+ *
  * CommandModel 构建器
  */
+@Deprecated
 public class CommandBuilder {
     private CommandModel commandModel;
 

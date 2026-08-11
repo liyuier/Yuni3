@@ -12,12 +12,15 @@ import static com.yuier.yuni.core.constants.YuniMessageType.GROUP_MESSAGE;
 import static com.yuier.yuni.core.constants.YuniMessageType.PRIVATE_MESSAGE;
 
 /**
+ * @deprecated 请使用 {@link CommandNodeDetector} 替代。新探测器使用 CommandNode 作为命令模型。
+ *
  * @Title: CommandDetector
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command
  * @Date 2025/12/23 1:19
  * @description: 命令探测器
  */
+@Deprecated
 
 @Data
 @AllArgsConstructor

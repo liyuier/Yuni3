@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @deprecated 请使用 {@link com.yuier.yuni.event.detector.message.command.model.CommandNode} 替代。
+ *             新 API 支持子命令嵌套、变长参数、多参数选项、选项必须约束等特性。
+ *
  * @Title: CommandModel
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command
  * @Date 2025/12/23 0:29
  * @description: 命令建模
  */
+@Deprecated
 
 @Data
 @NoArgsConstructor

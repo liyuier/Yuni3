@@ -5,12 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * @deprecated 请使用 {@link ArgDef} 替代。新 API 支持变长参数（variadic）和更丰富的工厂方法。
+ *
  * @Title: CommandArg
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command
  * @Date 2025/12/23 0:30
  * @description: 命令参数
  */
+@Deprecated
 
 @Data
 @NoArgsConstructor

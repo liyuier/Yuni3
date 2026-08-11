@@ -7,12 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 /**
+ * @deprecated 请使用 {@link CommandResult} 替代。新结果类支持子命令嵌套和变长参数的类型化取值。
+ *
  * @Title: CommandMatched
  * @Author yuier
  * @Package com.yuier.yuni.event.model.message.detector.command
  * @Date 2025/12/23 1:03
  * @description: 匹配出的结果
  */
+@Deprecated
 
 @Data
 @NoArgsConstructor
