@@ -104,10 +104,21 @@ public class CommandMatcher {
                         new ArgResult(arg.getName(), arg.getType(), consumed));
                 pos += consumed.size();
             } else {
-                // 单值参数
-                if (typeMatches(tokens.get(pos), arg.getType())) {
+                // 单值参数：消费前检查 token 是否为选项或子命令名，防止吞掉子命令
+                MessageSegment seg = tokens.get(pos);
+                if (seg.typeOf(MessageSegmentTypes.TEXT)) {
+                    String text = ((TextSegment) seg).getText();
+                    if (node.getOptions().contains(text) || isChildName(node, text)) {
+                        // 参数必须在子命令之前。遇到子命令名即停止参数匹配，不再回头
+                        if (arg.isRequired()) {
+                            return CommandResult.fail();
+                        }
+                        break;
+                    }
+                }
+                if (typeMatches(seg, arg.getType())) {
                     result.getArgs().put(arg.getName(),
-                            new ArgResult(arg.getName(), arg.getType(), tokens.get(pos)));
+                            new ArgResult(arg.getName(), arg.getType(), seg));
                     pos++;
                 } else if (arg.isRequired()) {
                     return CommandResult.fail();
