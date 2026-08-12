@@ -4,6 +4,7 @@ import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.event.matched.CommandMatched;
+import com.yuier.yuni.core.event.matched.CommandResult;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -92,6 +93,9 @@ public class YuniMessageEvent extends YuniEvent {
 
     // 命令匹配结果
     private CommandMatched commandMatched;
+
+    // 命令节点匹配结果（新解析器）
+    private CommandResult commandResult;
 
     /**
      * 纯日志字符串
