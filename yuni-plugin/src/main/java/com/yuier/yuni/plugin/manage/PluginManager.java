@@ -74,7 +74,7 @@ public class PluginManager {
             List<PluginInstance> pluginInstanceList = pluginLoadProcessor.assemblePluginInstances(pluginModuleInstance, pluginClasses);
             registerPluginInstances(pluginInstanceList);
         } catch (Exception e) {
-            log.error("加载 jar 包失败: {}", jarFile.getName(), e);
+            log.error("加载 jar 包 [{}] 失败: {}", jarFile.getName(), e.getMessage(), e);
         }
     }
 

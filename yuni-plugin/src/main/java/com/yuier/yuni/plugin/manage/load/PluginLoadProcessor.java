@@ -147,14 +147,14 @@ public class PluginLoadProcessor {
                     try {
                         pluginInstance = instanceFactory.createPluginInstance(pluginMetadata, pluginClass);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("插件 [{}] 实例化失败: {}", pluginMetadata.getName(), e.getMessage(), e);
                         continue;
                     }
                     if (pluginInstance != null) {
                         pluginInstance.initialize();
                         pluginInstances.add(pluginInstance);
                     } else {
-                        log.warn("插件实例创建失败: {}", pluginClass.getName());
+                        log.warn("插件实例创建失败: {} (类: {})", pluginMetadata.getName(), pluginClass.getName());
                     }
                     break;
                 }
