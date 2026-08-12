@@ -7,7 +7,7 @@ import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
 import com.yuier.yuni.plugin.model.active.scheduled.ScheduledPlugin;
-import com.yuier.yuni.plugin.model.passive.message.CommandNodePlugin;
+import com.yuier.yuni.plugin.model.passive.message.CommandPlugin;
 import com.yuier.yuni.plugin.model.passive.message.MessageSentPlugin;
 import com.yuier.yuni.plugin.model.passive.message.PatternPlugin;
 import com.yuier.yuni.plugin.model.passive.meta.MetaPlugin;
@@ -43,7 +43,7 @@ public class PluginBusinessMapUtil {
         return switch (plugin) {
             case ScheduledPlugin scheduledPlugin -> YuniPluginType.SCHEDULED;
             case ImmediatePlugin immediatePlugin -> YuniPluginType.IMMEDIATE;
-            case CommandNodePlugin commandNodePlugin -> YuniPluginType.COMMAND;
+            case CommandPlugin commandPlugin -> YuniPluginType.COMMAND;
             case PatternPlugin patternPlugin -> YuniPluginType.PATTERN;
             case NoticePlugin noticePlugin -> YuniPluginType.NOTICE;
             case RequestPlugin requestPlugin -> YuniPluginType.REQUEST;

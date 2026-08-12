@@ -8,7 +8,7 @@ import com.yuier.yuni.event.detector.message.command.CommandNodeDetector;
  *
  * <p>插件继承此类并实现 {@link #getDetector()} 和 {@link #execute} 即可。</p>
  */
-public abstract class CommandNodePlugin extends MessagePlugin<CommandNodeDetector> {
+public abstract class CommandPlugin extends MessagePlugin<CommandNodeDetector> {
 
     @Override
     public UserPermission pluginPermission() {
