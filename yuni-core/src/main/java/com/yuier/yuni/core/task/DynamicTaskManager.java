@@ -51,7 +51,7 @@ public class DynamicTaskManager {
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             try {
                 CompletableFuture.runAsync(() -> {
-                    log.info("定时任务 [" + taskId + "] 正在执行...");
+                    log.debug("定时任务 [" + taskId + "] 正在执行...");
                     task.run();
                 });
             } catch (Exception e) {
