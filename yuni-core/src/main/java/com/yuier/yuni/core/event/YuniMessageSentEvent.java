@@ -3,7 +3,7 @@ package com.yuier.yuni.core.event;
 import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.model.message.MessageSegment;
 import com.yuier.yuni.core.model.user.MessageSender;
-import com.yuier.yuni.core.event.matched.CommandMatched;
+
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -88,9 +88,6 @@ public class YuniMessageSentEvent extends YuniEvent {
 
     // 会话状态
     private ChatSession chatSession;
-
-    // 命令匹配结果
-    private CommandMatched commandMatched;
 
     /**
      * 纯日志字符串
