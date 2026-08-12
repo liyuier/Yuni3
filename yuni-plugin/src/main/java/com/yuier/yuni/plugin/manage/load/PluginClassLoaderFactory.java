@@ -8,6 +8,7 @@ package com.yuier.yuni.plugin.manage.load;
  * @description: 插件工厂
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.net.URL;
 /**
  * 插件类加载器工厂
  */
+@Slf4j
 @Component
 public class PluginClassLoaderFactory {
 
@@ -32,8 +34,13 @@ public class PluginClassLoaderFactory {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+        // 父加载器必须使用加载本工厂类的加载器（fat jar 下为 LaunchedClassLoader），
+        // 确保能看到框架类（BOOT-INF/classes）。
+        // 不能使用 Thread.currentThread().getContextClassLoader()：
+        // commonPool 工作线程的上下文类加载器是 AppClassLoader，看不到框架类，
+        // 插件类加载时会抛 NoClassDefFoundError，导致重载静默失败
         return new PluginClassLoader(new URL[]{jarUrl},  // 指定 jar 包
-                Thread.currentThread().getContextClassLoader());  // 指定父类加载器，使用当前线程的上下文类加载器，确保可以访问到 Spring 容器中的类
+                PluginClassLoaderFactory.class.getClassLoader());
     }
 }
 
