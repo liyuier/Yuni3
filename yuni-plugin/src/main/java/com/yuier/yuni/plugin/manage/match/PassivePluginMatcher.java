@@ -6,7 +6,7 @@ import com.yuier.yuni.core.event.YuniMessageSentEvent;
 import com.yuier.yuni.core.event.meta.YuniMetaEvent;
 import com.yuier.yuni.core.event.notice.YuniNoticeEvent;
 import com.yuier.yuni.core.event.request.YuniRequestEvent;
-import com.yuier.yuni.event.detector.message.command.CommandNodeDetector;
+import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.event.detector.meta.YuniMetaDetector;
 import com.yuier.yuni.event.detector.notice.YuniNoticeDetector;
@@ -66,7 +66,7 @@ public class PassivePluginMatcher {
                 return;
             }
             var rawDetector = commandPluginInstance.getDetector();
-            if (rawDetector instanceof CommandNodeDetector detector && detector.match(event)) {
+            if (rawDetector instanceof CommandDetector detector && detector.match(event)) {
                 // 同步匹配，确保在后续判断是否应匹配模式插件时，匹配完所有命令插件
                 isCommand.set(true);
                 // 异步执行插件

@@ -2,7 +2,7 @@ package com.yuier.yuni.plugin.util;
 
 import com.yuier.yuni.core.enums.YuniPluginType;
 import com.yuier.yuni.event.detector.YuniEventDetector;
-import com.yuier.yuni.event.detector.message.command.CommandNodeDetector;
+import com.yuier.yuni.event.detector.message.command.CommandDetector;
 import com.yuier.yuni.event.detector.message.pattern.PatternDetector;
 import com.yuier.yuni.plugin.model.YuniPlugin;
 import com.yuier.yuni.plugin.model.active.immediate.ImmediatePlugin;
@@ -30,7 +30,7 @@ public class PluginBusinessMapUtil {
 
 
     public static String pluginDetectorTypeName(YuniEventDetector<?> detector) {
-        if (detector instanceof CommandNodeDetector) {
+        if (detector instanceof CommandDetector) {
             return COMMAND;
         } else if (detector instanceof PatternDetector) {
             return PATTERN;

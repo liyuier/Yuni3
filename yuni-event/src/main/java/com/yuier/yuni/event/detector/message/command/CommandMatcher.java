@@ -5,7 +5,6 @@ import com.yuier.yuni.core.event.matched.ArgResult;
 import com.yuier.yuni.core.event.matched.CommandResult;
 import com.yuier.yuni.core.constants.MessageSegmentTypes;
 import com.yuier.yuni.core.model.message.MessageSegment;
-import com.yuier.yuni.core.model.message.segment.ReplySegment;
 import com.yuier.yuni.core.model.message.segment.TextSegment;
 import com.yuier.yuni.event.detector.message.command.model.ArgDef;
 import com.yuier.yuni.event.detector.message.command.model.CommandNode;
@@ -27,7 +26,7 @@ import java.util.regex.Pattern;
  * <p>匹配顺序：位置参数 → 选项（便宜） → 子命令（回溯）</p>
  */
 @Slf4j
-public class CommandNodeMatcher {
+public class CommandMatcher {
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 

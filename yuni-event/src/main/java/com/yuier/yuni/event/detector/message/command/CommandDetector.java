@@ -27,13 +27,13 @@ import static com.yuier.yuni.core.constants.YuniMessageType.GROUP_MESSAGE;
 import static com.yuier.yuni.core.constants.YuniMessageType.PRIVATE_MESSAGE;
 
 /**
- * 命令节点探测器 —— 使用 CommandNode + CommandNodeMatcher 替代旧的 CommandModel + CommandMatcher。
+ * 命令节点探测器 —— 使用 CommandNode + CommandMatcher 替代旧的 CommandModel + CommandMatcher。
  *
  * <p>插件在 {@code getDetector()} 中返回本探测器即可迁移到新命令系统。</p>
  */
 @Data
 @AllArgsConstructor
-public class CommandNodeDetector implements MessageDetector {
+public class CommandDetector implements MessageDetector {
 
     private CommandNode rootNode;
 
@@ -69,7 +69,7 @@ public class CommandNodeDetector implements MessageDetector {
         CommandTokens commandTokens = new CommandTokens(mutableTokens, tokens.getReply());
 
         // 匹配
-        CommandNodeMatcher matcher = new CommandNodeMatcher();
+        CommandMatcher matcher = new CommandMatcher();
         CommandResult result = matcher.match(commandTokens, rootNode);
 
         if (result.isMatchSuccess()) {
