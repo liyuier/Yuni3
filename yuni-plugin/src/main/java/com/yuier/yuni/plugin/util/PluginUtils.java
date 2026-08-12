@@ -12,8 +12,10 @@ import com.yuier.yuni.core.model.message.MessageChain;
 import com.yuier.yuni.core.bot.JsonCodec;
 import com.yuier.yuni.core.util.SpringContextUtil;
 import com.yuier.yuni.plugin.data.CrudRepository;
+import com.yuier.yuni.plugin.data.DeleteBuilder;
 import com.yuier.yuni.plugin.data.PluginDataService;
 import com.yuier.yuni.plugin.data.QueryBuilder;
+import com.yuier.yuni.plugin.data.UpdateBuilder;
 import com.yuier.yuni.plugin.manage.PluginContainer;
 import com.yuier.yuni.plugin.manage.PluginManager;
 import com.yuier.yuni.plugin.model.PluginModuleInstance;
@@ -314,6 +316,34 @@ public class PluginUtils {
      */
     public static <T> QueryBuilder<T> query(Class<T> entityClass) {
         return PluginDataService.getInstance().createQueryBuilder(entityClass);
+    }
+
+    /**
+     * 获取实体的链式删除构造器。
+     *
+     * <pre>{@code
+     * int rows = PluginUtils.delete(UserSteamId.class)
+     *     .where("userId", 123L)
+     *     .where("steamId", "XXX")
+     *     .execute();
+     * }</pre>
+     */
+    public static <T> DeleteBuilder<T> delete(Class<T> entityClass) {
+        return PluginDataService.getInstance().createDeleteBuilder(entityClass);
+    }
+
+    /**
+     * 获取实体的链式更新构造器。
+     *
+     * <pre>{@code
+     * int rows = PluginUtils.update(UserSteamId.class)
+     *     .set("steamId", "NEW_ID")
+     *     .where("userId", 123L)
+     *     .execute();
+     * }</pre>
+     */
+    public static <T> UpdateBuilder<T> update(Class<T> entityClass) {
+        return PluginDataService.getInstance().createUpdateBuilder(entityClass);
     }
 
     /**

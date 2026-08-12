@@ -101,6 +101,24 @@ public class PluginDataService {
     }
 
     /**
+     * 获取实体的 DeleteBuilder。
+     * @param entityClass 已注册的实体类
+     */
+    public <T> DeleteBuilder<T> createDeleteBuilder(Class<T> entityClass) {
+        TableSchema schema = getSchema(entityClass);
+        return new DeleteBuilder<>(schema, entityClass);
+    }
+
+    /**
+     * 获取实体的 UpdateBuilder。
+     * @param entityClass 已注册的实体类
+     */
+    public <T> UpdateBuilder<T> createUpdateBuilder(Class<T> entityClass) {
+        TableSchema schema = getSchema(entityClass);
+        return new UpdateBuilder<>(schema, entityClass);
+    }
+
+    /**
      * 获取实体的 TableSchema。
      * @throws IllegalArgumentException 如果未注册
      */
