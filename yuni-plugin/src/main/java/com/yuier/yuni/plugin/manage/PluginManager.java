@@ -73,7 +73,9 @@ public class PluginManager {
             List<Class<?>> pluginClasses = pluginLoadProcessor.loadPluginClassesFromJarFile(jarFile);
             List<PluginInstance> pluginInstanceList = pluginLoadProcessor.assemblePluginInstances(pluginModuleInstance, pluginClasses);
             registerPluginInstances(pluginInstanceList);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            // 必须捕获 Throwable：类加载失败常抛 Error（NoClassDefFoundError / LinkageError），
+            // 只 catch Exception 会穿透到上层 CompletableFuture 被静默吞掉，表现为重载无日志无响应
             log.error("加载 jar 包 [{}] 失败: {}", jarFile.getName(), e.getMessage(), e);
         }
     }

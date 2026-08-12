@@ -78,8 +78,9 @@ public class PassivePluginMatcher {
                         ((PassivePlugin) commandPluginInstance.getPlugin()).execute(event);
                         // 记录功能调用
                         savePluginCallEvent.saveEvent(event, commandPluginInstance);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Throwable e) {
+                        // 捕获 Throwable：插件执行抛出 Error（如类加载错误）时也必须给用户响应，不能静默
+                        log.error("执行插件 {} 失败", commandPluginInstance.getPluginFullId(), e);
                         event.getChatSession().response(
                                 "执行插件 " + commandPluginInstance.getPluginName() + " full id: " + commandPluginInstance.getPluginFullId() + " 失败，请联系开发人员。"
                         );
