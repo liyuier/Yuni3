@@ -3,6 +3,7 @@ package com.yuier.yuni.plugin.manage.match;
 import com.yuier.yuni.core.enums.UserPermission;
 import com.yuier.yuni.core.event.YuniMessageEvent;
 import com.yuier.yuni.core.event.YuniMessageSentEvent;
+import com.yuier.yuni.core.event.matched.CommandResult;
 import com.yuier.yuni.core.event.meta.YuniMetaEvent;
 import com.yuier.yuni.core.event.notice.YuniNoticeEvent;
 import com.yuier.yuni.core.event.request.YuniRequestEvent;
@@ -69,6 +70,11 @@ public class PassivePluginMatcher {
             if (rawDetector instanceof CommandDetector detector && detector.match(event)) {
                 // 同步匹配，确保在后续判断是否应匹配模式插件时，匹配完所有命令插件
                 isCommand.set(true);
+                // 校验匹配路径上每个节点的权限（根节点权限已在插件级校验过，此处校验子节点）
+                if (!checkCommandNodePermission(event.getCommandResult(), event, commandPluginInstance.getPluginFullId())) {
+                    event.getChatSession().response("权限不足，无法执行该命令。");
+                    continue;
+                }
                 // 异步执行插件
                 CompletableFuture.runAsync(() -> {
                     log.info("匹配到插件: {}", commandPluginInstance.getPluginName());
@@ -137,6 +143,30 @@ public class PassivePluginMatcher {
         UserPermission requiredPermission = instance.getPermission();
 
         return userPermission.getPriority() >= requiredPermission.getPriority();
+    }
+
+    /**
+     * 递归校验命令匹配路径上每个节点的权限。
+     * 根节点权限已在插件级（checkPermission）校验，此处覆盖子节点。
+     * @param result   匹配结果（树形，与命令树对应）
+     * @param event    消息事件
+     * @param pluginId 插件全限定 ID
+     * @return 所有匹配节点权限均满足时返回 true
+     */
+    private boolean checkCommandNodePermission(CommandResult result, YuniMessageEvent event, String pluginId) {
+        UserPermission userPermission = permissionManager.getUserPermission(event, pluginId);
+        UserPermission required = result.getRequiredPermission();
+        if (required != null && userPermission.getPriority() < required.getPriority()) {
+            log.info("权限不足: 用户 {} 执行 {} 需要 {}，实际 {}",
+                    event.getUserId(), result.getMatchedKey(), required, userPermission);
+            return false;
+        }
+        for (CommandResult child : result.getChildren().values()) {
+            if (!checkCommandNodePermission(child, event, pluginId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /* 匹配通知事件 */

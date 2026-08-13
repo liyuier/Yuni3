@@ -58,6 +58,8 @@ public class CommandMatcher {
 
         CommandResult result = new CommandResult();
         result.setMatchedKey(node.getName());
+        // 携带节点权限，供 PassivePluginMatcher 校验
+        result.setRequiredPermission(node.getPermission());
         result.setMatchSuccess(true);
 
         // 1. 匹配位置参数

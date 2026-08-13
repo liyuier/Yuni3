@@ -1,5 +1,6 @@
 package com.yuier.yuni.core.event.matched;
 
+import com.yuier.yuni.core.enums.UserPermission;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,9 @@ public class CommandResult {
 
     /** 匹配到的节点名 */
     private String matchedKey;
+
+    /** 匹配到的节点所需权限（匹配器从 CommandNode 复制，供权限校验使用） */
+    private UserPermission requiredPermission = UserPermission.USER;
 
     /** 匹配是否成功 */
     private boolean matchSuccess = false;
