@@ -1,7 +1,7 @@
 # ===== Stage 1: Build Frontend =====
 FROM node:22 AS frontend-builder
 WORKDIR /frontend
-COPY Yuni-front/ .
+COPY front/ .
 RUN npm ci && npm run build
 
 # ===== Stage 2: Build Backend =====

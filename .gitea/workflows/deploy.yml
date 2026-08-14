@@ -15,10 +15,6 @@ jobs:
         run: |
           git clone --depth 1 http://192.168.0.103:3000/yuier/Yuni3.git .
 
-      - name: Clone Yuni-front
-        run: |
-          git clone --depth 1 http://192.168.0.103:3000/yuier/Yuni-front.git Yuni-front
-
       - name: Docker build & push
         run: |
           docker build -t localhost:5000/yuni3:latest .

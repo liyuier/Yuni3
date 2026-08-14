@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sakura-50: #fef2f5;
+  --color-sakura-100: #fce4ec;
+  --color-sakura-200: #f8bbd0;
+  --color-sakura-300: #f48fb1;
+  --color-sakura-400: #f06292;
+  --color-sakura-500: #ec407a;
+  --color-warm-50: #fffaf5;
+  --color-warm-100: #fff3e4;
+}
+
+body {
+  background: linear-gradient(135deg, #fef2f5 0%, #fffaf5 100%);
+  min-height: 100vh;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #4a3448;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.yuni-card {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(248,165,182,0.3);
+  box-shadow: 0 2px 12px rgba(248,165,182,0.15);
+  transition: all 0.2s;
+}
+.yuni-card:hover {
+  box-shadow: 0 4px 20px rgba(248,165,182,0.25);
+  transform: translateY(-1px);
+}
