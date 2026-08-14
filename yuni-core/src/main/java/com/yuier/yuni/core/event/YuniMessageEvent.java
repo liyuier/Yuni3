@@ -108,13 +108,7 @@ public class YuniMessageEvent extends YuniEvent {
 
     @Override
     public String toLogString() {
-        return "YuniEvent";
-    }
-
-    public String toPlainLogString() {
-        String plainLog = "YuniEvent";
-        setPlainLogStr(plainLog);
-        return plainLog;
+        return "YuniMessageEvent";
     }
 
     public String getPosition() {

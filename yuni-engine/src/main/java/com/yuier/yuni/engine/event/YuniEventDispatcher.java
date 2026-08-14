@@ -39,7 +39,7 @@ public class YuniEventDispatcher {
         log.info(EventLogUtil.toLog(event));
         eventSaver.saveEvent(event);
         pluginManager.handleMessageEvent(event);
-        if (event.isGroup()) {
+        if (event.isGroup()) {  // TODO 为什么被写成只推送群聊消息？？？
             eventPublisher.publishEvent(YuniMessagePushEvent.from(event));
         }
     }

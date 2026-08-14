@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InviteToGroupRequest extends GroupRequest {
 
-    // 值为 add
+    // 值为 invite
     private String subType;
     // 验证信息
     private Long groupId;

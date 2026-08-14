@@ -64,7 +64,7 @@ public class PassivePluginMatcher {
             PassivePluginInstance commandPluginInstance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(commandPluginFullId);
             // 权限检查与使能情况检查
             if (!isPluginEnabled(event, commandPluginInstance) || !checkPermission(commandPluginInstance, event)) {
-                return;
+                continue;
             }
             var rawDetector = commandPluginInstance.getDetector();
             if (rawDetector instanceof CommandDetector detector && detector.match(event)) {
@@ -180,7 +180,7 @@ public class PassivePluginMatcher {
         for (String noticePluginFullId : pluginContainer.getNoticePluginFullIds()) {
             PassivePluginInstance instance = (PassivePluginInstance) pluginContainer.getPluginInstanceByFullId(noticePluginFullId);
             if (!isPluginEnabled(event, instance) || !checkPermission(instance, event)) {
-                return;
+                continue;
             }
             YuniNoticeDetector detector = (YuniNoticeDetector) instance.getDetector();
             if (detector.match(event)) {

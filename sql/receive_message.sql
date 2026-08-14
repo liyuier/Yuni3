@@ -32,7 +32,6 @@ CREATE TABLE "receive_message" (
   "role" TEXT,
   "to_log_str" TEXT,
   "raw_message" TEXT NOT NULL,
-  "raw_json" TEXT,
   "group_id" INTEGER,
   "message_format" TEXT,
   "real_id" INTEGER,

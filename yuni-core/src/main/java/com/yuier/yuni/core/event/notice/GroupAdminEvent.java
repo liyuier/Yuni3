@@ -22,6 +22,6 @@ public class GroupAdminEvent extends YuniNoticeEvent {
     @Override
     public String toLogString() {
         String action = subType.equals("set") ? "被设置管理员" : "被取消管理员";
-        return "群管理员变动事件: " + "群(" + userId + ")成员(" + groupId + ")" + action;
+        return "群管理员变动事件: " + "群(" + groupId + ")成员(" + userId + ")" + action;
     }
 }

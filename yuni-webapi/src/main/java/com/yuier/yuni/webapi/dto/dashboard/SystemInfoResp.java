@@ -9,10 +9,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SystemInfoResp {
-    /** 堆内存已用（格式化） */
-    private String heapUsed;
-    /** 堆内存上限（格式化） */
-    private String heapMax;
+    /** 内存已用（格式化） */
+    private String usedRam;
+    /** 内存上限（格式化） */
+    private String totalRamMax;
     /** 磁盘已用（格式化） */
     private String diskUsed;
     /** 磁盘总容量（格式化） */

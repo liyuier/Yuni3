@@ -26,11 +26,11 @@ public class HonorEvent extends YuniNoticeEvent {
      *   - performer: 群聊之火
      *   - emotion: 群聊炽火
      */
-    private String HonorType;
+    private String honorType;
 
     @Override
     public String toLogString() {
-        String honorLogStr = switch (HonorType) {
+        String honorLogStr = switch (honorType) {
             case "talkative" -> "龙王";
             case "performer" -> "群聊之火";
             case "emotion" -> "群聊炽火";

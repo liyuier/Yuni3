@@ -22,7 +22,7 @@ public class DefaultYuniRequestDetector implements YuniRequestDetector {
     public Boolean match(YuniRequestEvent event) {
         yuniRequestMatcher = matcher.match(event);
         event.setMatchedEvent(yuniRequestMatcher);
-        return null;
+        return yuniRequestMatcher != null;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class AnonymousSegment extends MessageSegment {
     private AnonymousData data;
 
     public AnonymousSegment() {
-        super();
+        super("anonymous");
     }
 
     @Override
