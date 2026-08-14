@@ -41,9 +41,10 @@ application*.yml
 # 忽略数据库文件
 *.db
 
-logs/
-tmp/
-plugins/
+# 运行产物（仅锚定仓库根目录，避免误伤任意层级的同名子目录，如 front/src/views/plugins/）
+/logs/
+/tmp/
+/plugins/
 
 # 前端项目（Vue + Vite）
 front/node_modules/
